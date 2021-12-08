@@ -21,11 +21,11 @@ public class PaymentRequest {
 	private Long id;
 
 	@Column(nullable = false)
-	@ColumnTransformer(forColumn = "client_id", read = "pgp_sym_decrypt(client_id, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
+	@ColumnTransformer(forColumn = "client_id", read = "pgp_sym_decrypt(clientId, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
 	private String clientId;
 
 	@Column(nullable = false)
-	@ColumnTransformer(forColumn = "client_secret", read = "pgp_sym_decrypt(client_secret, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
+	@ColumnTransformer(forColumn = "client_secret", read = "pgp_sym_decrypt(clientSecret, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
 	private String clientSecret;
 
 	@Column(nullable = false)

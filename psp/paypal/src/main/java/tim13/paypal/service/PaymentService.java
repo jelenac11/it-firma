@@ -17,6 +17,7 @@ import com.paypal.base.rest.APIContext;
 import com.paypal.base.rest.PayPalRESTException;
 
 import tim13.paypal.common.PaypalConstants;
+import tim13.paypal.enumeration.TransactionStatus;
 import tim13.paypal.model.PaymentRequest;
 import tim13.paypal.repository.PaymentRequestRepository;
 import tim13.paypal.util.ICurrencyConverter;
@@ -29,6 +30,9 @@ public class PaymentService {
 
 	@Autowired
 	ICurrencyConverter currencyConverter;
+
+	@Autowired
+	TransactionService transactionService;
 
 	public String createUrl(PaymentRequest paymentRequest) {
 		APIContext apiContext = createApiContext(paymentRequest);
@@ -63,7 +67,11 @@ public class PaymentService {
 		payment.setId(paymentId);
 
 		try {
-			payment.execute(apiContext, paymentExecution);
+			Payment paidTransaction = payment.execute(apiContext, paymentExecution);
+
+			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction);
+
+			transactionService.save(transaction);
 
 			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentId);
 		} catch (PayPalRESTException e) {
@@ -71,6 +79,18 @@ public class PaymentService {
 
 			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentId);
 		}
+	}
+
+	private tim13.paypal.model.Transaction createTransaction(String payerId, Payment paidTransaction) {
+		tim13.paypal.model.Transaction transaction = new tim13.paypal.model.Transaction();
+
+		transaction.setPaymentId(paidTransaction.getId());
+		transaction.setMerchantId(paidTransaction.getTransactions().get(0).getPayee().getMerchantId());
+		transaction.setPayerId(payerId);
+		transaction.setAmount(Double.valueOf(paidTransaction.getTransactions().get(0).getAmount().getTotal()));
+		transaction.setStatus(TransactionStatus.FINISHED);
+
+		return transaction;
 	}
 
 	private APIContext createApiContext(PaymentRequest paymentRequest) {
