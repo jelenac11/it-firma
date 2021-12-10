@@ -29,7 +29,7 @@ public class ShoppingCart {
 	@Column(name = "shopping_cart_id")
 	private Long id;
 
-	@Column
+	@Column(name = "total_price")
 	private double totalPrice;
 
 }
