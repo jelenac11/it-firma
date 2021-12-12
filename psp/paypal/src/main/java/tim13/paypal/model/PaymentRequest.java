@@ -30,6 +30,9 @@ public class PaymentRequest {
 
 	@Column(nullable = false)
 	private String paymentId;
+	
+	@Column(nullable = false)
+	private String merchantOrderId;
 
 	@Column(nullable = false)
 	private Double amount;

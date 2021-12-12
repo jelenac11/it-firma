@@ -69,7 +69,7 @@ public class PaymentService {
 		try {
 			Payment paidTransaction = payment.execute(apiContext, paymentExecution);
 
-			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction);
+			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction, paymentRequest);
 
 			transactionService.save(transaction);
 
@@ -81,14 +81,16 @@ public class PaymentService {
 		}
 	}
 
-	private tim13.paypal.model.Transaction createTransaction(String payerId, Payment paidTransaction) {
+	private tim13.paypal.model.Transaction createTransaction(String payerId, Payment paidTransaction,
+			PaymentRequest paymentRequest) {
 		tim13.paypal.model.Transaction transaction = new tim13.paypal.model.Transaction();
 
-		transaction.setPaymentId(paidTransaction.getId());
+		transaction.setPaymentId(paymentRequest.getPaymentId());
 		transaction.setMerchantId(paidTransaction.getTransactions().get(0).getPayee().getMerchantId());
 		transaction.setPayerId(payerId);
-		transaction.setAmount(Double.valueOf(paidTransaction.getTransactions().get(0).getAmount().getTotal()));
-		transaction.setStatus(TransactionStatus.FINISHED);
+		transaction.setMerchantOrderId(paymentRequest.getMerchantOrderId());
+		transaction.setAmount(paymentRequest.getAmount());
+		transaction.setStatus(TransactionStatus.APPROVED);
 
 		return transaction;
 	}

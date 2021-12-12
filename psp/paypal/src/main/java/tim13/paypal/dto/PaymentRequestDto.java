@@ -11,6 +11,8 @@ public class PaymentRequestDto {
 	
 	private String clientSecret;
 	
+	private String merchantOrderId;
+	
 	private Double amount;
 	
 	private String successUrl;
