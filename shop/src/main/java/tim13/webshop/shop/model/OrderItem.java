@@ -2,6 +2,8 @@ package tim13.webshop.shop.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,23 +20,23 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "general_service_shopping_cart_items")
-public class GeneralServiceShoppingCartItem {
+@Entity(name = "order_items")
+public class OrderItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "general_service_shopping_cart_item_id")
+	@Column(name = "order_item_id")
 	private Long id;
 
-	@Column
-	private String person;
+	@Column(name = "item_id")
+	private Long itemId;
+
+	@Column(name = "item_type")
+	@Enumerated(EnumType.STRING)
+	private ItemType itemType;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "shopping_cart_id")
-	private GeneralServiceShoppingCart cart;
-
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "service_id")
-	private Service service;
+	@JoinColumn(name = "order_id")
+	private Order order;
 
 }
