@@ -1,6 +1,7 @@
 package tim13.webshop.shop.model;
 
-import javax.persistence.CascadeType;
+import java.util.Set;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -13,7 +14,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,8 +53,8 @@ public class Service {
 	@Column(name = "end_date")
 	private Long endDate;
 
-	@OneToOne(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private GeneralServiceShoppingCartItem item;
+	@OneToMany(mappedBy = "service")
+	private Set<GeneralServiceShoppingCartItem> items;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumn(name = "user_id")

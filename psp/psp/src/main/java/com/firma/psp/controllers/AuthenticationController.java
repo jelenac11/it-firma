@@ -1,0 +1,116 @@
+package com.firma.psp.controllers;
+
+import java.util.Set;
+
+import javax.validation.Valid;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.firma.psp.dto.MerchantDTO;
+import com.firma.psp.dto.ResponseUserDTO;
+import com.firma.psp.dto.UserLoginDTO;
+import com.firma.psp.dto.UserTokenStateDTO;
+import com.firma.psp.exceptions.RequestException;
+import com.firma.psp.model.Authority;
+import com.firma.psp.model.Merchant;
+import com.firma.psp.security.TokenUtils;
+import com.firma.psp.services.MerchantService;
+
+@RestController
+@CrossOrigin(origins = "http://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+public class AuthenticationController {
+
+	@Autowired
+	private TokenUtils tokenUtils;
+
+	@Autowired
+	private AuthenticationManager authenticationManager;
+
+	@Autowired
+	private MerchantService merchantService;
+
+	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody UserLoginDTO authenticationRequest) {
+		Authentication authentication = null;
+		try {
+			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+					authenticationRequest.getEmail(), authenticationRequest.getPassword()));
+		} catch (Exception e) {
+			return new ResponseEntity<>("Incorrect email or password.", HttpStatus.UNAUTHORIZED);
+		}
+
+		Merchant user = (Merchant) authentication.getPrincipal();
+
+		if (!user.isVerified())
+			return new ResponseEntity<>("Account not verified.", HttpStatus.BAD_REQUEST);
+
+		@SuppressWarnings("unchecked")
+		Set<Authority> auth = (Set<Authority>) user.getAuthorities();
+
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		String role = "";
+		for (Authority a : auth) {
+			role = a.getName();
+		}
+
+		String jwt = tokenUtils.generateToken(user.getEmail(), role);
+		int expiresIn = tokenUtils.getExpiredIn();
+
+		if (!user.isSupportsPaymentMethods()) {
+			return ResponseEntity.ok(new UserTokenStateDTO(jwt, false, (long) expiresIn));
+		}
+		return ResponseEntity.ok(new UserTokenStateDTO(jwt, true, (long) expiresIn));
+	}
+
+	@PostMapping(value = "/sign-up")
+	public ResponseEntity<?> signUp(@RequestBody MerchantDTO merchantDTO) {
+		try {
+			return new ResponseEntity<>(merchantService.signUp(merchantDTO), HttpStatus.OK);
+		} catch (RequestException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (InterruptedException | MailException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(value = "/verify/{token}")
+	public ResponseEntity<?> verify(@PathVariable("token") String url) {
+		merchantService.verify(url);
+		return new ResponseEntity<>("Verified.", HttpStatus.OK);
+	}
+
+	@SuppressWarnings("unchecked")
+	@GetMapping(value = "/current-user")
+	public ResponseEntity<?> currentUser() {
+		if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals("anonymousUser")) {
+			return new ResponseEntity<>("Session expired.", HttpStatus.UNAUTHORIZED);
+		}
+		Merchant current = (Merchant) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		String role = "";
+		for (Authority a : (Set<Authority>) current.getAuthorities()) {
+			role = a.getName();
+		}
+
+		ResponseUserDTO responseUser = new ResponseUserDTO(current.getEmail(), role, current.isSupportsPaymentMethods());
+		return new ResponseEntity<>(responseUser, HttpStatus.OK);
+	}
+
+}

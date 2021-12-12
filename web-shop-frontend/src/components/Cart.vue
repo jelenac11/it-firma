@@ -96,6 +96,10 @@ export default {
   name: "Cart",
   data: () => ({
     cartItems: [],
+    order: {
+      totalPrice: 0,
+      items: [],
+    },
   }),
   props: {
     value: Boolean,
@@ -116,7 +120,19 @@ export default {
   },
   methods: {
     checkout: function () {
-      console.log("checkout");
+      this.order.items = [];
+      this.cartItems.forEach((cartItem) => {
+        this.order.items.push({
+          itemId: cartItem.id,
+          itemType:
+            this.currentUser.role === "ROLE_CHIEF" ? "EQUIPMENT" : "SERVICE",
+        });
+      });
+      this.order.totalPrice = this.calculateTotal();
+      this.$store.dispatch("addOrder", this.order).then((resp) => {
+        console.log(resp.data.url);
+        window.location.href = resp.data.url;
+      });
     },
     remove: function (item) {
       if (this.currentUser.role === "ROLE_CHIEF") {
