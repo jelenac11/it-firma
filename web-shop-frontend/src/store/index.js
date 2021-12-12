@@ -136,6 +136,19 @@ export default new Vuex.Store({
             });
         },
 
+        addOrder({ commit }, order) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/orders', data: order, method: 'POST' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
         removeServiceCartItem({ commit }, id) {
             return new Promise((resolve, reject) => {
                 axios({ url: 'http://localhost:8089/api/general-service-shopping-carts/remove-item/' + id, method: 'DELETE' })

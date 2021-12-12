@@ -1,4 +1,4 @@
-package tim13.webshop.shop.model;
+package com.firma.psp.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.ColumnTransformer;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,23 +20,24 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "general_service_shopping_cart_items")
-public class GeneralServiceShoppingCartItem {
+@Entity(name = "payment_data")
+public class PaymentData {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "general_service_shopping_cart_item_id")
+	@Column(name = "payment_data_id")
 	private Long id;
 
 	@Column
-	private String person;
+	@ColumnTransformer(forColumn = "value", read = "pgp_sym_decrypt(value, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
+	private String value;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "shopping_cart_id")
-	private GeneralServiceShoppingCart cart;
+	@JoinColumn(name = "payment_method_attribute_id")
+	private PaymentMethodAttribute attribute;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "service_id")
-	private Service service;
+	@JoinColumn(name = "merchant_id")
+	private Merchant merchant;
 
 }

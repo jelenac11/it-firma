@@ -1,4 +1,6 @@
-package tim13.webshop.shop.model;
+package com.firma.psp.model;
+
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,23 +21,25 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "general_service_shopping_cart_items")
-public class GeneralServiceShoppingCartItem {
+@Entity(name = "payment_method_attributes")
+public class PaymentMethodAttribute {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "general_service_shopping_cart_item_id")
+	@Column(name = "payment_method_attribute_id")
 	private Long id;
 
 	@Column
-	private String person;
+	private String name;
+
+	@Column
+	private String type;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "shopping_cart_id")
-	private GeneralServiceShoppingCart cart;
+	@JoinColumn(name = "payment_method_id")
+	private PaymentMethod method;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
-	@JoinColumn(name = "service_id")
-	private Service service;
+	@OneToMany(mappedBy = "attribute")
+	private Set<PaymentData> data;
 
 }
