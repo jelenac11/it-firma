@@ -42,8 +42,14 @@ export default {
   }),
   methods: {
     choose: function (method) {
-      // OVDE RADIŠ
-      console.log(method);
+      const paymentData = {
+        paymentMethodId: method.id,
+        merchantOrderId: this.$route.params.transactionId,
+        merchantEmail: this.$route.params.merchantEmail,
+        amount: this.$route.params.totalPrice
+      }
+
+      this.$store.dispatch("getPaymentUrl", paymentData).then(() => {});
     },
   },
   computed: {},

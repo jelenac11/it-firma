@@ -1,5 +1,7 @@
 package com.firma.psp.controllers;
 
+import java.net.URI;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.firma.psp.dto.ChosenPaymentMethodsDTO;
 import com.firma.psp.dto.NewPaymentMethodDTO;
+import com.firma.psp.dto.PaymentRequestDTO;
 import com.firma.psp.services.PaymentMethodService;
 
 @RestController
@@ -24,7 +27,7 @@ public class PaymentMethodController {
 
 	@Autowired
 	private PaymentMethodService methodService;
-	
+
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		try {
@@ -33,7 +36,7 @@ public class PaymentMethodController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping(value = "/chosen")
 	public ResponseEntity<?> addSupportedMethods(@Valid @RequestBody ChosenPaymentMethodsDTO methods) {
 		try {
@@ -43,7 +46,7 @@ public class PaymentMethodController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@GetMapping(value = "/merchant")
 	public ResponseEntity<?> getMethods() {
 		try {
@@ -53,7 +56,7 @@ public class PaymentMethodController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<?> addNewMethod(@Valid @RequestBody NewPaymentMethodDTO newMethod) {
 		try {
@@ -62,6 +65,11 @@ public class PaymentMethodController {
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	@PostMapping(value = "/get-payment-url")
+	public ResponseEntity<?> getPaymentUrl(@Valid @RequestBody PaymentRequestDTO paymentRequest) {
+		return new ResponseEntity<>(methodService.getPaymentUrl(paymentRequest), HttpStatus.OK);
 	}
 
 }

@@ -69,26 +69,28 @@ public class PaymentService {
 		try {
 			Payment paidTransaction = payment.execute(apiContext, paymentExecution);
 
-			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction);
+			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction, paymentRequest);
 
 			transactionService.save(transaction);
 
-			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentId);
+			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentRequest.getMerchantOrderId());
 		} catch (PayPalRESTException e) {
 			e.printStackTrace();
 
-			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentId);
+			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentRequest.getMerchantOrderId());
 		}
 	}
 
-	private tim13.paypal.model.Transaction createTransaction(String payerId, Payment paidTransaction) {
+	private tim13.paypal.model.Transaction createTransaction(String payerId, Payment paidTransaction,
+			PaymentRequest paymentRequest) {
 		tim13.paypal.model.Transaction transaction = new tim13.paypal.model.Transaction();
 
-		transaction.setPaymentId(paidTransaction.getId());
+		transaction.setPaymentId(paymentRequest.getPaymentId());
 		transaction.setMerchantId(paidTransaction.getTransactions().get(0).getPayee().getMerchantId());
 		transaction.setPayerId(payerId);
-		transaction.setAmount(Double.valueOf(paidTransaction.getTransactions().get(0).getAmount().getTotal()));
-		transaction.setStatus(TransactionStatus.FINISHED);
+		transaction.setMerchantOrderId(paymentRequest.getMerchantOrderId());
+		transaction.setAmount(paymentRequest.getAmount());
+		transaction.setStatus(TransactionStatus.APPROVED);
 
 		return transaction;
 	}
@@ -123,7 +125,7 @@ public class PaymentService {
 		RedirectUrls redirectUrls = new RedirectUrls();
 
 		redirectUrls.setReturnUrl(PaypalConstants.SUCCESS_URL);
-		redirectUrls.setCancelUrl(paymentRequest.getCancelUrl());
+		redirectUrls.setCancelUrl(expandUrlWithId(paymentRequest.getCancelUrl(), paymentRequest.getMerchantOrderId()));
 
 		return redirectUrls;
 	}
@@ -162,7 +164,7 @@ public class PaymentService {
 				.orElse(null).getHref();
 	}
 
-	private String expandUrlWithId(String url, String id) {
-		return url + "?service=paypal&id=" + id;
+	private String expandUrlWithId(String url, Long id) {
+		return url + "?service=paypal&transactionId=" + id;
 	}
 }

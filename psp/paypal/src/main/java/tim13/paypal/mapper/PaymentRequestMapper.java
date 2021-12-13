@@ -13,6 +13,7 @@ public class PaymentRequestMapper {
 
 		paymentRequest.setClientId(paymentRequestDto.getClientId());
 		paymentRequest.setClientSecret(paymentRequestDto.getClientSecret());
+		paymentRequest.setMerchantOrderId(paymentRequestDto.getMerchantOrderId());
 		paymentRequest.setAmount(paymentRequestDto.getAmount());
 		paymentRequest.setSuccessUrl(paymentRequestDto.getSuccessUrl());
 		paymentRequest.setCancelUrl(paymentRequestDto.getCancelUrl());
@@ -26,6 +27,7 @@ public class PaymentRequestMapper {
 
 		paymentRequestDto.setClientId(paymentRequest.getClientId());
 		paymentRequestDto.setClientSecret(paymentRequest.getClientSecret());
+		paymentRequestDto.setMerchantOrderId(paymentRequest.getMerchantOrderId());
 		paymentRequestDto.setAmount(paymentRequest.getAmount());
 		paymentRequestDto.setSuccessUrl(paymentRequest.getSuccessUrl());
 		paymentRequestDto.setCancelUrl(paymentRequest.getCancelUrl());

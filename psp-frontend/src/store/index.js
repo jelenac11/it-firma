@@ -173,6 +173,15 @@ export default new Vuex.Store({
             });
         },
 
+        getPaymentUrl({ commit }, data) {
+            return new Promise(() => {
+                axios({url: 'http://localhost:8095/api/payment-methods/get-payment-url', method: 'POST', data: data})
+                .then((res) => {
+                    commit('');
+                    window.location.href = res.data;
+                });
+            });
+        },
     },
     modules: {}
 });

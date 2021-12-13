@@ -4,6 +4,9 @@ import Login from "../components/Login.vue";
 import Equipment from "../components/Equipment.vue";
 import Courses from "../components/Courses.vue";
 import Conferences from "../components/Conferences.vue";
+import Success from "../components/Success.vue";
+import Cancel from "../components/Cancel.vue";
+import Fail from "../components/Fail.vue";
 import store from "../store";
 
 Vue.use(VueRouter);
@@ -28,6 +31,21 @@ const routes = [
     path: "/conferences",
     name: "Conferences",
     component: Conferences
+  },
+  {
+    path: "/success",
+    name: "Success",
+    component: Success
+  },
+  {
+    path: "/fail",
+    name: "Fail",
+    component: Fail
+  },
+  {
+    path: "/cancel",
+    name: "Cancel",
+    component: Cancel
   },
 ];
 

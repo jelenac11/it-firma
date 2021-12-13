@@ -29,6 +29,9 @@ public class Transaction {
 	private String payerId;
 
 	@Column(nullable = false)
+	private Long merchantOrderId;
+	
+	@Column(nullable = false)
 	private Double amount;
 
 	@Column(nullable = false)
