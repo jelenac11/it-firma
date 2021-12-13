@@ -6,57 +6,62 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import tim13.webshop.shop.dto.GeneralServiceShoppingCartDTO;
-import tim13.webshop.shop.dto.GeneralServiceShoppingCartItemDTO;
+import tim13.webshop.shop.dto.ServiceShoppingCartDTO;
+import tim13.webshop.shop.dto.ServiceShoppingCartItemDTO;
 import tim13.webshop.shop.exceptions.NotLoggedInException;
 import tim13.webshop.shop.exceptions.RequestException;
-import tim13.webshop.shop.model.GeneralServiceShoppingCart;
-import tim13.webshop.shop.model.GeneralServiceShoppingCartItem;
+import tim13.webshop.shop.model.ServiceShoppingCart;
+import tim13.webshop.shop.model.ServiceShoppingCartItem;
 import tim13.webshop.shop.model.User;
-import tim13.webshop.shop.repositories.IGeneralServiceShoppingCartItemRepository;
-import tim13.webshop.shop.repositories.IGeneralServiceShoppingCartRepository;
+import tim13.webshop.shop.repositories.IServiceShoppingCartItemRepository;
+import tim13.webshop.shop.repositories.IServiceShoppingCartRepository;
 import tim13.webshop.shop.repositories.IServiceRepository;
 
 @Service
-public class GeneralServiceShoppingCartService {
+public class ServiceShoppingCartService {
 
 	@Autowired
-	private IGeneralServiceShoppingCartRepository generalServiceShoppingCartRepository;
+	private IServiceShoppingCartRepository serviceShoppingCartRepository;
 
 	@Autowired
-	private IGeneralServiceShoppingCartItemRepository generalServiceShoppingCartItemRepository;
+	private IServiceShoppingCartItemRepository serviceShoppingCartItemRepository;
 
 	@Autowired
 	private IServiceRepository serviceRepository;
 
-	public GeneralServiceShoppingCartDTO getMyCart() throws NotLoggedInException {
+	public ServiceShoppingCartDTO getMyCart() throws NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		GeneralServiceShoppingCart cart = generalServiceShoppingCartRepository.findByUserId(current.getId());
+		ServiceShoppingCart cart = serviceShoppingCartRepository.findByUserId(current.getId());
 
-		return new GeneralServiceShoppingCartDTO(cart);
+		return new ServiceShoppingCartDTO(cart);
 	}
 
-	public ResponseEntity<?> addItem(GeneralServiceShoppingCartItemDTO dto)
-			throws RequestException, NotLoggedInException {
+	public ResponseEntity<?> addItem(ServiceShoppingCartItemDTO dto) throws RequestException, NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		GeneralServiceShoppingCart cart = generalServiceShoppingCartRepository.findByUserId(current.getId());
+		ServiceShoppingCart cart = serviceShoppingCartRepository.findByUserId(current.getId());
 
 		tim13.webshop.shop.model.Service s = serviceRepository.getOne(dto.getService().getId());
 		if (s == null)
 			throw new RequestException("Service with ID " + dto.getService().getId() + " doesn't exists.");
 
-		GeneralServiceShoppingCartItem item = new GeneralServiceShoppingCartItem();
+		for (ServiceShoppingCartItem itm : cart.getItems()) {
+			if (itm.getService().getMerchant().getId() != s.getMerchant().getId()) {
+				throw new RequestException("You can't add to cart items from multiple merchants.");
+			}
+		}
+
+		ServiceShoppingCartItem item = new ServiceShoppingCartItem();
 		item.setService(s);
 		item.setPerson(dto.getPerson());
 		item.setCart(cart);
 
-		generalServiceShoppingCartItemRepository.save(item);
+		serviceShoppingCartItemRepository.save(item);
 		return new ResponseEntity<>("Item " + dto.getService().getName() + " added.", HttpStatus.OK);
 	}
 
@@ -65,11 +70,11 @@ public class GeneralServiceShoppingCartService {
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		GeneralServiceShoppingCart cart = generalServiceShoppingCartRepository.findByUserId(current.getId());
+		ServiceShoppingCart cart = serviceShoppingCartRepository.findByUserId(current.getId());
 
-		for (GeneralServiceShoppingCartItem item : cart.getItems()) {
+		for (ServiceShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
-				generalServiceShoppingCartItemRepository.deleteById(id);
+				serviceShoppingCartItemRepository.deleteById(id);
 				break;
 			}
 		}

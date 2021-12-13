@@ -19,12 +19,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "chief_shopping_cart_items")
-public class ChiefShoppingCartItem {
+@Entity(name = "equipment_shopping_cart_items")
+public class EquipmentShoppingCartItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "chief_shopping_cart_item_id")
+	@Column(name = "equipment_shopping_cart_item_id")
 	private Long id;
 
 	@Column
@@ -32,7 +32,7 @@ public class ChiefShoppingCartItem {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumn(name = "shopping_cart_id")
-	private ChiefShoppingCart cart;
+	private EquipmentShoppingCart cart;
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "equipment_id")

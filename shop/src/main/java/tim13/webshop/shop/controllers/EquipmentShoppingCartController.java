@@ -13,39 +13,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tim13.webshop.shop.dto.ChiefShoppingCartItemDTO;
-import tim13.webshop.shop.services.ChiefShoppingCartService;
+import tim13.webshop.shop.dto.EquipmentShoppingCartItemDTO;
+import tim13.webshop.shop.services.EquipmentShoppingCartService;
 
 @RestController
-@RequestMapping(value = "/api/chief-shopping-carts", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/equipment-shopping-carts", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "http://localhost:8080", maxAge = 3600, allowedHeaders = "*")
-public class ChiefShoppingCartController {
+public class EquipmentShoppingCartController {
 
 	@Autowired
-	private ChiefShoppingCartService chiefShoppingCartService;
+	private EquipmentShoppingCartService equipmentShoppingCartService;
 
 	@GetMapping
-	public ResponseEntity<?> getChiefShoppingCart() {
+	public ResponseEntity<?> getEquipmentShoppingCart() {
 		try {
-			return new ResponseEntity<>(chiefShoppingCartService.getMyCart(), HttpStatus.OK);
+			return new ResponseEntity<>(equipmentShoppingCartService.getMyCart(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@PostMapping(value = "/add-item")
-	public ResponseEntity<?> addItem(@RequestBody ChiefShoppingCartItemDTO dto) {
+	public ResponseEntity<?> addItem(@RequestBody EquipmentShoppingCartItemDTO dto) {
 		try {
-			return new ResponseEntity<>(chiefShoppingCartService.addItem(dto), HttpStatus.OK);
+			return new ResponseEntity<>(equipmentShoppingCartService.addItem(dto), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@DeleteMapping(value = "/remove-item/{id}")
 	public ResponseEntity<?> removeItem(@PathVariable(value = "id") Long id) {
 		try {
-			chiefShoppingCartService.removeItem(id);
+			equipmentShoppingCartService.removeItem(id);
 			return new ResponseEntity<>("Item successfully deleted", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

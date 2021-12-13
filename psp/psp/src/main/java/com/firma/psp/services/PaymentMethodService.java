@@ -3,7 +3,6 @@ package com.firma.psp.services;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -153,21 +152,21 @@ public class PaymentMethodService {
 	}
 
 	public String getPaymentUrl(PaymentRequestDTO paymentRequest) {
-		Optional<PaymentMethod> paymentMethod = methodRepo.findById(paymentRequest.getPaymentMethodId());
+		PaymentMethod paymentMethod = methodRepo.findById(paymentRequest.getPaymentMethodId()).orElse(null);
 		Merchant merchant = merchantService.findByEmail(paymentRequest.getMerchantEmail());
 
-		if (paymentMethod.isEmpty() || merchant == null) {
+		if (paymentMethod == null || merchant == null) {
 			return null;
 		}
 
-		Set<PaymentMethodAttribute> paymentMethodAttributes = paymentMethod.get().getAttributes();
+		Set<PaymentMethodAttribute> paymentMethodAttributes = paymentMethod.getAttributes();
 
-		switch (paymentMethod.get().getId().toString()) {
+		switch (paymentMethod.getId().toString()) {
 		case "1":
 
 			break;
 		case "2":
-			return getUrlByPaypal(merchant, paymentMethodAttributes, paymentRequest, paymentMethod.get());
+			return getUrlByPaypal(merchant, paymentMethodAttributes, paymentRequest, paymentMethod);
 		default:
 			break;
 		}

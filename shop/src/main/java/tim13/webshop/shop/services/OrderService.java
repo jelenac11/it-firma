@@ -19,8 +19,8 @@ import tim13.webshop.shop.model.Order;
 import tim13.webshop.shop.model.OrderItem;
 import tim13.webshop.shop.model.Transaction;
 import tim13.webshop.shop.model.User;
-import tim13.webshop.shop.repositories.IChiefShoppingCartItemRepository;
-import tim13.webshop.shop.repositories.IGeneralServiceShoppingCartItemRepository;
+import tim13.webshop.shop.repositories.IEquipmentShoppingCartItemRepository;
+import tim13.webshop.shop.repositories.IServiceShoppingCartItemRepository;
 import tim13.webshop.shop.repositories.IOrderRepository;
 
 @Service
@@ -30,10 +30,10 @@ public class OrderService {
 	private IOrderRepository orderRepository;
 
 	@Autowired
-	private IGeneralServiceShoppingCartItemRepository generalServiceShoppingCartItemRepository;
+	private IServiceShoppingCartItemRepository generalServiceShoppingCartItemRepository;
 
 	@Autowired
-	private IChiefShoppingCartItemRepository chiefShoppingCartItemRepository;
+	private IEquipmentShoppingCartItemRepository chiefShoppingCartItemRepository;
 
 	@Autowired
 	private TransactionService transactionService;

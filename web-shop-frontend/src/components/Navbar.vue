@@ -7,7 +7,7 @@
         outlined
         @click="goToEquipment()"
         v-if="
-          currentUser.role === 'ROLE_CHIEF' ||
+          currentUser.role === 'ROLE_EQUIPMENT_BUYER' ||
           currentUser.role === 'ROLE_MERCHANT'
         "
       >
@@ -18,7 +18,7 @@
         outlined
         @click="goToCourses()"
         v-if="
-          currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER' ||
+          currentUser.role === 'ROLE_SERVICE_BUYER' ||
           currentUser.role === 'ROLE_MERCHANT'
         "
       >
@@ -29,7 +29,7 @@
         outlined
         @click="goToConferences()"
         v-if="
-          currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER' ||
+          currentUser.role === 'ROLE_SERVICE_BUYER' ||
           currentUser.role === 'ROLE_MERCHANT'
         "
       >

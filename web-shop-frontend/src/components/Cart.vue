@@ -16,13 +16,13 @@
                     <th class="text-left">Name</th>
                     <th
                       class="text-left"
-                      v-if="currentUser.role === 'ROLE_CHIEF'"
+                      v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'"
                     >
                       Amount
                     </th>
                     <th
                       class="text-left"
-                      v-if="currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER'"
+                      v-if="currentUser.role === 'ROLE_SERVICE_BUYER'"
                     >
                       Participant
                     </th>
@@ -32,28 +32,22 @@
                 </thead>
                 <tbody>
                   <tr v-for="item in cartItems" :key="item.name">
-                    <td v-if="currentUser.role === 'ROLE_CHIEF'">
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'">
                       {{ item.equipment.name }}
                     </td>
-                    <td
-                      v-if="currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER'"
-                    >
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
                       {{ item.service.name }}
                     </td>
-                    <td v-if="currentUser.role === 'ROLE_CHIEF'">
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'">
                       {{ item.quantity }}
                     </td>
-                    <td
-                      v-if="currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER'"
-                    >
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
                       {{ item.person }}
                     </td>
-                    <td v-if="currentUser.role === 'ROLE_CHIEF'">
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'">
                       ${{ item.equipment.price }}
                     </td>
-                    <td
-                      v-if="currentUser.role === 'ROLE_GENERAL_SERVICE_WORKER'"
-                    >
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
                       ${{ item.service.price }}
                     </td>
                     <td>
@@ -125,7 +119,9 @@ export default {
         this.order.items.push({
           itemId: cartItem.id,
           itemType:
-            this.currentUser.role === "ROLE_CHIEF" ? "EQUIPMENT" : "SERVICE",
+            this.currentUser.role === "ROLE_EQUIPMENT_BUYER"
+              ? "EQUIPMENT"
+              : "SERVICE",
         });
       });
       this.order.totalPrice = this.calculateTotal();
@@ -135,7 +131,7 @@ export default {
       });
     },
     remove: function (item) {
-      if (this.currentUser.role === "ROLE_CHIEF") {
+      if (this.currentUser.role === "ROLE_EQUIPMENT_BUYER") {
         this.$store.dispatch("removeEquipmentCartItem", item.id).then(() => {
           this.cartItems = this.cartItems.filter((e) => e.id !== item.id);
         });
@@ -157,12 +153,12 @@ export default {
       return sum;
     },
     getCartItems: function () {
-      if (this.currentUser.role === "ROLE_CHIEF") {
-        this.$store.dispatch("getChiefShoppingCart").then((resp) => {
+      if (this.currentUser.role === "ROLE_EQUIPMENT_BUYER") {
+        this.$store.dispatch("getEquipmentShoppingCart").then((resp) => {
           this.cartItems = resp.data.items;
         });
-      } else if (this.currentUser.role === "ROLE_GENERAL_SERVICE_WORKER") {
-        this.$store.dispatch("getGeneralServiceShoppingCart").then((resp) => {
+      } else if (this.currentUser.role === "ROLE_SERVICE_BUYER") {
+        this.$store.dispatch("getServiceShoppingCart").then((resp) => {
           this.cartItems = resp.data.items;
         });
       }

@@ -54,7 +54,7 @@ public class Service {
 	private Long endDate;
 
 	@OneToMany(mappedBy = "service")
-	private Set<GeneralServiceShoppingCartItem> items;
+	private Set<ServiceShoppingCartItem> items;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumn(name = "user_id")

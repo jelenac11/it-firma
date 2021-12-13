@@ -17,6 +17,7 @@ public class EquipmentDTO {
 	private String description;
 	private int price;
 	private String equipmentType;
+	private String merchant;
 
 	public EquipmentDTO(Equipment e) {
 		this.id = e.getId();
@@ -24,6 +25,7 @@ public class EquipmentDTO {
 		this.description = e.getDescription();
 		this.price = e.getPrice();
 		this.equipmentType = e.getEquipmentType().toString();
+		this.merchant = e.getMerchant().getName();
 	}
 
 }

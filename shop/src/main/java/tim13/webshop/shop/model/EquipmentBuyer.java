@@ -12,32 +12,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("CH")
+@DiscriminatorValue("EB")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Chief extends User {
+public class EquipmentBuyer extends User {
 
 	private static final long serialVersionUID = 1L;
 
-	public Chief(Long id) {
+	public EquipmentBuyer(Long id) {
 		super(id);
 	}
 
-	public Chief(String email, String firstName, String lastName) {
+	public EquipmentBuyer(String email, String firstName, String lastName) {
 		super(email, firstName, lastName);
 	}
 
-	public Chief(String email, String password, String firstName, String lastName) {
+	public EquipmentBuyer(String email, String password, String firstName, String lastName) {
 		super(email, password, firstName, lastName);
 	}
 
-	public Chief(Long id, String email, String password, String firstName, String lastName) {
+	public EquipmentBuyer(Long id, String email, String password, String firstName, String lastName) {
 		super(id, email, password, firstName, lastName);
 	}
 
-	@OneToOne(mappedBy = "chief", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private ChiefShoppingCart shoppingCart;
+	@OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private EquipmentShoppingCart shoppingCart;
 
 }

@@ -78,7 +78,7 @@ export default {
         .dispatch("login", { email, password })
         .then((res) => {
           var role = jwt_decode(res.data.accessToken).role;
-          if (role === "ROLE_GENERAL_SERVICE_WORKER") {
+          if (role === "ROLE_SERVICE_BUYER") {
             this.$router.push("/courses");
           } else {
             this.$router.push("/equipment");

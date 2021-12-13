@@ -59,10 +59,10 @@ router.beforeEach((to, from, next) => {
   if ((to.name === 'Login') && store.getters.authenticated) next({ name: from.name })
   else next()
 
-  if ((to.name === 'Equipment') && store.state.user.role === 'ROLE_GENERAL_SERVICE_WORKER') next({ name: 'Courses' })
+  if ((to.name === 'Equipment') && store.state.user.role === 'ROLE_SERVICE_BUYER') next({ name: 'Courses' })
   else next()
 
-  if ((to.name === 'Courses' || to.name === 'Conferences') && store.state.user.role === 'ROLE_CHIEF') next({ name: 'Equipment' })
+  if ((to.name === 'Courses' || to.name === 'Conferences') && store.state.user.role === 'ROLE_EQUIPMENT_BUYER') next({ name: 'Equipment' })
   else next()
 })
 

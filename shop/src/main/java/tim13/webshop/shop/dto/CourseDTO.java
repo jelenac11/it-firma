@@ -27,6 +27,7 @@ public class CourseDTO extends ServiceDTO {
 		this.startDate = c.getStartDate();
 		this.endDate = c.getEndDate();
 		this.teacher = c.getTeacher();
+		this.merchant = c.getMerchant().getName();
 	}
 
 }

@@ -47,7 +47,7 @@ public class Equipment {
 	private EquipmentType equipmentType;
 
 	@OneToOne(mappedBy = "equipment", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private ChiefShoppingCartItem item;
+	private EquipmentShoppingCartItem item;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumn(name = "user_id")

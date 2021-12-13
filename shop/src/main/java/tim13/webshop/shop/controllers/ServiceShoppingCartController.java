@@ -13,30 +13,30 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import tim13.webshop.shop.dto.GeneralServiceShoppingCartItemDTO;
-import tim13.webshop.shop.services.GeneralServiceShoppingCartService;
+import tim13.webshop.shop.dto.ServiceShoppingCartItemDTO;
+import tim13.webshop.shop.services.ServiceShoppingCartService;
 
 @RestController
-@RequestMapping(value = "/api/general-service-shopping-carts", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/service-shopping-carts", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin(origins = "http://localhost:8080", maxAge = 3600, allowedHeaders = "*")
-public class GeneralServiceShoppingCartController {
+public class ServiceShoppingCartController {
 
 	@Autowired
-	private GeneralServiceShoppingCartService generalServiceShoppingCartService;
+	private ServiceShoppingCartService serviceShoppingCartService;
 
 	@GetMapping
-	public ResponseEntity<?> getGeneralServiceShoppingCart() {
+	public ResponseEntity<?> getServiceShoppingCart() {
 		try {
-			return new ResponseEntity<>(generalServiceShoppingCartService.getMyCart(), HttpStatus.OK);
+			return new ResponseEntity<>(serviceShoppingCartService.getMyCart(), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
 	@PostMapping(value = "/add-item")
-	public ResponseEntity<?> addItem(@RequestBody GeneralServiceShoppingCartItemDTO dto) {
+	public ResponseEntity<?> addItem(@RequestBody ServiceShoppingCartItemDTO dto) {
 		try {
-			return new ResponseEntity<>(generalServiceShoppingCartService.addItem(dto), HttpStatus.OK);
+			return new ResponseEntity<>(serviceShoppingCartService.addItem(dto), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -45,7 +45,7 @@ public class GeneralServiceShoppingCartController {
 	@DeleteMapping(value = "/remove-item/{id}")
 	public ResponseEntity<?> removeItem(@PathVariable(value = "id") Long id) {
 		try {
-			generalServiceShoppingCartService.removeItem(id);
+			serviceShoppingCartService.removeItem(id);
 			return new ResponseEntity<>("Item successfully deleted", HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

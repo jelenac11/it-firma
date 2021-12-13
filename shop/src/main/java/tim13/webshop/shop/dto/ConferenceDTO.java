@@ -25,6 +25,7 @@ public class ConferenceDTO extends ServiceDTO {
 		this.price = c.getPrice();
 		this.startDate = c.getStartDate();
 		this.endDate = c.getEndDate();
+		this.merchant = c.getMerchant().getName();
 	}
 
 }

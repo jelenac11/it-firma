@@ -4,12 +4,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import tim13.webshop.shop.model.ChiefShoppingCart;
+import tim13.webshop.shop.model.EquipmentShoppingCart;
 
 @Repository
-public interface IChiefShoppingCartRepository extends JpaRepository<ChiefShoppingCart, Long> {
+public interface IEquipmentShoppingCartRepository extends JpaRepository<EquipmentShoppingCart, Long> {
 
 	@Query(value = "SELECT * FROM shopping_carts a WHERE a.user_id = ?1", nativeQuery = true)
-	ChiefShoppingCart findByUserId(Long userId);
+	EquipmentShoppingCart findByUserId(Long userId);
 
 }

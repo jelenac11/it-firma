@@ -36,6 +36,9 @@
         </v-card>
       </v-dialog>
     </v-row>
+    <v-snackbar v-model="wrong" top color="red darken-3">
+      You can't add to cart items from multiple merchants.
+    </v-snackbar>
   </div>
 </template>
 
@@ -45,6 +48,7 @@ export default {
   data: () => ({
     name: "",
     isValid: true,
+    wrong: false,
   }),
   props: {
     value: Boolean,
@@ -78,8 +82,8 @@ export default {
           this.name = "";
           this.show = false;
         })
-        .catch((err) => {
-          console.log(err.response);
+        .catch(() => {
+          this.wrong = true;
         });
     },
     close: function () {
