@@ -32,7 +32,7 @@ public class PaymentRequest {
 	private String paymentId;
 	
 	@Column(nullable = false)
-	private String merchantOrderId;
+	private Long merchantOrderId;
 
 	@Column(nullable = false)
 	private Double amount;

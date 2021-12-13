@@ -218,6 +218,20 @@ export default new Vuex.Store({
                     });
             });
         },
+
+        updateTransaction({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios({ url: `http://localhost:8089/api/transaction/${data.transactionId}?status=${data.status}`, method: 'PUT' })
+                    .then((resp) => {
+                        commit();
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        commit('logout');
+                        reject(err);
+                    });
+            });
+        }
     },
     modules: {}
 });

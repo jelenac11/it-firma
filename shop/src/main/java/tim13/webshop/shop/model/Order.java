@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,8 @@ public class Order {
 
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderItem> items;
+	
+	@OneToOne(mappedBy = "order")
+	private Transaction transaction;
 
 }

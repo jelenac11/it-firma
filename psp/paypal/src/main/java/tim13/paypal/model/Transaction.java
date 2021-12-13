@@ -29,7 +29,7 @@ public class Transaction {
 	private String payerId;
 
 	@Column(nullable = false)
-	private String merchantOrderId;
+	private Long merchantOrderId;
 	
 	@Column(nullable = false)
 	private Double amount;

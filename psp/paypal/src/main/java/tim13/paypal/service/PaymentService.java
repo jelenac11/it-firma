@@ -73,11 +73,11 @@ public class PaymentService {
 
 			transactionService.save(transaction);
 
-			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentId);
+			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentRequest.getMerchantOrderId());
 		} catch (PayPalRESTException e) {
 			e.printStackTrace();
 
-			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentId);
+			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentRequest.getMerchantOrderId());
 		}
 	}
 
@@ -125,7 +125,7 @@ public class PaymentService {
 		RedirectUrls redirectUrls = new RedirectUrls();
 
 		redirectUrls.setReturnUrl(PaypalConstants.SUCCESS_URL);
-		redirectUrls.setCancelUrl(paymentRequest.getCancelUrl());
+		redirectUrls.setCancelUrl(expandUrlWithId(paymentRequest.getCancelUrl(), paymentRequest.getMerchantOrderId()));
 
 		return redirectUrls;
 	}
@@ -164,7 +164,7 @@ public class PaymentService {
 				.orElse(null).getHref();
 	}
 
-	private String expandUrlWithId(String url, String id) {
-		return url + "?service=paypal&id=" + id;
+	private String expandUrlWithId(String url, Long id) {
+		return url + "?service=paypal&transactionId=" + id;
 	}
 }
