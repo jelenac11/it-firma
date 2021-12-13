@@ -15,11 +15,13 @@ public class ServiceDTO {
 	protected Long id;
 	protected String name;
 	protected double price;
+	protected String merchant;
 
 	public ServiceDTO(Service s) {
 		this.id = s.getId();
 		this.name = s.getName();
 		this.price = s.getPrice();
+		this.merchant = s.getMerchant().getName();
 	}
 
 }

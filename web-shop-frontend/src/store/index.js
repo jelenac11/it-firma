@@ -45,9 +45,9 @@ export default new Vuex.Store({
         },
     },
     actions: {
-        getChiefShoppingCart({ commit }) {
+        getEquipmentShoppingCart({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/chief-shopping-carts', method: 'GET' })
+                axios({ url: 'http://localhost:8089/api/equipment-shopping-carts', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -58,9 +58,9 @@ export default new Vuex.Store({
             });
         },
 
-        getGeneralServiceShoppingCart({ commit }) {
+        getServiceShoppingCart({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/general-service-shopping-carts', method: 'GET' })
+                axios({ url: 'http://localhost:8089/api/service-shopping-carts', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -112,7 +112,7 @@ export default new Vuex.Store({
 
         addEquipmentToCart({ commit }, equipment) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/chief-shopping-carts/add-item', data: equipment, method: 'POST' })
+                axios({ url: 'http://localhost:8089/api/equipment-shopping-carts/add-item', data: equipment, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -125,7 +125,7 @@ export default new Vuex.Store({
 
         addServiceToCart({ commit }, service) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/general-service-shopping-carts/add-item', data: service, method: 'POST' })
+                axios({ url: 'http://localhost:8089/api/service-shopping-carts/add-item', data: service, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -151,7 +151,7 @@ export default new Vuex.Store({
 
         removeServiceCartItem({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/general-service-shopping-carts/remove-item/' + id, method: 'DELETE' })
+                axios({ url: 'http://localhost:8089/api/service-shopping-carts/remove-item/' + id, method: 'DELETE' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -164,7 +164,7 @@ export default new Vuex.Store({
 
         removeEquipmentCartItem({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8089/api/chief-shopping-carts/remove-item/' + id, method: 'DELETE' })
+                axios({ url: 'http://localhost:8089/api/equipment-shopping-carts/remove-item/' + id, method: 'DELETE' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);

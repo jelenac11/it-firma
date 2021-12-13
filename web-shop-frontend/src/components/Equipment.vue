@@ -63,6 +63,11 @@
                               >Price: <b>${{ item.price }}</b></span
                             >
                           </v-list-item-content>
+                          <v-list-item-content>
+                            <span class="ml-4"
+                              >Merchant: <b>{{ item.merchant }}</b></span
+                            >
+                          </v-list-item-content>
                           <p
                             class="ml-4 mr-6 mt-3"
                             style="text-justify: inter-word"

@@ -15,18 +15,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("GSSC")
+@DiscriminatorValue("SSC")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralServiceShoppingCart extends ShoppingCart {
+public class ServiceShoppingCart extends ShoppingCart {
 
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id")
-	private GeneralServiceWorker worker;
+	private ServiceBuyer buyer;
 
 	@OneToMany(mappedBy = "cart")
-	private Set<GeneralServiceShoppingCartItem> items;
+	private Set<ServiceShoppingCartItem> items;
 
 }

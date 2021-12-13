@@ -6,67 +6,73 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import tim13.webshop.shop.dto.ChiefShoppingCartDTO;
-import tim13.webshop.shop.dto.ChiefShoppingCartItemDTO;
+import tim13.webshop.shop.dto.EquipmentShoppingCartDTO;
+import tim13.webshop.shop.dto.EquipmentShoppingCartItemDTO;
 import tim13.webshop.shop.exceptions.NotLoggedInException;
 import tim13.webshop.shop.exceptions.RequestException;
-import tim13.webshop.shop.model.ChiefShoppingCart;
-import tim13.webshop.shop.model.ChiefShoppingCartItem;
+import tim13.webshop.shop.model.EquipmentShoppingCart;
+import tim13.webshop.shop.model.EquipmentShoppingCartItem;
 import tim13.webshop.shop.model.Equipment;
 import tim13.webshop.shop.model.User;
-import tim13.webshop.shop.repositories.IChiefShoppingCartItemRepository;
-import tim13.webshop.shop.repositories.IChiefShoppingCartRepository;
+import tim13.webshop.shop.repositories.IEquipmentShoppingCartItemRepository;
+import tim13.webshop.shop.repositories.IEquipmentShoppingCartRepository;
 import tim13.webshop.shop.repositories.IEquipmentRepository;
 
 @Service
-public class ChiefShoppingCartService {
+public class EquipmentShoppingCartService {
 
 	@Autowired
-	private IChiefShoppingCartRepository chiefShoppingCartRepository;
+	private IEquipmentShoppingCartRepository equipmentShoppingCartRepository;
 
 	@Autowired
-	private IChiefShoppingCartItemRepository chiefShoppingCartItemRepository;
+	private IEquipmentShoppingCartItemRepository equipmentShoppingCartItemRepository;
 
 	@Autowired
 	private IEquipmentRepository equipmentRepository;
 
-	public ChiefShoppingCartDTO getMyCart() throws NotLoggedInException {
+	public EquipmentShoppingCartDTO getMyCart() throws NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		ChiefShoppingCart cart = chiefShoppingCartRepository.findByUserId(current.getId());
+		EquipmentShoppingCart cart = equipmentShoppingCartRepository.findByUserId(current.getId());
 
-		return new ChiefShoppingCartDTO(cart);
+		return new EquipmentShoppingCartDTO(cart);
 	}
 
-	public ResponseEntity<?> addItem(ChiefShoppingCartItemDTO dto) throws RequestException, NotLoggedInException {
+	public ResponseEntity<?> addItem(EquipmentShoppingCartItemDTO dto) throws RequestException, NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		ChiefShoppingCart cart = chiefShoppingCartRepository.findByUserId(current.getId());
+		EquipmentShoppingCart cart = equipmentShoppingCartRepository.findByUserId(current.getId());
 
 		Equipment e = equipmentRepository.getOne(dto.getEquipment().getId());
 		if (e == null)
 			throw new RequestException("Equipment with ID " + dto.getEquipment().getId() + " doesn't exists.");
 
+		for (EquipmentShoppingCartItem itm : cart.getItems()) {
+			if (itm.getEquipment().getMerchant().getId() != e.getMerchant().getId()) {
+				throw new RequestException("You can't add to cart items from multiple merchants.");
+			}
+		}
+
 		boolean existing = false;
-		for (ChiefShoppingCartItem itm : cart.getItems()) {
+		for (EquipmentShoppingCartItem itm : cart.getItems()) {
 			if (itm.getEquipment().getId() == e.getId()) {
 				existing = true;
 				itm.setQuantity(itm.getQuantity() + dto.getQuantity());
-				chiefShoppingCartItemRepository.save(itm);
+				equipmentShoppingCartItemRepository.save(itm);
 				break;
 			}
 		}
 
 		if (!existing) {
-			ChiefShoppingCartItem item = new ChiefShoppingCartItem();
+			EquipmentShoppingCartItem item = new EquipmentShoppingCartItem();
 			item.setEquipment(e);
 			item.setQuantity(dto.getQuantity());
 			item.setCart(cart);
-			chiefShoppingCartItemRepository.save(item);
+			equipmentShoppingCartItemRepository.save(item);
 		}
 
 		return new ResponseEntity<>("Item " + dto.getEquipment().getName() + " added.", HttpStatus.OK);
@@ -77,11 +83,11 @@ public class ChiefShoppingCartService {
 		if (current == null)
 			throw new NotLoggedInException("You must login first. No logged in user found!");
 
-		ChiefShoppingCart cart = chiefShoppingCartRepository.findByUserId(current.getId());
+		EquipmentShoppingCart cart = equipmentShoppingCartRepository.findByUserId(current.getId());
 
-		for (ChiefShoppingCartItem item : cart.getItems()) {
+		for (EquipmentShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
-				chiefShoppingCartItemRepository.deleteById(id);
+				equipmentShoppingCartItemRepository.deleteById(id);
 				break;
 			}
 		}

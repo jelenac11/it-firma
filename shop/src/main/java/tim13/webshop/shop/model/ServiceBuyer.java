@@ -12,32 +12,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@DiscriminatorValue("GS")
+@DiscriminatorValue("SB")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GeneralServiceWorker extends User {
+public class ServiceBuyer extends User {
 
 	private static final long serialVersionUID = 1L;
 
-	public GeneralServiceWorker(Long id) {
+	public ServiceBuyer(Long id) {
 		super(id);
 	}
 
-	public GeneralServiceWorker(String email, String firstName, String lastName) {
+	public ServiceBuyer(String email, String firstName, String lastName) {
 		super(email, firstName, lastName);
 	}
 
-	public GeneralServiceWorker(String email, String password, String firstName, String lastName) {
+	public ServiceBuyer(String email, String password, String firstName, String lastName) {
 		super(email, password, firstName, lastName);
 	}
 
-	public GeneralServiceWorker(Long id, String email, String password, String firstName, String lastName) {
+	public ServiceBuyer(Long id, String email, String password, String firstName, String lastName) {
 		super(id, email, password, firstName, lastName);
 	}
 
-	@OneToOne(mappedBy = "worker", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private GeneralServiceShoppingCart shoppingCart;
+	@OneToOne(mappedBy = "buyer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private ServiceShoppingCart shoppingCart;
 
 }
