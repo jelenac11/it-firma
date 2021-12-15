@@ -2,6 +2,8 @@ package tim13.paypal.controller;
 
 import java.net.URI;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -27,14 +29,18 @@ public class PaymentController {
 	@Autowired
 	private PaymentRequestMapper paymentRequestMapper;
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+
 	@PostMapping(value = "/create-url")
 	public ResponseEntity<String> createUrl(@RequestBody PaymentRequestDto paymentRequestDto) {
+		logger.trace("URL creation requested.");
 		return ResponseEntity.ok(paymentService.createUrl(paymentRequestMapper.toEntity(paymentRequestDto)));
 	}
 
 	@GetMapping(value = "/execute", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<Void> executePayment(@RequestParam("paymentId") String paymentId,
 			@RequestParam("PayerID") String payerId) {
+		logger.trace("Payment execution requested.");
 		return ResponseEntity.status(HttpStatus.SEE_OTHER)
 				.location(URI.create(paymentService.executePayment(payerId, paymentId))).build();
 	}

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,13 +17,14 @@ import org.springframework.stereotype.Service;
 
 import com.firma.psp.dto.MerchantDTO;
 import com.firma.psp.dto.MethodResponseDTO;
-import com.firma.psp.dto.ShopDataDTO;
 import com.firma.psp.exceptions.RequestException;
 import com.firma.psp.model.Authority;
 import com.firma.psp.model.Merchant;
+import com.firma.psp.model.OrderData;
 import com.firma.psp.model.VerificationToken;
 import com.firma.psp.repositories.IAuthorityRepository;
 import com.firma.psp.repositories.IMerchantRepository;
+import com.firma.psp.repositories.IOrderDataRepository;
 
 @Service
 public class MerchantService implements UserDetailsService {
@@ -33,6 +36,9 @@ public class MerchantService implements UserDetailsService {
 	private IAuthorityRepository authorityRepository;
 
 	@Autowired
+	private IOrderDataRepository orderDataRepository;
+
+	@Autowired
 	private EmailService emailService;
 
 	@Autowired
@@ -40,6 +46,8 @@ public class MerchantService implements UserDetailsService {
 
 	@Autowired
 	private VerificationTokenService verificationTokenService;
+
+	private static final Logger logger = LoggerFactory.getLogger(MerchantService.class);
 
 	public boolean signUp(MerchantDTO merchantDTO) throws MailException, InterruptedException, RequestException {
 		Merchant existing = merchantRepository.findByEmail(merchantDTO.getEmail());
@@ -51,10 +59,6 @@ public class MerchantService implements UserDetailsService {
 		merchant.setEmail(merchantDTO.getEmail());
 		merchant.setShopName(merchantDTO.getShopName());
 		merchant.setPassword(encodePassword(merchantDTO.getPassword()));
-		merchant.setWebSiteUrl(merchantDTO.getWebSiteUrl());
-		merchant.setSuccessUrl(merchantDTO.getSuccessUrl());
-		merchant.setFailedUrl(merchantDTO.getFailedUrl());
-		merchant.setErrorUrl(merchantDTO.getErrorUrl());
 
 		Set<Authority> auths = new HashSet<>();
 		Authority a = authorityRepository.findByName("ROLE_MERCHANT");
@@ -66,6 +70,7 @@ public class MerchantService implements UserDetailsService {
 		merchant.setLastPasswordResetDate(System.currentTimeMillis());
 
 		this.save(merchant);
+		logger.info("New merchant successfully registered.");
 
 		emailService.sendActivationLink(merchant);
 		return true;
@@ -77,13 +82,17 @@ public class MerchantService implements UserDetailsService {
 		if (vt != null) {
 			vt.getMerchant().setVerified(true);
 			save(vt.getMerchant());
+			logger.info("Account successfully verified.");
 		}
 	}
 
-	public List<MethodResponseDTO> getMerchantMethods(ShopDataDTO data) throws Exception {
-		Merchant m = merchantRepository.findByEmail(data.getMerchant());
+	public List<MethodResponseDTO> getMerchantMethods(Long id) throws Exception {
+		OrderData o = orderDataRepository.getOne(id);
+
+		Merchant m = merchantRepository.findByEmail(o.getMerchantEmail());
 		if (m == null)
 			throw new Exception("Merchant doesn't exist");
+		logger.info("Reading merchant methods from database.");
 		return m.getPaymentMethods().stream().map(pm -> new MethodResponseDTO(pm.getId(), pm.getName()))
 				.collect(Collectors.toList());
 	}

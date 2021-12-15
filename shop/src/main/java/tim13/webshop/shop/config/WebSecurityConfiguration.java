@@ -53,15 +53,27 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().exceptionHandling()
 				.authenticationEntryPoint(restAuthenticationEntryPoint).and().authorizeRequests()
-				.antMatchers("/auth/**").permitAll().and().cors().and()
+
+				.antMatchers(HttpMethod.GET, "/api/conferences").hasAuthority("READ_CONFERENCES")
+				.antMatchers(HttpMethod.GET, "/api/courses").hasAuthority("READ_COURSES")
+				.antMatchers(HttpMethod.GET, "/api/equipments").hasAuthority("READ_EQUIPMENT")
+				.antMatchers(HttpMethod.GET, "/api/equipment-shopping-carts").hasAuthority("READ_ESC")
+				.antMatchers(HttpMethod.POST, "/api/equipment-shopping-carts/add-item").hasAuthority("ADD_ITEM_TO_ESC")
+				.antMatchers(HttpMethod.DELETE, "/api/equipment-shopping-carts/remove-item/{id}")
+				.hasAuthority("REMOVE_ITEM_FROM_ESC").antMatchers(HttpMethod.GET, "/api/service-shopping-carts")
+				.hasAuthority("READ_SSC").antMatchers(HttpMethod.POST, "/api/service-shopping-carts/add-item")
+				.hasAuthority("ADD_ITEM_TO_SSC")
+				.antMatchers(HttpMethod.DELETE, "/api/service-shopping-carts/remove-item/{id}")
+				.hasAuthority("REMOVE_ITEM_FROM_SSC").antMatchers(HttpMethod.POST, "/api/orders")
+				.hasAuthority("ADD_ORDER")
+
+				.anyRequest().permitAll().and().cors().and()
 				.addFilterBefore(new TokenAuthenticationFilter(tokenUtils, jwtUserDetailsService),
 						BasicAuthenticationFilter.class);
+
 		http.csrf().disable();
-		
-		http.headers()
-        .xssProtection()
-        .and()
-        .contentSecurityPolicy("script-src 'self'");
+
+		http.headers().xssProtection().and().contentSecurityPolicy("script-src 'self'");
 	}
 
 	@Override

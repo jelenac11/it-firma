@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -23,9 +25,11 @@ import com.firma.psp.dto.PaymentRequestDTO;
 import com.firma.psp.dto.PaypalDataDTO;
 import com.firma.psp.dto.SupportedMethodResponseDTO;
 import com.firma.psp.model.Merchant;
+import com.firma.psp.model.OrderData;
 import com.firma.psp.model.PaymentData;
 import com.firma.psp.model.PaymentMethod;
 import com.firma.psp.model.PaymentMethodAttribute;
+import com.firma.psp.repositories.IOrderDataRepository;
 import com.firma.psp.repositories.IPaymentDataRepository;
 import com.firma.psp.repositories.IPaymentMethodAttributeRepository;
 import com.firma.psp.repositories.IPaymentMethodRepository;
@@ -37,6 +41,9 @@ public class PaymentMethodService {
 	private IPaymentMethodRepository methodRepo;
 
 	@Autowired
+	private IOrderDataRepository orderDataRepo;
+
+	@Autowired
 	private MerchantService merchantService;
 
 	@Autowired
@@ -44,6 +51,8 @@ public class PaymentMethodService {
 
 	@Autowired
 	private IPaymentDataRepository dataRepo;
+
+	private static final Logger logger = LoggerFactory.getLogger(PaymentMethodService.class);
 
 	public List<PaymentMethodDTO> getAll() {
 		List<PaymentMethod> allMethods = methodRepo.findAll();
@@ -54,6 +63,7 @@ public class PaymentMethodService {
 			result.add(new PaymentMethodDTO(pm.getId(), pm.getName(), attributes));
 
 		}
+		logger.info("Reading payment methods from database.");
 		return result;
 	}
 
@@ -85,6 +95,7 @@ public class PaymentMethodService {
 				dataRepo.save(pd);
 			}
 		}
+		logger.info("Saving supported payment methods.");
 	}
 
 	public List<SupportedMethodResponseDTO> getMethods() {
@@ -120,6 +131,7 @@ public class PaymentMethodService {
 					.collect(Collectors.toList());
 			result.add(new SupportedMethodResponseDTO(pm.getId(), pm.getName(), false, values));
 		}
+		logger.info("Reading payment methods from database.");
 		return result;
 	}
 
@@ -148,12 +160,13 @@ public class PaymentMethodService {
 			if (!exists)
 				throw new Exception("Payment method attribute incorrect!");
 		}
-
 	}
 
 	public String getPaymentUrl(PaymentRequestDTO paymentRequest) {
 		PaymentMethod paymentMethod = methodRepo.findById(paymentRequest.getPaymentMethodId()).orElse(null);
-		Merchant merchant = merchantService.findByEmail(paymentRequest.getMerchantEmail());
+
+		OrderData o = orderDataRepo.getOne(paymentRequest.getOrderDataId());
+		Merchant merchant = merchantService.findByEmail(o.getMerchantEmail());
 
 		if (paymentMethod == null || merchant == null) {
 			return null;
@@ -183,16 +196,19 @@ public class PaymentMethodService {
 
 	private PaypalDataDTO createPaypalData(Merchant merchant, Set<PaymentMethodAttribute> paymentAttributes,
 			PaymentRequestDTO paymentRequestDTO) {
+		OrderData o = orderDataRepo.getOne(paymentRequestDTO.getOrderDataId());
+
 		PaypalDataDTO paypalDataDTO = new PaypalDataDTO();
 
-		paypalDataDTO.setAmount(paymentRequestDTO.getAmount());
-		paypalDataDTO.setCancelUrl(merchant.getFailedUrl());
+		paypalDataDTO.setAmount(o.getTotalPrice());
+		paypalDataDTO.setCancelUrl(o.getFailUrl());
 		paypalDataDTO.setClientId(getMerchantClientId(paymentAttributes, merchant));
 		paypalDataDTO.setClientSecret(getMerchantSecret(paymentAttributes, merchant));
-		paypalDataDTO.setErrorUrl(merchant.getErrorUrl());
-		paypalDataDTO.setMerchantOrderId(paymentRequestDTO.getMerchantOrderId());
-		paypalDataDTO.setSuccessUrl(merchant.getSuccessUrl());
+		paypalDataDTO.setErrorUrl(o.getErrorUrl());
+		paypalDataDTO.setMerchantOrderId(o.getTransactionId());
+		paypalDataDTO.setSuccessUrl(o.getSuccessUrl());
 
+		logger.info("Paypal payment data created.");
 		return paypalDataDTO;
 	}
 

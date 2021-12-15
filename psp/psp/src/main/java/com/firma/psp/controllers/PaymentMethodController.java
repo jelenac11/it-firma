@@ -1,9 +1,9 @@
 package com.firma.psp.controllers;
 
-import java.net.URI;
-
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,11 +28,15 @@ public class PaymentMethodController {
 	@Autowired
 	private PaymentMethodService methodService;
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentMethodController.class);
+
 	@GetMapping
 	public ResponseEntity<?> getAll() {
 		try {
+			logger.trace("All payment methods requested.");
 			return new ResponseEntity<>(methodService.getAll(), HttpStatus.OK);
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -40,9 +44,11 @@ public class PaymentMethodController {
 	@PostMapping(value = "/chosen")
 	public ResponseEntity<?> addSupportedMethods(@Valid @RequestBody ChosenPaymentMethodsDTO methods) {
 		try {
+			logger.trace("Choosing merchant supported payment methods requested.");
 			methodService.addSupportedMethods(methods);
 			return new ResponseEntity<>("Successfully added methods!", HttpStatus.OK);
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -50,9 +56,10 @@ public class PaymentMethodController {
 	@GetMapping(value = "/merchant")
 	public ResponseEntity<?> getMethods() {
 		try {
+			logger.trace("Merchant supported payment methods requested.");
 			return new ResponseEntity<>(methodService.getMethods(), HttpStatus.OK);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -60,9 +67,11 @@ public class PaymentMethodController {
 	@PostMapping
 	public ResponseEntity<?> addNewMethod(@Valid @RequestBody NewPaymentMethodDTO newMethod) {
 		try {
+			logger.trace("Payment method addition requested.");
 			methodService.save(newMethod);
 			return new ResponseEntity<>("Successfully added new payment method!", HttpStatus.CREATED);
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

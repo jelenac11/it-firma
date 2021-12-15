@@ -39,46 +39,6 @@
                 :rules="passwordRules"
                 required
               ></v-text-field>
-              <v-text-field
-                color="blue darken-2"
-                prepend-icon="mdi-web"
-                name="webSiteUrl"
-                label="Web site URL"
-                type="text"
-                v-model="user.webSiteUrl"
-                :rules="[(v) => !!v || 'Web site URL is required']"
-                required
-              ></v-text-field>
-              <v-text-field
-                color="blue darken-2"
-                prepend-icon="mdi-web-check"
-                name="successUrl"
-                label="Success URL"
-                type="text"
-                v-model="user.successUrl"
-                :rules="[(v) => !!v || 'Success URL is required']"
-                required
-              ></v-text-field>
-              <v-text-field
-                color="blue darken-2"
-                prepend-icon="mdi-web-cancel"
-                name="failedUrl"
-                label="Failed URL"
-                type="text"
-                v-model="user.failedUrl"
-                :rules="[(v) => !!v || 'Failed URL is required']"
-                required
-              ></v-text-field>
-              <v-text-field
-                color="blue darken-2"
-                prepend-icon="mdi-web-off"
-                name="errorUrl"
-                label="Error URL"
-                type="text"
-                v-model="user.errorUrl"
-                :rules="[(v) => !!v || 'Error URL is required']"
-                required
-              ></v-text-field>
             </v-form>
           </v-card-text>
           <v-card-actions class="justify-center">
@@ -115,10 +75,6 @@ export default {
       email: null,
       shopName: null,
       password: null,
-      webSiteUrl: null,
-      successUrl: null,
-      failedUrl: null,
-      errorUrl: null,
     },
     isValid: true,
     conflict: false,

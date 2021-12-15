@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -44,14 +46,19 @@ public class AuthenticationController {
 
 	@Autowired
 	private MerchantService merchantService;
+	
+	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
 
 	@PostMapping(value = "/login", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody UserLoginDTO authenticationRequest) {
+		logger.trace("Login requested.");
+		
 		Authentication authentication = null;
 		try {
 			authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 					authenticationRequest.getEmail(), authenticationRequest.getPassword()));
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>("Incorrect email or password.", HttpStatus.UNAUTHORIZED);
 		}
 
@@ -73,6 +80,7 @@ public class AuthenticationController {
 		String jwt = tokenUtils.generateToken(user.getEmail(), role);
 		int expiresIn = tokenUtils.getExpiredIn();
 
+		logger.trace(String.format("User with ID: %s successfully logged in.", user.getId()));
 		if (!user.isSupportsPaymentMethods()) {
 			return ResponseEntity.ok(new UserTokenStateDTO(jwt, false, (long) expiresIn));
 		}
@@ -82,11 +90,13 @@ public class AuthenticationController {
 	@PostMapping(value = "/sign-up")
 	public ResponseEntity<?> signUp(@RequestBody MerchantDTO merchantDTO) {
 		try {
+			logger.trace("Sign up requested.");
 			return new ResponseEntity<>(merchantService.signUp(merchantDTO), HttpStatus.OK);
 		} catch (RequestException e) {
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		} catch (InterruptedException | MailException e) {
-			e.printStackTrace();
+			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
