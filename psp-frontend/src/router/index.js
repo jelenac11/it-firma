@@ -22,7 +22,7 @@ const routes = [
     component: Methods
   },
   {
-    path: "/checkout/:transactionId/:merchantEmail/:totalPrice",
+    path: "/checkout/:orderDataId",
     name: "Checkout",
     component: Checkout
   },

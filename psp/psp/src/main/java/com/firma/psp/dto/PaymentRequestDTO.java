@@ -12,10 +12,6 @@ import lombok.Setter;
 public class PaymentRequestDTO {
 
 	private Long paymentMethodId;
+	private Long orderDataId;
 
-	private String merchantEmail;
-
-	private Double amount;
-
-	private Long merchantOrderId;
 }

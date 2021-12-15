@@ -32,7 +32,7 @@ values ('Merchant API Token', 'password', 3);
 
 --Merchant
 INSERT INTO merchants
-(email, error_url, failed_url, last_password_reset_date, "password", shop_name, success_url, supports_payment_methods, verified, web_site_url)
-VALUES('merchant1@gmail.com', 'http://localhost:8081/#/fail', 'http://localhost:8081/#/cancel', 0, '$2a$12$AG2MxGN5ClxbU/a./ydhEeN483inOKkCy/GltpwPhqovplZiWPxqS', 'Shop 1', 'http://localhost:8081/#/success', false, true, 'http://localhost:8081/#/equipment');
+(email, last_password_reset_date, "password", shop_name, supports_payment_methods, verified)
+VALUES('merchant1@gmail.com', 0, '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 'Shop 1', false, true);
 
 

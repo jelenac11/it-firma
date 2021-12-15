@@ -50,4 +50,16 @@ public class Merchant extends User {
 	@OneToMany(mappedBy = "merchant")
 	private Set<Equipment> equipments;
 
+	@Column(name = "web_site_url")
+	private String webSiteUrl;
+
+	@Column(name = "success_url")
+	private String successUrl;
+
+	@Column(name = "fail_url")
+	private String failUrl;
+
+	@Column(name = "error_url")
+	private String errorUrl;
+
 }

@@ -45,18 +45,6 @@ public class Merchant implements UserDetails {
 	@Column
 	private String password;
 
-	@Column(name = "web_site_url")
-	private String webSiteUrl;
-
-	@Column(name = "success_url")
-	private String successUrl;
-
-	@Column(name = "failed_url")
-	private String failedUrl;
-
-	@Column(name = "error_url")
-	private String errorUrl;
-
 	@Column
 	private boolean verified;
 

@@ -44,30 +44,23 @@ export default {
     choose: function (method) {
       const paymentData = {
         paymentMethodId: method.id,
-        merchantOrderId: this.$route.params.transactionId,
-        merchantEmail: this.$route.params.merchantEmail,
-        amount: this.$route.params.totalPrice
-      }
+        orderDataId: this.$route.params.orderDataId,
+      };
 
       this.$store.dispatch("getPaymentUrl", paymentData).then(() => {});
     },
   },
   computed: {},
   created() {
-    let shopData = {
-        transactionId: parseInt(this.$route.params.transactionId),
-        merchant: this.$route.params.merchantEmail,
-        totalPrice: parseFloat(this.$route.params.totalPrice)
-    }
+    let orderDataId = parseInt(this.$route.params.orderDataId);
     this.$store
-      .dispatch("getSupportedMethodsForMerchant", shopData)
+      .dispatch("getSupportedMethodsForMerchant", orderDataId)
       .then((resp) => {
         this.methods = resp.data;
-      }).catch((err) => {
-          console.log(err.response);
-      }
-
-      );
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
   },
 };
 </script>
