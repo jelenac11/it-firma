@@ -1,5 +1,6 @@
 package tim13.webshop.shop.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,6 +19,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import lombok.AllArgsConstructor;
@@ -57,8 +59,8 @@ public class User implements UserDetails {
 	private Long lastPasswordResetDate;
 
 	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "user_authority", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "authority_id"))
-	private List<Authority> authorities;
+	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
+	private List<Role> roles;
 
 	public User(Long id) {
 		super();
@@ -94,7 +96,16 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return this.authorities;
+		List<GrantedAuthority> authorities = new ArrayList<>();
+
+		for (Role role : this.roles) {
+			role.getPrivileges().forEach(p -> {
+				GrantedAuthority authority = new SimpleGrantedAuthority(p.getName());
+				authorities.add(authority);
+			});
+		}
+
+		return authorities;
 	}
 
 	@Override
@@ -175,8 +186,8 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-	public void setAuthorities(List<Authority> authorities) {
-		this.authorities = authorities;
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
 	}
 
 }

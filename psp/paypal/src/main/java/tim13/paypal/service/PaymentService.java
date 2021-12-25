@@ -3,6 +3,8 @@ package tim13.paypal.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,8 @@ public class PaymentService {
 	@Autowired
 	TransactionService transactionService;
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
+
 	public String createUrl(PaymentRequest paymentRequest) {
 		APIContext apiContext = createApiContext(paymentRequest);
 
@@ -45,11 +49,12 @@ public class PaymentService {
 			paymentRequest.setPaymentId(createdPayment.getId());
 
 			paymentRequestRepository.save(paymentRequest);
+			logger.info("URL created.");
 
 			return getLink(createdPayment.getLinks());
 		} catch (PayPalRESTException e) {
 			e.printStackTrace();
-
+			logger.debug(e.getMessage());
 			return null;
 		}
 	}
@@ -72,11 +77,12 @@ public class PaymentService {
 			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction, paymentRequest);
 
 			transactionService.save(transaction);
+			logger.info("Payment execution.");
 
 			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentRequest.getMerchantOrderId());
 		} catch (PayPalRESTException e) {
 			e.printStackTrace();
-
+			logger.debug(e.getMessage());
 			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentRequest.getMerchantOrderId());
 		}
 	}
@@ -91,6 +97,8 @@ public class PaymentService {
 		transaction.setMerchantOrderId(paymentRequest.getMerchantOrderId());
 		transaction.setAmount(paymentRequest.getAmount());
 		transaction.setStatus(TransactionStatus.APPROVED);
+
+		logger.info("Transaction creation.");
 
 		return transaction;
 	}
@@ -110,6 +118,8 @@ public class PaymentService {
 		payment.setTransactions(createTransactions(paymentRequest));
 		payment.setIntent(PaypalConstants.INTENT);
 
+		logger.info("Payment creation.");
+
 		return payment;
 	}
 
@@ -117,6 +127,7 @@ public class PaymentService {
 		Payer payer = new Payer();
 
 		payer.setPaymentMethod(PaypalConstants.PAYMENT_METHOD);
+		logger.info("Payer creation.");
 
 		return payer;
 	}
@@ -127,6 +138,7 @@ public class PaymentService {
 		redirectUrls.setReturnUrl(PaypalConstants.SUCCESS_URL);
 		redirectUrls.setCancelUrl(expandUrlWithId(paymentRequest.getCancelUrl(), paymentRequest.getMerchantOrderId()));
 
+		logger.info("Redirect URLs creation.");
 		return redirectUrls;
 	}
 
@@ -135,6 +147,7 @@ public class PaymentService {
 
 		transactions.add(createTransaction(paymentRequest));
 
+		logger.info("Transaction creation.");
 		return transactions;
 	}
 
@@ -143,6 +156,7 @@ public class PaymentService {
 
 		transaction.setAmount(createAmount(paymentRequest));
 
+		logger.info("Transaction creation.");
 		return transaction;
 	}
 
@@ -152,6 +166,7 @@ public class PaymentService {
 		amount.setCurrency(PaypalConstants.CURRENCY);
 		amount.setTotal(convertCurrency(paymentRequest.getAmount()).toString());
 
+		logger.info("Amount creation.");
 		return amount;
 	}
 

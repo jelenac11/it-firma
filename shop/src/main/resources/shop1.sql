@@ -1,6 +1,6 @@
-INSERT INTO authority (name) VALUES ('ROLE_EQUIPMENT_BUYER');
-INSERT INTO authority (name) VALUES ('ROLE_SERVICE_BUYER');
-INSERT INTO authority (name) VALUES ('ROLE_MERCHANT');
+INSERT INTO roles (name) VALUES ('ROLE_EQUIPMENT_BUYER');
+INSERT INTO roles (name) VALUES ('ROLE_SERVICE_BUYER');
+INSERT INTO roles (name) VALUES ('ROLE_MERCHANT');
 
 INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date) VALUES ('EB', 'chief1@gmail.com', 'Chief', 'Chiefovic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402);
 INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date) VALUES ('EB', 'chief2@gmail.com', 'Laza', 'Lazic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402);
@@ -15,26 +15,26 @@ INSERT INTO users ("type", email, first_name, last_name, "password", last_passwo
 INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date) VALUES ('SB', 'generalservice8@gmail.com', 'Jelena', 'Nastasic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402);
 INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date) VALUES ('SB', 'generalservice9@gmail.com', 'Lenka', 'Dundjerski', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402);
 INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date) VALUES ('SB', 'generalservice10@gmail.com', 'Jasmina', 'Brundic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402);
-INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date, name) VALUES ('ME', 'merchant1@gmail.com', 'Petar', 'Petrovic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402, 'WinWin');
-INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date, name) VALUES ('ME', 'merchant2@gmail.com', 'Zarko', 'Stefanovic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402, 'Gigatron');
+INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date, name, web_site_url, success_url, fail_url, error_url) VALUES ('ME', 'merchant1@gmail.com', 'Petar', 'Petrovic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402, 'WinWin', 'http://localhost:8081/#/', 'http://localhost:8081/#/success', 'http://localhost:8081/#/fail', 'http://localhost:8081/#/error');
+INSERT INTO users ("type", email, first_name, last_name, "password", last_password_reset_date, name, web_site_url, success_url, fail_url, error_url) VALUES ('ME', 'merchant2@gmail.com', 'Zarko', 'Stefanovic', '$2a$12$wNTgmVgZyA4gzAYqJOxEiOJPwCZ3SFFsGEGRbTaqphjitHmawdr.m', 1608560339402, 'Gigatron', 'http://localhost:8081/#/', 'http://localhost:8081/#/success', 'http://localhost:8081/#/fail', 'http://localhost:8081/#/error');
 
-INSERT INTO user_authority(user_id, authority_id) VALUES (1,1);
-INSERT INTO user_authority(user_id, authority_id) VALUES (2,1);
-INSERT INTO user_authority(user_id, authority_id) VALUES (3,1);
+INSERT INTO user_roles(user_id, role_id) VALUES (1,1);
+INSERT INTO user_roles(user_id, role_id) VALUES (2,1);
+INSERT INTO user_roles(user_id, role_id) VALUES (3,1);
 
-INSERT INTO user_authority(user_id, authority_id) VALUES (4,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (5,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (6,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (7,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (8,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (9,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (10,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (11,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (12,2);
-INSERT INTO user_authority(user_id, authority_id) VALUES (13,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (4,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (5,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (6,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (7,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (8,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (9,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (10,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (11,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (12,2);
+INSERT INTO user_roles(user_id, role_id) VALUES (13,2);
 
-INSERT INTO user_authority(user_id, authority_id) VALUES (14,3);
-INSERT INTO user_authority(user_id, authority_id) VALUES (15,3);
+INSERT INTO user_roles(user_id, role_id) VALUES (14,3);
+INSERT INTO user_roles(user_id, role_id) VALUES (15,3);
 
 INSERT INTO shopping_carts("type", total_price, user_id) VALUES ('ESC',0,1);
 INSERT INTO shopping_carts("type", total_price, user_id) VALUES ('ESC',0,2);

@@ -1,5 +1,7 @@
 package tim13.webshop.shop.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,10 +23,12 @@ public class TransactionController {
 	@Autowired
 	private TransactionService transactionService;
 
+	private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+
 	@PutMapping(value = "{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestParam Integer status) {
+		logger.trace("Transaction update requested.");
 		transactionService.update(id, status);
-
 		return new ResponseEntity<>("Transaction successfully updated", HttpStatus.NO_CONTENT);
 	}
 }

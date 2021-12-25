@@ -1,5 +1,7 @@
 package tim13.webshop.shop.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,13 +16,16 @@ public class UserService implements UserDetailsService {
 
 	@Autowired
 	private IUserRepository userRepository;
-	
+
+	private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
 	@Override
 	public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 		User user = userRepository.findByEmail(email);
 		if (user == null) {
 			throw new UsernameNotFoundException(String.format("No user found with email '%s'.", email));
 		} else {
+			logger.info("Reading user from database.");
 			return user;
 		}
 	}

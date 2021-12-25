@@ -1,5 +1,7 @@
 package tim13.webshop.shop.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,8 @@ public class EquipmentShoppingCartService {
 	@Autowired
 	private IEquipmentRepository equipmentRepository;
 
+	private static final Logger logger = LoggerFactory.getLogger(EquipmentShoppingCartService.class);
+
 	public EquipmentShoppingCartDTO getMyCart() throws NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		if (current == null)
@@ -37,6 +41,7 @@ public class EquipmentShoppingCartService {
 
 		EquipmentShoppingCart cart = equipmentShoppingCartRepository.findByUserId(current.getId());
 
+		logger.info("Reading equipment shopping cart from database.");
 		return new EquipmentShoppingCartDTO(cart);
 	}
 
@@ -75,6 +80,7 @@ public class EquipmentShoppingCartService {
 			equipmentShoppingCartItemRepository.save(item);
 		}
 
+		logger.info("Adding new item to equipment shopping cart.");
 		return new ResponseEntity<>("Item " + dto.getEquipment().getName() + " added.", HttpStatus.OK);
 	}
 
@@ -88,6 +94,7 @@ public class EquipmentShoppingCartService {
 		for (EquipmentShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
 				equipmentShoppingCartItemRepository.deleteById(id);
+				logger.info("Item removed from equipment shopping cart.");
 				break;
 			}
 		}

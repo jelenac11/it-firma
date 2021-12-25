@@ -7,25 +7,35 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "authority")
+@Table(name = "roles")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Authority implements GrantedAuthority {
+public class Role implements GrantedAuthority {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "authority_id")
+	@Column(name = "role_id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
 	@Column(name = "name")
 	String name;
+
+	@ManyToMany(mappedBy = "roles")
+	private Collection<User> users;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "roles_privileges", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "privilege_id"))
+	private List<Privilege> privileges;
 
 	@Override
 	public String getAuthority() {

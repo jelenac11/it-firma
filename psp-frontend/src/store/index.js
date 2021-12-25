@@ -79,9 +79,9 @@ export default new Vuex.Store({
             });
         },
 
-        getSupportedMethodsForMerchant({ commit }, shopData) {
+        getSupportedMethodsForMerchant({ commit }, orderDataId) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'http://localhost:8095/api/merchants/supported-methods', data: shopData, method: 'POST' })
+                axios({ url: 'http://localhost:8095/api/merchants/supported-methods/' + orderDataId, method: 'GET' })
                     .then(resp => {
                         commit('setMethods', resp.data);
                         resolve(resp);
@@ -175,11 +175,11 @@ export default new Vuex.Store({
 
         getPaymentUrl({ commit }, data) {
             return new Promise(() => {
-                axios({url: 'http://localhost:8095/api/payment-methods/get-payment-url', method: 'POST', data: data})
-                .then((res) => {
-                    commit('');
-                    window.location.href = res.data;
-                });
+                axios({ url: 'http://localhost:8095/api/payment-methods/get-payment-url', method: 'POST', data: data })
+                    .then((res) => {
+                        commit('');
+                        window.location.href = res.data;
+                    });
             });
         },
     },
