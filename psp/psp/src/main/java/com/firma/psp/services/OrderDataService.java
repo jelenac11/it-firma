@@ -1,5 +1,7 @@
 package com.firma.psp.services;
 
+import java.sql.Timestamp;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ public class OrderDataService {
 		o.setMerchantEmail(orderDataDTO.getMerchantEmail());
 		o.setTotalPrice(orderDataDTO.getTotalPrice());
 		o.setTransactionId(orderDataDTO.getTransactionId());
+		o.setTimestamp(Timestamp.valueOf(orderDataDTO.getTimestamp().toString()));
 		o.setSuccessUrl(orderDataDTO.getSuccessUrl());
 		o.setFailUrl(orderDataDTO.getFailUrl());
 		o.setErrorUrl(orderDataDTO.getErrorUrl());

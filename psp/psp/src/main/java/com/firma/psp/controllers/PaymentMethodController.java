@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.firma.psp.dto.ChosenPaymentMethodsDTO;
 import com.firma.psp.dto.NewPaymentMethodDTO;
 import com.firma.psp.dto.PaymentRequestDTO;
+import com.firma.psp.exceptions.RequestException;
 import com.firma.psp.services.PaymentMethodService;
 
 @RestController
@@ -78,7 +79,13 @@ public class PaymentMethodController {
 
 	@PostMapping(value = "/get-payment-url")
 	public ResponseEntity<?> getPaymentUrl(@Valid @RequestBody PaymentRequestDTO paymentRequest) {
-		return new ResponseEntity<>(methodService.getPaymentUrl(paymentRequest), HttpStatus.OK);
+		try {
+			logger.trace("Payment requested.");
+			return new ResponseEntity<>(methodService.getPaymentUrl(paymentRequest), HttpStatus.OK);
+		} catch (RequestException e) {
+			logger.debug(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 
 }

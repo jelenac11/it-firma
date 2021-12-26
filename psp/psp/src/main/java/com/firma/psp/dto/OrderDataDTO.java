@@ -23,6 +23,8 @@ public class OrderDataDTO {
 	private double totalPrice;
 	@NotEmpty
 	private String merchantEmail;
+	@NotNull
+	private Long timestamp;
 	@NotEmpty
 	private String successUrl;
 	@NotEmpty
