@@ -82,6 +82,7 @@ public class OrderService {
 		OrderDataDTO orderDataDTO = new OrderDataDTO();
 		orderDataDTO.setTransactionId(transaction.getId());
 		orderDataDTO.setMerchantEmail(merchant.getEmail());
+		orderDataDTO.setTimeStamp(transaction.getTimeStamp());
 		orderDataDTO.setTotalPrice(o.getTotalPrice());
 		orderDataDTO.setSuccessUrl(merchant.getSuccessUrl());
 		orderDataDTO.setFailUrl(merchant.getFailUrl());

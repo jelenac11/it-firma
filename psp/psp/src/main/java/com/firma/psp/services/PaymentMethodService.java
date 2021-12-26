@@ -19,11 +19,13 @@ import com.firma.psp.dto.ChosenPaymentMethodDTO;
 import com.firma.psp.dto.ChosenPaymentMethodsDTO;
 import com.firma.psp.dto.NewAttributeDTO;
 import com.firma.psp.dto.NewPaymentMethodDTO;
+import com.firma.psp.dto.PaymentAttributeDTO;
 import com.firma.psp.dto.PaymentAttributeValueDTO;
+import com.firma.psp.dto.PaymentDataDTO;
 import com.firma.psp.dto.PaymentMethodDTO;
 import com.firma.psp.dto.PaymentRequestDTO;
-import com.firma.psp.dto.PaypalDataDTO;
 import com.firma.psp.dto.SupportedMethodResponseDTO;
+import com.firma.psp.exceptions.RequestException;
 import com.firma.psp.model.Merchant;
 import com.firma.psp.model.OrderData;
 import com.firma.psp.model.PaymentData;
@@ -48,6 +50,9 @@ public class PaymentMethodService {
 
 	@Autowired
 	private IPaymentMethodAttributeRepository attributeRepo;
+
+	@Autowired
+	private IPaymentDataRepository paymentDataRepo;
 
 	@Autowired
 	private IPaymentDataRepository dataRepo;
@@ -162,75 +167,88 @@ public class PaymentMethodService {
 		}
 	}
 
-	public String getPaymentUrl(PaymentRequestDTO paymentRequest) {
+	public String getPaymentUrl(PaymentRequestDTO paymentRequest) throws RequestException {
 		PaymentMethod paymentMethod = methodRepo.findById(paymentRequest.getPaymentMethodId()).orElse(null);
-
 		OrderData o = orderDataRepo.getOne(paymentRequest.getOrderDataId());
 		Merchant merchant = merchantService.findByEmail(o.getMerchantEmail());
 
 		if (paymentMethod == null || merchant == null) {
-			return null;
+			throw new RequestException("Payment method or merchant does not exist.");
 		}
 
-		Set<PaymentMethodAttribute> paymentMethodAttributes = paymentMethod.getAttributes();
+		PaymentDataDTO pd = createPaymentDataDTO(paymentMethod, o, merchant);
 
-		switch (paymentMethod.getId().toString()) {
-		case "1":
-
-			break;
-		case "2":
-			return getUrlByPaypal(merchant, paymentMethodAttributes, paymentRequest, paymentMethod);
-		default:
-			break;
-		}
-
-		return null;
-	}
-
-	private String getUrlByPaypal(Merchant merchant, Set<PaymentMethodAttribute> paymentAttributes,
-			PaymentRequestDTO paymentRequestDTO, PaymentMethod paymentMethod) {
-		PaypalDataDTO paypalDataDTO = createPaypalData(merchant, paymentAttributes, paymentRequestDTO);
-
-		return sendRequestToPaypal(paymentMethod, paypalDataDTO);
-	}
-
-	private PaypalDataDTO createPaypalData(Merchant merchant, Set<PaymentMethodAttribute> paymentAttributes,
-			PaymentRequestDTO paymentRequestDTO) {
-		OrderData o = orderDataRepo.getOne(paymentRequestDTO.getOrderDataId());
-
-		PaypalDataDTO paypalDataDTO = new PaypalDataDTO();
-
-		paypalDataDTO.setAmount(o.getTotalPrice());
-		paypalDataDTO.setCancelUrl(o.getFailUrl());
-		paypalDataDTO.setClientId(getMerchantClientId(paymentAttributes, merchant));
-		paypalDataDTO.setClientSecret(getMerchantSecret(paymentAttributes, merchant));
-		paypalDataDTO.setErrorUrl(o.getErrorUrl());
-		paypalDataDTO.setMerchantOrderId(o.getTransactionId());
-		paypalDataDTO.setSuccessUrl(o.getSuccessUrl());
-
-		logger.info("Paypal payment data created.");
-		return paypalDataDTO;
-	}
-
-	private String getMerchantClientId(Set<PaymentMethodAttribute> paymentAttributes, Merchant merchant) {
-		return paymentAttributes.stream()
-				.filter(attribute -> attribute.getName().equalsIgnoreCase("merchant client id")).findFirst().get()
-				.getData().stream().filter(data -> data.getMerchant().getId() == merchant.getId()).findFirst().get()
-				.getValue();
-	}
-
-	private String getMerchantSecret(Set<PaymentMethodAttribute> paymentAttributes, Merchant merchant) {
-		return paymentAttributes.stream()
-				.filter(attribute -> attribute.getName().equalsIgnoreCase("merchant client secret")).findFirst().get()
-				.getData().stream().filter(data -> data.getMerchant().getId() == merchant.getId()).findFirst().get()
-				.getValue();
-	}
-
-	private String sendRequestToPaypal(PaymentMethod paymentMethod, PaypalDataDTO paypalDataDTO) {
 		RestTemplate rs = new RestTemplate();
-
-		String response = rs.postForEntity(paymentMethod.getUri(), paypalDataDTO, String.class).getBody();
-
-		return response;
+		return rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
 	}
+
+	private PaymentDataDTO createPaymentDataDTO(PaymentMethod m, OrderData o, Merchant merchant) {
+		PaymentDataDTO pd = new PaymentDataDTO();
+		pd.setMerchantOrderId(o.getTransactionId());
+		pd.setMerchantTimestamp(o.getTimestamp());
+		pd.setAmount(o.getTotalPrice());
+		pd.setFailedURL(o.getFailUrl());
+		pd.setErrorURL(o.getErrorUrl());
+		pd.setSuccessURL(o.getSuccessUrl());
+
+		Set<PaymentMethodAttribute> paymentMethodAttributes = m.getAttributes();
+		List<PaymentAttributeDTO> attributes = new ArrayList<PaymentAttributeDTO>();
+
+		for (PaymentMethodAttribute pma : paymentMethodAttributes) {
+			PaymentData paymentData = paymentDataRepo.findByMerchantIdAndAttributeId(merchant.getId(), pma.getId());
+			attributes.add(new PaymentAttributeDTO(pma.getName(), paymentData.getValue()));
+		}
+
+		pd.setAttributes(attributes);
+
+		return pd;
+	}
+
+	/*
+	 * private String getUrlByPaypal(Merchant merchant, Set<PaymentMethodAttribute>
+	 * paymentAttributes, PaymentRequestDTO paymentRequestDTO, PaymentMethod
+	 * paymentMethod) { PaypalDataDTO paypalDataDTO = createPaypalData(merchant,
+	 * paymentAttributes, paymentRequestDTO);
+	 * 
+	 * return sendRequestToPaypal(paymentMethod, paypalDataDTO); }
+	 * 
+	 * private PaypalDataDTO createPaypalData(Merchant merchant,
+	 * Set<PaymentMethodAttribute> paymentAttributes, PaymentRequestDTO
+	 * paymentRequestDTO) { OrderData o =
+	 * orderDataRepo.getOne(paymentRequestDTO.getOrderDataId());
+	 * 
+	 * PaypalDataDTO paypalDataDTO = new PaypalDataDTO();
+	 * 
+	 * paypalDataDTO.setAmount(o.getTotalPrice());
+	 * paypalDataDTO.setCancelUrl(o.getFailUrl());
+	 * paypalDataDTO.setClientId(getMerchantClientId(paymentAttributes, merchant));
+	 * paypalDataDTO.setClientSecret(getMerchantSecret(paymentAttributes,
+	 * merchant)); paypalDataDTO.setErrorUrl(o.getErrorUrl());
+	 * paypalDataDTO.setMerchantOrderId(o.getTransactionId());
+	 * paypalDataDTO.setSuccessUrl(o.getSuccessUrl());
+	 * 
+	 * logger.info("Paypal payment data created."); return paypalDataDTO; }
+	 * 
+	 * private String getMerchantClientId(Set<PaymentMethodAttribute>
+	 * paymentAttributes, Merchant merchant) { return paymentAttributes.stream()
+	 * .filter(attribute ->
+	 * attribute.getName().equalsIgnoreCase("merchant client id")).findFirst().get()
+	 * .getData().stream().filter(data -> data.getMerchant().getId() ==
+	 * merchant.getId()).findFirst().get() .getValue(); }
+	 * 
+	 * private String getMerchantSecret(Set<PaymentMethodAttribute>
+	 * paymentAttributes, Merchant merchant) { return paymentAttributes.stream()
+	 * .filter(attribute ->
+	 * attribute.getName().equalsIgnoreCase("merchant client secret")).findFirst().
+	 * get() .getData().stream().filter(data -> data.getMerchant().getId() ==
+	 * merchant.getId()).findFirst().get() .getValue(); }
+	 * 
+	 * private String sendRequestToPaypal(PaymentMethod paymentMethod, PaypalDataDTO
+	 * paypalDataDTO) { RestTemplate rs = new RestTemplate();
+	 * 
+	 * String response = rs.postForEntity(paymentMethod.getUri(), paypalDataDTO,
+	 * String.class).getBody();
+	 * 
+	 * return response; }
+	 */
 }

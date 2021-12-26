@@ -1,5 +1,7 @@
 package com.firma.psp.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,6 +30,9 @@ public class OrderData {
 
 	@Column(name = "merchant_email")
 	private String merchantEmail;
+
+	@Column(nullable = false)
+	private Timestamp timestamp;
 
 	@Column(name = "total_price")
 	private double totalPrice;
