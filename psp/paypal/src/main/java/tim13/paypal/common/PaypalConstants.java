@@ -18,10 +18,10 @@ public class PaypalConstants {
 	public static String SHIPPING_PREFERENCE = "NO_SHIPPING";
 	public static String USER_ACTION = "SUBSCRIBE_NOW";
 	public static String PLAN_STATUS = "ACTIVE";
+	public static String INTERVAL_UNIT = "MONTH";
 	public static int SEQUENCE = 1;
 	public static int TOTAL_CYCLES = 0;
 	public static int PAYMENT_FAILURE_THRESHOLD = 1;
-	public static int INTERVAL_UNIT = 1;
 	public static int INTERVAL_COUNT = 1;
 
 }

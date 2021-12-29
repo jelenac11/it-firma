@@ -1,10 +1,10 @@
 package tim13.paypal.service;
 
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.TimeZone;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,7 +22,9 @@ import tim13.paypal.common.PaypalConstants;
 import tim13.paypal.dto.CancellingSubscriptionDto;
 import tim13.paypal.model.Plan;
 import tim13.paypal.model.Product;
+import tim13.paypal.model.Subscription;
 import tim13.paypal.repository.PlanRepository;
+import tim13.paypal.repository.SubscriptionRepository;
 
 @Service
 public class SubscriptionService {
@@ -31,6 +33,9 @@ public class SubscriptionService {
 
 	@Autowired
 	private PlanRepository planRepository;
+
+	@Autowired
+	private SubscriptionRepository subscriptionRepository;
 
 	public String createPlan(Plan plan, Product product) {
 		String productId = createProduct(product, plan.getClientId(), plan.getClientSecret());
@@ -73,12 +78,19 @@ public class SubscriptionService {
 
 		JSONObject applicationContext = createApplicationContext(plan.getSuccessUrl(), plan.getCancelUrl());
 
-		JSONObject subscription = createSubscription(plan.getPlanId(), applicationContext);
+		JSONObject subscriptionData = createSubscription(plan.getPlanId(), applicationContext);
 
-		JSONObject responseJSON = sendRequestForSubscribingOnPlan(PaypalConstants.SUBSCRIBE_URL, subscription,
+		JSONObject responseJSON = sendRequestForSubscribingOnPlan(PaypalConstants.SUBSCRIBE_URL, subscriptionData,
 				plan.getClientId(), plan.getClientSecret());
 
 		logger.info(String.format("Subscription %s successfully created.", responseJSON.get("id")));
+
+		Subscription subscription = new Subscription();
+		subscription.setStartDate(subscriptionData.getString("start_time"));
+		subscription.setSubscriptionId(responseJSON.get("id").toString());
+		subscription.setPlanId(planId);
+
+		subscriptionRepository.save(subscription);
 
 		String redirectUrl = responseJSON.getJSONArray("links").getJSONObject(0).getString("href");
 
@@ -86,14 +98,14 @@ public class SubscriptionService {
 	}
 
 	public void unsubscribe(String subscriptionId, CancellingSubscriptionDto dto) {
-		Plan plan = new Plan();
+		Subscription subscription = subscriptionRepository.findBySubscriptionId(subscriptionId);
+		Plan plan = planRepository.findOneByPlanId(subscription.getPlanId());
 
 		JSONObject unsubscribe = new JSONObject();
 		unsubscribe.put("reason", dto.getReason());
 
-		sendRequestForCancellingSubscription(
-				String.format(PaypalConstants.SUBSCRIPTION_CANCELLING_URL, subscriptionId), unsubscribe,
-				plan.getClientId(), plan.getClientSecret());
+		sendRequestForCancellingSubscription(String.format(PaypalConstants.SUBSCRIPTION_CANCELLING_URL, subscriptionId),
+				unsubscribe, plan.getClientId(), plan.getClientSecret());
 
 		logger.info(String.format("Subscription %s cancelled.", subscriptionId));
 	}
@@ -101,9 +113,10 @@ public class SubscriptionService {
 	private String createProduct(Product product, String clientId, String clientSecret) {
 		JSONObject productData = new JSONObject();
 		productData.put("name", product.getName());
-		productData.put("category", product.getCategory());
 		productData.put("type", product.getType());
+		productData.put("category", product.getCategory());
 
+		System.out.println(productData.toString());
 		JSONObject responseJSON = sendRequestForCreatingProduct(PaypalConstants.CREATE_PRODUCT_URL, productData,
 				clientId, clientSecret);
 
@@ -177,13 +190,8 @@ public class SubscriptionService {
 	}
 
 	private String getTimeInFormatForPaypal() {
-		TimeZone tz = TimeZone.getTimeZone("UTC");
-
-		DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-
-		df.setTimeZone(tz);
-
-		return df.format(new Date());
+		return LocalDateTime.of(LocalDate.now().plusDays(1), LocalTime.MIDNIGHT)
+				.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) + "Z";
 	}
 
 	private JSONObject sendRequestForCreatingProduct(String url, JSONObject data, String merchantId,

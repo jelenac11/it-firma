@@ -1,11 +1,12 @@
 package tim13.paypal.controller;
 
-import java.net.URI;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,22 +34,29 @@ public class SubscriptionController {
 	@Autowired
 	private PlanMapper planMapper;
 
-	@PostMapping(value = "/subscribe/{planId}")
+	private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
+
+	@GetMapping(value = "/subscribe/{planId}")
 	public ResponseEntity<?> createSubscribeUrl(@PathVariable("planId") String planId) {
-		return ResponseEntity.status(HttpStatus.SEE_OTHER).location(URI.create(subscriptionService.subscribe(planId)))
-				.build();
+		logger.info("URL creation for subscribe requested.");
+
+		return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(planId));
 	}
 
 	@PostMapping(value = "/unsubscribe/{id}")
 	public ResponseEntity<?> unsubscribe(@PathVariable("id") String subscriptionId,
 			@RequestBody CancellingSubscriptionDto dto) {
+		logger.info("Unsubscribe requested.");
+
 		subscriptionService.unsubscribe(subscriptionId, dto);
 
-		return new ResponseEntity<String>(HttpStatus.OK);
+		return new ResponseEntity<Void>(HttpStatus.OK);
 	}
 
 	@PostMapping
 	public ResponseEntity<?> createPlan(@RequestBody PlanDto planDto) {
+		logger.info("Plan creation requested.");
+
 		Plan plan = planMapper.toEntity(planDto);
 		Product product = productMapper.toEntity(planDto.getProduct());
 
