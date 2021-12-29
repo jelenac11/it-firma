@@ -1,4 +1,4 @@
-package tim13.paypal.dto;
+package com.firma.psp.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,8 @@ public class PlanDto {
 	private String name;
 
 	private String description;
+	
+	private String merchantEmail;
 
 	private String clientId;
 
@@ -18,4 +20,5 @@ public class PlanDto {
 	private Double amount;
 
 	private ProductDto product;
+	
 }

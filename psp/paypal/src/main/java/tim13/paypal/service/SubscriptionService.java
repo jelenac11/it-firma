@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 import org.apache.commons.codec.binary.Base64;
 import tim13.paypal.common.PaypalConstants;
 import tim13.paypal.dto.CancellingSubscriptionDto;
+import tim13.paypal.dto.SubscribeDto;
 import tim13.paypal.model.Plan;
 import tim13.paypal.model.Product;
 import tim13.paypal.model.Subscription;
@@ -73,10 +74,11 @@ public class SubscriptionService {
 		return planId;
 	}
 
-	public String subscribe(String planId) {
-		Plan plan = planRepository.findOneByPlanId(planId);
+	public String subscribe(SubscribeDto subscribeDto) {
+		Plan plan = planRepository.findOneByPlanId(subscribeDto.getPlanId());
 
-		JSONObject applicationContext = createApplicationContext(plan.getSuccessUrl(), plan.getCancelUrl());
+		JSONObject applicationContext = createApplicationContext(subscribeDto.getSuccessUrl(),
+				subscribeDto.getCancelUrl());
 
 		JSONObject subscriptionData = createSubscription(plan.getPlanId(), applicationContext);
 
@@ -88,7 +90,7 @@ public class SubscriptionService {
 		Subscription subscription = new Subscription();
 		subscription.setStartDate(subscriptionData.getString("start_time"));
 		subscription.setSubscriptionId(responseJSON.get("id").toString());
-		subscription.setPlanId(planId);
+		subscription.setPlanId(subscribeDto.getPlanId());
 
 		subscriptionRepository.save(subscription);
 

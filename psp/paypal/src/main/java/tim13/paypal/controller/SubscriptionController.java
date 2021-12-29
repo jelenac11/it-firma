@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import tim13.paypal.dto.CancellingSubscriptionDto;
 import tim13.paypal.dto.PlanDto;
+import tim13.paypal.dto.SubscribeDto;
 import tim13.paypal.mapper.PlanMapper;
 import tim13.paypal.mapper.ProductMapper;
 import tim13.paypal.model.Plan;
@@ -36,11 +36,11 @@ public class SubscriptionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
 
-	@GetMapping(value = "/subscribe/{planId}")
-	public ResponseEntity<?> createSubscribeUrl(@PathVariable("planId") String planId) {
+	@PostMapping(value = "/subscribe")
+	public ResponseEntity<?> createSubscribeUrl(@RequestBody SubscribeDto subscribeDto) {
 		logger.info("URL creation for subscribe requested.");
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(planId));
+		return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(subscribeDto));
 	}
 
 	@PostMapping(value = "/unsubscribe/{id}")

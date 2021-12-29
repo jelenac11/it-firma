@@ -40,12 +40,4 @@ public class Plan {
 	@Column(nullable = false)
 	private Double amount;
 
-	@Column(nullable = false)
-	private String successUrl;
-
-	@Column(nullable = false)
-	private String cancelUrl;
-
-	@Column(nullable = false)
-	private String errorUrl;
 }

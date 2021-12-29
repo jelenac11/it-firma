@@ -7,4 +7,5 @@ import com.firma.psp.model.PaymentMethodAttribute;
 @Repository
 public interface IPaymentMethodAttributeRepository extends JpaRepository<PaymentMethodAttribute, Long> {
 
+	
 }
