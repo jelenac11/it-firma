@@ -39,6 +39,9 @@ public class Account {
 	@Column(name = "balance")
 	private Double balance;
 
+	@Column(nullable = false)
+	private String currency;
+	
 	@OneToMany(mappedBy = "account")
 	private Set<CreditCard> creditCards = new HashSet<>();
 }

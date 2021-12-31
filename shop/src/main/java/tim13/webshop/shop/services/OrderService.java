@@ -82,7 +82,7 @@ public class OrderService {
 		OrderDataDTO orderDataDTO = new OrderDataDTO();
 		orderDataDTO.setTransactionId(transaction.getId());
 		orderDataDTO.setMerchantEmail(merchant.getEmail());
-		orderDataDTO.setTimeStamp(transaction.getTimeStamp());
+		orderDataDTO.setTimestamp(transaction.getTimeStamp());
 		orderDataDTO.setTotalPrice(o.getTotalPrice());
 		orderDataDTO.setSuccessUrl(merchant.getSuccessUrl());
 		orderDataDTO.setFailUrl(merchant.getFailUrl());
@@ -92,7 +92,8 @@ public class OrderService {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		Long orderDataId = restTemplate.postForEntity("http://localhost:8095/api/order-data", entity, Long.class).getBody();
+		Long orderDataId = restTemplate.postForEntity("http://localhost:8095/api/order-data", entity, Long.class)
+				.getBody();
 
 		return new RedirectView("http://localhost:8096/#/checkout/" + orderDataId);
 	}

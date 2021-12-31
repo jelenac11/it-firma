@@ -144,6 +144,7 @@ export default new Vuex.Store({
                         resolve(resp);
                     })
                     .catch(err => {
+                        console.log(err.response);
                         reject(err);
                     });
             });
@@ -223,11 +224,10 @@ export default new Vuex.Store({
             return new Promise((resolve, reject) => {
                 axios({ url: `http://localhost:8089/api/transaction/${data.transactionId}?status=${data.status}`, method: 'PUT' })
                     .then((resp) => {
-                        commit();
+                        commit('setEquipments', resp.data);
                         resolve(resp);
                     })
                     .catch(err => {
-                        commit('logout');
                         reject(err);
                     });
             });

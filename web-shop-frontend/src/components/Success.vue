@@ -31,10 +31,13 @@ export default {
   computed: {},
   methods: {},
   mounted: function () {
-    const transactionId = this.$route.query.transactionId;
+    const transactionId = this.$route.params.transactionId;
 
     this.$store
-      .dispatch("updateTransaction", { transactionId, status: 1 })
+      .dispatch("updateTransaction", {
+        transactionId: transactionId,
+        status: 1,
+      })
       .then(() => {});
   },
 };

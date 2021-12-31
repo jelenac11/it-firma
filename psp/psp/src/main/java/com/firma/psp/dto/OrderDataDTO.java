@@ -39,6 +39,7 @@ public class OrderDataDTO {
 		this.successUrl = o.getSuccessUrl();
 		this.failUrl = o.getFailUrl();
 		this.errorUrl = o.getErrorUrl();
+		this.timestamp = o.getTimestamp().getTime();
 	}
 
 }

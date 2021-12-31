@@ -3,10 +3,10 @@ INSERT INTO authority (name) VALUES ('ROLE_MERCHANT');
 
 
 insert into payment_methods (name, uri)
-values ('Credit Card', 'http://localhost:8100/bank');
+values ('Credit Card', 'http://localhost:8098');
 
 insert into payment_methods (name, uri)
-values ('Paypal', 'http://localhost:8080/paypal');
+values ('Paypal', 'http://localhost:8080');
 
 insert into payment_methods (name, uri)
 values ('Bitcoin', 'http://localhost:8300/bitcoin');
