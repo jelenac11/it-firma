@@ -1,6 +1,8 @@
 package com.firma.psp.services;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,15 +26,16 @@ public class OrderDataService {
 		o.setMerchantEmail(orderDataDTO.getMerchantEmail());
 		o.setTotalPrice(orderDataDTO.getTotalPrice());
 		o.setTransactionId(orderDataDTO.getTransactionId());
-		o.setTimestamp(Timestamp.valueOf(orderDataDTO.getTimestamp().toString()));
+		Date d = new Date(orderDataDTO.getTimestamp());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String dateStr = sdf.format(d);
+		o.setTimestamp(Timestamp.valueOf(dateStr));
 		o.setSuccessUrl(orderDataDTO.getSuccessUrl());
 		o.setFailUrl(orderDataDTO.getFailUrl());
 		o.setErrorUrl(orderDataDTO.getErrorUrl());
 
 		OrderData newOrder = orderDataRepository.save(o);
 		logger.info("Saving order data.");
-
-		System.out.println(newOrder.getId());
 
 		return newOrder.getId();
 	}

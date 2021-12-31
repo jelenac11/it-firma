@@ -179,7 +179,8 @@ public class PaymentMethodService {
 		PaymentDataDTO pd = createPaymentDataDTO(paymentMethod, o, merchant);
 
 		RestTemplate rs = new RestTemplate();
-		return rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
+		String res = rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
+		return res;
 	}
 
 	private PaymentDataDTO createPaymentDataDTO(PaymentMethod m, OrderData o, Merchant merchant) {

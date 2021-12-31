@@ -14,7 +14,7 @@ public class OrderDataDTO {
 	private Long transactionId;
 	private double totalPrice;
 	private String merchantEmail;
-	private Long timeStamp;
+	private Long timestamp;
 	private String successUrl;
 	private String failUrl;
 	private String errorUrl;

@@ -33,17 +33,17 @@ const routes = [
     component: Conferences
   },
   {
-    path: "/success",
+    path: "/success/:transactionId",
     name: "Success",
     component: Success
   },
   {
-    path: "/fail",
+    path: "/fail/:transactionId",
     name: "Fail",
     component: Fail
   },
   {
-    path: "/cancel",
+    path: "/cancel/:transactionId",
     name: "Cancel",
     component: Cancel
   },
