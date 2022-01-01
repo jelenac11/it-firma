@@ -66,7 +66,7 @@
       </v-flex>
     </v-layout>
     <v-snackbar v-model="wrong" top color="red darken-3">
-      {{ this.message }}
+      Invalid credit card.
     </v-snackbar>
   </v-container>
 </template>
@@ -144,6 +144,7 @@ export default {
         })
         .catch((err) => {
           this.wrong = true;
+          console.log(err.response);
           this.message = err.response.data;
         });
     },

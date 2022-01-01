@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import javassist.NotFoundException;
 import tim13.bank.bank.constants.BankConstants;
 import tim13.bank.bank.dto.CardDetailsDTO;
-import tim13.bank.bank.dto.PCCRequestDTO;
 import tim13.bank.bank.dto.PaymentRequestDTO;
 import tim13.bank.bank.exceptions.RequestException;
 import tim13.bank.bank.model.CreditCard;
@@ -20,7 +19,6 @@ import tim13.bank.bank.model.Transaction;
 import tim13.bank.bank.model.TransactionStatus;
 import tim13.bank.bank.repository.IMerchantRepository;
 import tim13.bank.bank.repository.IPaymentRepository;
-import tim13.bank.bank.repository.ITransactionRepository;
 
 @Service
 public class PaymentService {
@@ -35,8 +33,6 @@ public class PaymentService {
 	private CreditCardService cardService;
 	@Autowired
 	private TransactionService transactionService;
-	@Autowired
-	private ITransactionRepository transactionRepository;
 
 	public String pay(PaymentRequestDTO paymentRequestDto) {
 		if (!checkMerchantData(paymentRequestDto.getMerchantId(), paymentRequestDto.getMerchantPassword())) {
@@ -78,7 +74,6 @@ public class PaymentService {
 			transaction = transactionService.transferDifferentBanks(payment, merchant, cardDetailsDTO);
 		}
 
-		transactionRepository.save(transaction);
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
 			return payment.getSuccessUrl() + "/" + payment.getMerchantOrderId();
 		} else if (transaction.getStatus().equals(TransactionStatus.FAILED)) {
