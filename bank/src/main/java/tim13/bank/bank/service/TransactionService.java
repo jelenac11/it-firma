@@ -26,13 +26,13 @@ import tim13.bank.bank.repository.ITransactionRepository;
 public class TransactionService {
 
 	@Autowired
-	private ITransactionRepository transactionRepo;
-
-	@Autowired
 	private AccountService accountService;
 
 	@Autowired
 	private MerchantService merchantService;
+
+	@Autowired
+	private ITransactionRepository transactionRepository;
 
 	public Transaction transferSameBank(CreditCard card, Merchant merchant, Payment payment) {
 		Transaction transaction = createTransaction(payment, card.getPan());
@@ -57,6 +57,7 @@ public class TransactionService {
 	public Transaction transferDifferentBanks(Payment payment, Merchant merchant, CardDetailsDTO card)
 			throws RequestException {
 		Transaction transaction = createTransaction(payment, card.getPAN());
+		transactionRepository.save(transaction);
 
 		Date d = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -74,6 +75,7 @@ public class TransactionService {
 
 		PCCResponseDTO pccResponse = response.getBody();
 		transaction.setStatus(pccResponse.getStatus());
+		transactionRepository.save(transaction);
 
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
 			double merchantAmount = convertAmount(merchant.getCurrency(), payment.getAmount());
