@@ -9,7 +9,7 @@ insert into payment_methods (name, uri)
 values ('Paypal', 'http://localhost:8080');
 
 insert into payment_methods (name, uri)
-values ('Bitcoin', 'http://localhost:8300/bitcoin');
+values ('Bitcoin', 'http://localhost:9005');
 
 
 
@@ -27,7 +27,7 @@ values ('Merchant Client Secret', 'password', 2);
 
 --Bitcoin
 insert into payment_method_attributes (name, "type", payment_method_id)
-values ('Merchant API Token', 'password', 3);
+values ('Merchant Token', 'password', 3);
 
 
 --Merchant
