@@ -3,6 +3,7 @@ package tim13.bank.bank.dto;
 import java.sql.Timestamp;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,13 +22,13 @@ public class PaymentRequestDTO {
 	@NotBlank(message = "Merchant password is not provided.")
 	private String merchantPassword;
 
-	@NotBlank(message = "Merchant order id is not provided.")
+	@NotNull(message = "Merchant order id is not provided.")
 	private Long merchantOrderId;
 
-	@NotBlank(message = "Merchant timestamp is not provided.")
+	@NotNull(message = "Merchant timestamp is not provided.")
 	private Timestamp timestamp;
 
-	@NotBlank(message = "Amount is not provided.")
+	@NotNull(message = "Amount is not provided.")
 	private Double amount;
 
 	@NotBlank(message = "Success url is not provided.")

@@ -10,4 +10,7 @@ public interface ICreditCardRepository extends JpaRepository<CreditCard, Long>{
 
 	CreditCard findByAccountId(Long id);
 
+	CreditCard findByPanAndSecurityCodeAndCardHolderName(String pan, String securityCode,
+			String cardHolderName);
+
 }

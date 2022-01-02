@@ -195,6 +195,7 @@ export default {
     this.$store
       .dispatch("getAllCourses")
       .then((resp) => {
+        console.log(resp.data);
         this.coursesItems = resp.data;
       })
       .catch((err) => {

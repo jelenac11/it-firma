@@ -43,12 +43,12 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 		createCreditCardIfNotFound(6L, "1234561234567895", "484", "Dejan Djuric", LocalDate.parse("2022-06-01"));
 		createCreditCardIfNotFound(7L, "1234561234567896", "485", "Sasa Lazarevic", LocalDate.parse("2022-07-01"));
 		
-		createMerchantIfNotFound("merchant1@gmail.com", "Petar Petrovic", 100000.0, "sodRrevLNjYm6F9WPUSRPxZWRPFSxz", "7Q5BPSmUCm29QSeW3YnAHSu9XpoOGVuPBSTxrQKmubjTdLdlPBBp3vccOcQ8so7WfATRdjH9BOiKvoG5SDTRQ0KNxQVBDHrCU7Pn");
-		createMerchantIfNotFound("merchant2@gmail.com", "Zarko Stefanovic", 100000.0, "XxzfKrwTEnj6hyRz11mVNpqHFbKivd", "rtHVfdEFMDc0nf3zb9MbxLGAodXL5mjmnm1BZrnPfHu8gMZo5T3uFcF1OkGveMblqYxaj4NBDUq5OTqrFYgqCXr3FwElpPJYJRWb");
-		createMerchantIfNotFound("merchant3@gmail.com", "Aleksa Uskokovic", 100000.0, "maWaO83t4DdNlTXxUCDkBmZjgu1e3U", "JNncaxJvOF71OMRJaDMunLJf9b3HvhJvecTePQva7OExYPmPwzZR6i90YmOzUPJCxryppwoAQ0530PvRixdv0PYW9VAQmGZVOPvD");
-		createMerchantIfNotFound("merchant4@gmail.com", "Nikola Ivanovic", 100000.0, "aZY4L3Op9QLgxaEASok6fQ5Jwc7m7H", "fm670PAvkGy7UuR3HOUwMKRsBwWIlNbSHeETfRWmHgXn2xZGoofxg6Mq3o4902LzfKJmTqttUkDZ3T2S0U3bLFkaHdUbrfPfFwQr");
-		createMerchantIfNotFound("merchant5@gmail.com", "Ognjen Dobric", 100000.0, "KR9yZ3pOPwXfPHGycNvHeeuWvOQkGx", "qPqeu2S9f6EgU9Wdxy0DiwL6RkXxMpu4qTXMTx9OB6V3e5Idp1gmogRDBwfWpV00zXZ9q2tfRo0NspVjdyAuw3QLOlt7yY6Mjqdk");
-		createMerchantIfNotFound("merchant6@gmail.com", "Stefan Markovic", 100000.0, "9TwfdCupyJvK0j3ydoWRzbHHLWAeqP", "UGsu4bbILffOr41LiNB0E4LXCDBLDnw80HgX0lomDTr5Q4Qz34N95lXTc4QKyzZ7j72nHk3u1I7tKREvVrViNT3luztFfUrjcqTo");
+		createMerchantIfNotFound("merchant1@gmail.com", "Petar Petrovic", 100000.0, "sodRrevLNjYm6F9WPUSRPxZWRPFSxz", "7Q5BPSmUCm29QSeW3YnAHSu9XpoOGVuPBSTxrQKmubjTdLdlPBBp3vccOcQ8so7WfATRdjH9BOiKvoG5SDTRQ0KNxQVBDHrCU7Pn", "RSD");
+		createMerchantIfNotFound("merchant2@gmail.com", "Zarko Stefanovic", 100000.0, "XxzfKrwTEnj6hyRz11mVNpqHFbKivd", "rtHVfdEFMDc0nf3zb9MbxLGAodXL5mjmnm1BZrnPfHu8gMZo5T3uFcF1OkGveMblqYxaj4NBDUq5OTqrFYgqCXr3FwElpPJYJRWb", "USD");
+		createMerchantIfNotFound("merchant3@gmail.com", "Aleksa Uskokovic", 100000.0, "maWaO83t4DdNlTXxUCDkBmZjgu1e3U", "JNncaxJvOF71OMRJaDMunLJf9b3HvhJvecTePQva7OExYPmPwzZR6i90YmOzUPJCxryppwoAQ0530PvRixdv0PYW9VAQmGZVOPvD", "EUR");
+		createMerchantIfNotFound("merchant4@gmail.com", "Nikola Ivanovic", 100000.0, "aZY4L3Op9QLgxaEASok6fQ5Jwc7m7H", "fm670PAvkGy7UuR3HOUwMKRsBwWIlNbSHeETfRWmHgXn2xZGoofxg6Mq3o4902LzfKJmTqttUkDZ3T2S0U3bLFkaHdUbrfPfFwQr", "GBP");
+		createMerchantIfNotFound("merchant5@gmail.com", "Ognjen Dobric", 100000.0, "KR9yZ3pOPwXfPHGycNvHeeuWvOQkGx", "qPqeu2S9f6EgU9Wdxy0DiwL6RkXxMpu4qTXMTx9OB6V3e5Idp1gmogRDBwfWpV00zXZ9q2tfRo0NspVjdyAuw3QLOlt7yY6Mjqdk", "RSD");
+		createMerchantIfNotFound("merchant6@gmail.com", "Stefan Markovic", 100000.0, "9TwfdCupyJvK0j3ydoWRzbHHLWAeqP", "UGsu4bbILffOr41LiNB0E4LXCDBLDnw80HgX0lomDTr5Q4Qz34N95lXTc4QKyzZ7j72nHk3u1I7tKREvVrViNT3luztFfUrjcqTo", "RSD");
 
 		alreadySetup = true;
 	}
@@ -69,7 +69,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 	}
 
 	@Transactional
-	public void createMerchantIfNotFound(String email, String name, Double balance, String merchantId, String merchantPassword) {
+	public void createMerchantIfNotFound(String email, String name, Double balance, String merchantId, String merchantPassword, String currency) {
 		Merchant merchant = merchantRepo.findByEmail(name);
 		if (merchant == null) {
 			merchant = new Merchant();
@@ -78,6 +78,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 			merchant.setBalance(balance);
 			merchant.setMerchantId(merchantId);
 			merchant.setMerchantPassword(merchantPassword);
+			merchant.setCurrency(currency);
 		}
 		merchantRepo.save(merchant);
 	}
