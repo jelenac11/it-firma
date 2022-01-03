@@ -76,6 +76,9 @@
                               >End: <b>{{ getDate(item.endDate) }}</b></span
                             >
                           </v-list-item-content>
+                          <v-list-item-content v-if="item.online">
+                            <span class="ml-4"><b>Online</b></span>
+                          </v-list-item-content>
                           <v-list-item-content>
                             <span class="ml-4"
                               >Price: <b>${{ item.price }}</b></span
