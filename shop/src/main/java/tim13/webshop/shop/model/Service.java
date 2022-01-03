@@ -52,6 +52,9 @@ public class Service {
 
 	@Column(name = "end_date")
 	private Long endDate;
+	
+	@Column
+	private boolean online;
 
 	@OneToMany(mappedBy = "service")
 	private Set<ServiceShoppingCartItem> items;
