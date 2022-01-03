@@ -16,12 +16,14 @@ public class ServiceDTO {
 	protected String name;
 	protected double price;
 	protected String merchant;
+	protected boolean online;
 
 	public ServiceDTO(Service s) {
 		this.id = s.getId();
 		this.name = s.getName();
 		this.price = s.getPrice();
 		this.merchant = s.getMerchant().getName();
+		this.online = s.isOnline();
 	}
 
 }
