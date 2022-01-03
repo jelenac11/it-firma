@@ -2,7 +2,10 @@ package tim13.pcc.dto;
 
 import java.sql.Timestamp;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,18 +25,23 @@ public class PCCRequestDTO {
 	private Timestamp acquirerTimestamp;
 
 	@NotNull(message = "Amount is not provided.")
+	@Min(value = 1,message = "Amount must be greater than 0")
 	private Double amount;
 
-	@NotNull(message = "Pan is not provided.")
-	private String PAN;
+	@NotBlank(message = "PAN number is empty.")
+    @Pattern(regexp = "^[0-9]{16}$")
+    private String PAN;
 
-	@NotNull(message = "Card holder name is not provided.")
-	private String cardHolderName;
+    @NotBlank(message = "Card Holder Name is empty.")
+    @Pattern(regexp = "^(([A-Za-zÀ-ƒ]+[.]?[ ]?|[a-zÀ-ƒ]+['-]?){0,4})$")
+    private String cardHolderName;
 
-	@NotNull(message = "Expiration date is not provided.")
-	private String expirationDate;
+    @NotBlank(message = "Expiration date is empty")
+    @Pattern(regexp = "^([01]?[0-9]?(\\/)[0-9]{2,4})$")
+    private String expirationDate;
 
-	@NotNull(message = "Security code is not provided.")
-	private String securityCode;
+    @NotBlank(message = "Security Code is empty.")
+    @Pattern(regexp = "^[0-9]{3,4}$")
+    private String securityCode;
 
 }
