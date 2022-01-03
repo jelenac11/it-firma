@@ -34,4 +34,16 @@ public class CourseController {
 		}
 	}
 
+	@GetMapping(value = "/by-merchant")
+	public ResponseEntity<?> getAllCoursesByMerchant() {
+		try {
+			logger.trace("All courses requested.");
+
+			return new ResponseEntity<>(courseService.findAllByMerchantId(), HttpStatus.OK);
+		} catch (Exception e) {
+			logger.debug(e.getMessage());
+
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 }

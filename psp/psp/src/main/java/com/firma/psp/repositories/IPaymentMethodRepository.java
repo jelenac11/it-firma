@@ -5,8 +5,9 @@ import org.springframework.stereotype.Repository;
 
 import com.firma.psp.model.PaymentMethod;
 
-
 @Repository
 public interface IPaymentMethodRepository extends JpaRepository<PaymentMethod, Long> {
+
+	PaymentMethod findByName(String name);
 
 }

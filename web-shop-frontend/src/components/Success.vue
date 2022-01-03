@@ -29,7 +29,16 @@ export default {
   data: () => ({}),
   props: {},
   computed: {},
-  methods: {},
+  methods: {
+    createSubscription: function (subscriptionId, transactionId) {
+      this.$store
+        .dispatch("createSubscription", {
+          subscriptionId,
+          transactionId,
+        })
+        .then(() => {});
+    },
+  },
   mounted: function () {
     const transactionId = this.$route.params.transactionId;
 
@@ -39,6 +48,14 @@ export default {
         status: 1,
       })
       .then(() => {});
+
+    const subscriptionId = this.$route.query.subscription_id;
+
+    if (!subscriptionId) {
+      return;
+    }
+
+    this.createSubscription(subscriptionId, transactionId);
   },
 };
 </script>

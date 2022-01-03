@@ -34,6 +34,7 @@ public class PaymentController {
 	@PostMapping(value = "/create-url")
 	public ResponseEntity<String> createUrl(@RequestBody PaymentRequestDto paymentRequestDto) {
 		logger.trace("URL creation requested.");
+
 		return ResponseEntity.ok(paymentService.createUrl(paymentRequestMapper.toEntity(paymentRequestDto)));
 	}
 
@@ -41,6 +42,7 @@ public class PaymentController {
 	public ResponseEntity<Void> executePayment(@RequestParam("paymentId") String paymentId,
 			@RequestParam("PayerID") String payerId) {
 		logger.trace("Payment execution requested.");
+
 		return ResponseEntity.status(HttpStatus.SEE_OTHER)
 				.location(URI.create(paymentService.executePayment(payerId, paymentId))).build();
 	}

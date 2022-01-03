@@ -180,6 +180,6 @@ public class PaymentService {
 	}
 
 	private String expandUrlWithId(String url, Long id) {
-		return url + "?service=paypal&transactionId=" + id;
+		return url + "/" + id;
 	}
 }

@@ -97,9 +97,48 @@ export default new Vuex.Store({
             });
         },
 
+        getAllCoursesByMerchant({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/courses/by-merchant', method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        getAllPlans({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/plans', method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
         getAllConferences({ commit }) {
             return new Promise((resolve, reject) => {
                 axios({ url: 'http://localhost:8089/api/conferences', method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        getMySubscriptions({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/subscriptions/by-buyer', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -231,7 +270,62 @@ export default new Vuex.Store({
                         reject(err);
                     });
             });
-        }
+        },
+
+        createPlan({ commit }, plan) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/plans', data: plan, method: 'POST' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        subscribe({ commit }, planId) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/subscriptions/subscribe/' + planId, method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        createSubscription({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios({ url: `http://localhost:8089/api/subscriptions/${data.subscriptionId}/${data.transactionId}`, method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        unsubscribe({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios({ url: `http://localhost:8089/api/subscriptions/unsubscribe/${data.id}`, data: { reason: data.reason }, method: 'POST' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
     },
     modules: {}
 });

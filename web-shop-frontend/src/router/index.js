@@ -3,10 +3,12 @@ import VueRouter from "vue-router";
 import Login from "../components/Login.vue";
 import Equipment from "../components/Equipment.vue";
 import Courses from "../components/Courses.vue";
+import Plans from "../components/Plans.vue";
 import Conferences from "../components/Conferences.vue";
 import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
 import Fail from "../components/Fail.vue";
+import MySubscriptions from "../components/MySubscriptions.vue";
 //import store from "../store";
 
 Vue.use(VueRouter);
@@ -28,6 +30,11 @@ const routes = [
     component: Courses
   },
   {
+    path: "/plans",
+    name: "Plans",
+    component: Plans
+  },
+  {
     path: "/conferences",
     name: "Conferences",
     component: Conferences
@@ -46,6 +53,11 @@ const routes = [
     path: "/cancel/:transactionId",
     name: "Cancel",
     component: Cancel
+  },
+  {
+    path: "/my-subscriptions",
+    name: "MySubscriptions",
+    component: MySubscriptions
   },
 ];
 

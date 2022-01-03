@@ -15,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tim13.webshop.shop.enums.OrderType;
 
 @Getter
 @Setter
@@ -31,9 +32,12 @@ public class Order {
 	@Column(name = "total_price")
 	private double totalPrice;
 
+	@Column
+	private OrderType orderType;
+
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private Set<OrderItem> items;
-	
+
 	@OneToOne(mappedBy = "order")
 	private Transaction transaction;
 

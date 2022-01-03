@@ -27,6 +27,17 @@
       <v-btn
         class="mr-4"
         outlined
+        @click="goToPlans()"
+        v-if="
+          currentUser.role === 'ROLE_SERVICE_BUYER' ||
+          currentUser.role === 'ROLE_MERCHANT'
+        "
+      >
+        Plans
+      </v-btn>
+      <v-btn
+        class="mr-4"
+        outlined
         @click="goToConferences()"
         v-if="
           currentUser.role === 'ROLE_SERVICE_BUYER' ||
@@ -67,6 +78,9 @@
         </template>
         <v-card class="mx-auto" max-width="300" tile>
           <v-list dense>
+            <v-subheader class="log-out mr-2" @click="openMySubscriptions()">
+              <b>My Subscriptions</b>
+            </v-subheader>
             <v-subheader class="log-out mr-2" @click="logOut()"
               ><v-icon class="mr-2">mdi-exit-to-app</v-icon
               ><b>Log out</b></v-subheader
@@ -105,12 +119,20 @@ export default {
       let path = "/courses";
       if (this.$route.path !== path) this.$router.push(path);
     },
+    goToPlans: function () {
+      let path = "/plans";
+      if (this.$route.path !== path) this.$router.push(path);
+    },
     goToConferences: function () {
       let path = "/conferences";
       if (this.$route.path !== path) this.$router.push(path);
     },
     openCart: function () {
       this.showCart = true;
+    },
+    openMySubscriptions: function () {
+      let path = "/my-subscriptions";
+      if (this.$route.path !== path) this.$router.push(path);
     },
   },
   computed: {
