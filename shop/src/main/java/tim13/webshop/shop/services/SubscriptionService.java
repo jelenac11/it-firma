@@ -2,8 +2,10 @@ package tim13.webshop.shop.services;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 
+import tim13.webshop.shop.dto.SubscriptionDTO;
 import tim13.webshop.shop.dto.SubscriptionForPSPDTO;
 import tim13.webshop.shop.dto.UnsubscribeDTO;
 import tim13.webshop.shop.enums.OrderType;
 import tim13.webshop.shop.enums.TransactionStatus;
 import tim13.webshop.shop.exceptions.BaseException;
+import tim13.webshop.shop.mapper.SubscriptionMapper;
 import tim13.webshop.shop.model.ItemType;
 import tim13.webshop.shop.model.Merchant;
 import tim13.webshop.shop.model.Order;
@@ -47,7 +51,23 @@ public class SubscriptionService {
 	@Autowired
 	private ITransactionRepository transactionRepository;
 
+	@Autowired
+	private SubscriptionMapper mapper;
+
 	private static final Logger logger = LoggerFactory.getLogger(SubscriptionService.class);
+
+	public List<SubscriptionDTO> getAllByBuyer() throws BaseException {
+		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+		if (current == null) {
+			logger.debug("You need to be logged in.");
+
+			throw new BaseException(HttpStatus.UNAUTHORIZED, "You need to be logged in.");
+		}
+
+		return subscriptionRepository.findByBuyer(current).stream().map(subs -> mapper.toDTO(subs))
+				.collect(Collectors.toList());
+	}
 
 	public String subscribe(Long planId) throws BaseException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();

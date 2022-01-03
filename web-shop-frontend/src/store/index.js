@@ -136,6 +136,19 @@ export default new Vuex.Store({
             });
         },
 
+        getMySubscriptions({ commit }) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/subscriptions/by-buyer', method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
         addEquipmentToCart({ commit }, equipment) {
             return new Promise((resolve, reject) => {
                 axios({ url: 'http://localhost:8089/api/equipment-shopping-carts/add-item', data: equipment, method: 'POST' })
@@ -298,7 +311,21 @@ export default new Vuex.Store({
                         reject(err);
                     });
             });
-        }
+        },
+
+        unsubscribe({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios({ url: `http://localhost:8089/api/subscriptions/unsubscribe/${data.id}`, data: { reason: data.reason }, method: 'POST' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
     },
     modules: {}
 });

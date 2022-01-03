@@ -78,6 +78,9 @@
         </template>
         <v-card class="mx-auto" max-width="300" tile>
           <v-list dense>
+            <v-subheader class="log-out mr-2" @click="openMySubscriptions()">
+              <b>My Subscriptions</b>
+            </v-subheader>
             <v-subheader class="log-out mr-2" @click="logOut()"
               ><v-icon class="mr-2">mdi-exit-to-app</v-icon
               ><b>Log out</b></v-subheader
@@ -126,6 +129,10 @@ export default {
     },
     openCart: function () {
       this.showCart = true;
+    },
+    openMySubscriptions: function () {
+      let path = "/my-subscriptions";
+      if (this.$route.path !== path) this.$router.push(path);
     },
   },
   computed: {

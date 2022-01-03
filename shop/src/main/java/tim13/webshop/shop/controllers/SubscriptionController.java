@@ -1,5 +1,7 @@
 package tim13.webshop.shop.controllers;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import tim13.webshop.shop.dto.SubscriptionDTO;
 import tim13.webshop.shop.dto.UnsubscribeDTO;
 import tim13.webshop.shop.exceptions.BaseException;
 import tim13.webshop.shop.services.SubscriptionService;
@@ -27,6 +30,17 @@ public class SubscriptionController {
 	private SubscriptionService subscriptionService;
 
 	private static final Logger logger = LoggerFactory.getLogger(SubscriptionController.class);
+
+	@GetMapping(value = "/by-buyer")
+	public ResponseEntity<?> getAllByBuyer() {
+		logger.trace("Requested fetching subscriptions for specific buyer");
+
+		try {
+			return new ResponseEntity<List<SubscriptionDTO>>(subscriptionService.getAllByBuyer(), HttpStatus.OK);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
+	}
 
 	@GetMapping(value = "/subscribe/{planId}")
 	public ResponseEntity<?> subscribe(@PathVariable(value = "planId") Long planId) {

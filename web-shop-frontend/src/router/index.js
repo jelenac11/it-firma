@@ -8,6 +8,7 @@ import Conferences from "../components/Conferences.vue";
 import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
 import Fail from "../components/Fail.vue";
+import MySubscriptions from "../components/MySubscriptions.vue";
 //import store from "../store";
 
 Vue.use(VueRouter);
@@ -52,6 +53,11 @@ const routes = [
     path: "/cancel/:transactionId",
     name: "Cancel",
     component: Cancel
+  },
+  {
+    path: "/my-subscriptions",
+    name: "MySubscriptions",
+    component: MySubscriptions
   },
 ];
 
