@@ -6,7 +6,7 @@ insert into payment_methods (name, uri)
 values ('Credit Card', 'http://localhost:8098');
 
 insert into payment_methods (name, uri)
-values ('Paypal', 'http://localhost:8080');
+values ('Paypal', 'http://localhost:8080/paypal');
 
 insert into payment_methods (name, uri)
 values ('Bitcoin', 'http://localhost:8300/bitcoin');

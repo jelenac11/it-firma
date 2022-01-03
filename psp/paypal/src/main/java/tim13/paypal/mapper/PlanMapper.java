@@ -16,7 +16,8 @@ public class PlanMapper {
 		plan.setClientId(dto.getClientId());
 		plan.setClientSecret(dto.getClientSecret());
 		plan.setAmount(dto.getAmount());
-
+		plan.setTypeOfPlan(dto.getTypeOfPlan());
+		
 		return plan;
 	}
 

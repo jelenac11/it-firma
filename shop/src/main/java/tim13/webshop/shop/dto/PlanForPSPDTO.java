@@ -1,25 +1,22 @@
-package tim13.paypal.dto;
+package tim13.webshop.shop.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import tim13.paypal.enums.TypeOfPlan;
+import tim13.webshop.shop.enums.TypeOfPlan;
 
 @Getter
 @Setter
-public class PlanDto {
+public class PlanForPSPDTO {
 
 	private String name;
 
 	private String description;
 
-	private String clientId;
-
-	private String clientSecret;
+	private String merchantEmail;
 
 	private Double amount;
 
-	private ProductDto product;
-
+	private ProductDTO product;
+	
 	private TypeOfPlan typeOfPlan;
-
 }

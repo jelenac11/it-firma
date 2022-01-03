@@ -27,6 +27,17 @@
       <v-btn
         class="mr-4"
         outlined
+        @click="goToPlans()"
+        v-if="
+          currentUser.role === 'ROLE_SERVICE_BUYER' ||
+          currentUser.role === 'ROLE_MERCHANT'
+        "
+      >
+        Plans
+      </v-btn>
+      <v-btn
+        class="mr-4"
+        outlined
         @click="goToConferences()"
         v-if="
           currentUser.role === 'ROLE_SERVICE_BUYER' ||
@@ -103,6 +114,10 @@ export default {
     },
     goToCourses: function () {
       let path = "/courses";
+      if (this.$route.path !== path) this.$router.push(path);
+    },
+    goToPlans: function () {
+      let path = "/plans";
       if (this.$route.path !== path) this.$router.push(path);
     },
     goToConferences: function () {

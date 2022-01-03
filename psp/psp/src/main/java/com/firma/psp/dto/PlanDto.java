@@ -1,5 +1,7 @@
 package com.firma.psp.dto;
 
+import com.firma.psp.enums.TypeOfPlan;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,5 +22,7 @@ public class PlanDto {
 	private Double amount;
 
 	private ProductDto product;
+	
+	private TypeOfPlan typeOfPlan;
 	
 }

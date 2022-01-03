@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tim13.paypal.dto.CancellingSubscriptionDto;
 import tim13.paypal.dto.PlanDto;
 import tim13.paypal.dto.SubscribeDto;
+import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.mapper.PlanMapper;
 import tim13.paypal.mapper.ProductMapper;
 import tim13.paypal.model.Plan;
@@ -40,7 +41,11 @@ public class SubscriptionController {
 	public ResponseEntity<?> createSubscribeUrl(@RequestBody SubscribeDto subscribeDto) {
 		logger.info("URL creation for subscribe requested.");
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(subscribeDto));
+		try {
+			return ResponseEntity.status(HttpStatus.CREATED).body(subscriptionService.subscribe(subscribeDto));
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 
 	@PostMapping(value = "/unsubscribe/{id}")
@@ -48,9 +53,13 @@ public class SubscriptionController {
 			@RequestBody CancellingSubscriptionDto dto) {
 		logger.info("Unsubscribe requested.");
 
-		subscriptionService.unsubscribe(subscriptionId, dto);
+		try {
+			subscriptionService.unsubscribe(subscriptionId, dto);
 
-		return new ResponseEntity<Void>(HttpStatus.OK);
+			return new ResponseEntity<Void>(HttpStatus.OK);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 
 	@PostMapping
@@ -60,8 +69,12 @@ public class SubscriptionController {
 		Plan plan = planMapper.toEntity(planDto);
 		Product product = productMapper.toEntity(planDto.getProduct());
 
-		String id = subscriptionService.createPlan(plan, product);
+		try {
+			String id = subscriptionService.createPlan(plan, product);
 
-		return new ResponseEntity<String>(id, HttpStatus.CREATED);
+			return new ResponseEntity<String>(id, HttpStatus.CREATED);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 }

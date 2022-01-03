@@ -3,6 +3,7 @@ import VueRouter from "vue-router";
 import Login from "../components/Login.vue";
 import Equipment from "../components/Equipment.vue";
 import Courses from "../components/Courses.vue";
+import Plans from "../components/Plans.vue";
 import Conferences from "../components/Conferences.vue";
 import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
@@ -26,6 +27,11 @@ const routes = [
     path: "/courses",
     name: "Courses",
     component: Courses
+  },
+  {
+    path: "/plans",
+    name: "Plans",
+    component: Plans
   },
   {
     path: "/conferences",

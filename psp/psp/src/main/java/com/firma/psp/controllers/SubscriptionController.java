@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.firma.psp.dto.CancellingSubscriptionDto;
 import com.firma.psp.dto.PlanDto;
 import com.firma.psp.dto.SubscribeDto;
+import com.firma.psp.exceptions.BaseException;
 import com.firma.psp.services.SubscriptionService;
 
 @RestController
@@ -26,16 +27,24 @@ public class SubscriptionController {
 
 	@PostMapping(value = "/create-plan")
 	public ResponseEntity<?> createPlan(@RequestBody PlanDto planDto) {
-		String productId = subscriptionService.createPlan(planDto);
+		try {
+			String productId = subscriptionService.createPlan(planDto);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(productId);
+			return ResponseEntity.status(HttpStatus.CREATED).body(productId);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 
 	@PostMapping(value = "/subscribe")
 	public ResponseEntity<?> subscribe(@RequestBody SubscribeDto subscribeDto) {
-		String productId = subscriptionService.subscribe(subscribeDto);
+		try {
+			String productId = subscriptionService.subscribe(subscribeDto);
 
-		return ResponseEntity.status(HttpStatus.CREATED).body(productId);
+			return ResponseEntity.status(HttpStatus.CREATED).body(productId);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 
 	@PostMapping(value = "/unsubscribe/{id}")
@@ -45,8 +54,8 @@ public class SubscriptionController {
 			subscriptionService.unsubscribe(subscriptionId, dto);
 
 			return new ResponseEntity<Void>(HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
 		}
 	}
 }

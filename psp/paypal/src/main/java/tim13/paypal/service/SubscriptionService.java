@@ -13,14 +13,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.apache.commons.codec.binary.Base64;
 import tim13.paypal.common.PaypalConstants;
 import tim13.paypal.dto.CancellingSubscriptionDto;
 import tim13.paypal.dto.SubscribeDto;
+import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.model.Plan;
 import tim13.paypal.model.Product;
 import tim13.paypal.model.Subscription;
@@ -38,12 +41,12 @@ public class SubscriptionService {
 	@Autowired
 	private SubscriptionRepository subscriptionRepository;
 
-	public String createPlan(Plan plan, Product product) {
+	public String createPlan(Plan plan, Product product) throws BaseException {
 		String productId = createProduct(product, plan.getClientId(), plan.getClientSecret());
 
 		JSONObject paymentPreference = createPaymentPreference();
 
-		JSONObject frequency = createFrequency();
+		JSONObject frequency = createFrequency(plan);
 
 		JSONObject price = createPrice(plan.getAmount());
 
@@ -65,7 +68,15 @@ public class SubscriptionService {
 
 		String planId = responseJSON.getString("id");
 
+		if (planId == null) {
+			logger.debug("Creating plan was unsuccessful.");
+
+			throw new BaseException(HttpStatus.BAD_REQUEST, "Creating plan was unsuccessful.");
+		}
+
 		plan.setPlanId(planId);
+
+		logger.info("Saving plan in database.");
 
 		planRepository.save(plan);
 
@@ -74,8 +85,14 @@ public class SubscriptionService {
 		return planId;
 	}
 
-	public String subscribe(SubscribeDto subscribeDto) {
+	public String subscribe(SubscribeDto subscribeDto) throws BaseException {
 		Plan plan = planRepository.findOneByPlanId(subscribeDto.getPlanId());
+
+		if (plan == null) {
+			logger.info("Plan doesn't exist.");
+
+			throw new BaseException(HttpStatus.NOT_FOUND, "Plan doesn't exist.");
+		}
 
 		JSONObject applicationContext = createApplicationContext(subscribeDto.getSuccessUrl(),
 				subscribeDto.getCancelUrl());
@@ -94,14 +111,31 @@ public class SubscriptionService {
 
 		subscriptionRepository.save(subscription);
 
+		logger.info("Subscription saved in database.");
+
 		String redirectUrl = responseJSON.getJSONArray("links").getJSONObject(0).getString("href");
 
 		return redirectUrl;
 	}
 
-	public void unsubscribe(String subscriptionId, CancellingSubscriptionDto dto) {
+	public void unsubscribe(String subscriptionId, CancellingSubscriptionDto dto) throws BaseException {
 		Subscription subscription = subscriptionRepository.findBySubscriptionId(subscriptionId);
+
+		if (subscription == null) {
+			logger.info(String.format("Subscription %s doesn't exist.", subscriptionId));
+
+			throw new BaseException(HttpStatus.NOT_FOUND,
+					String.format("Subscription %s doesn't exist.", subscriptionId));
+		}
+
 		Plan plan = planRepository.findOneByPlanId(subscription.getPlanId());
+
+		if (plan == null) {
+			logger.info(String.format("Plan %s doesn't exist.", subscription.getPlanId()));
+
+			throw new BaseException(HttpStatus.NOT_FOUND,
+					String.format("Plan %s doesn't exist.", subscription.getPlanId()));
+		}
 
 		JSONObject unsubscribe = new JSONObject();
 		unsubscribe.put("reason", dto.getReason());
@@ -112,13 +146,12 @@ public class SubscriptionService {
 		logger.info(String.format("Subscription %s cancelled.", subscriptionId));
 	}
 
-	private String createProduct(Product product, String clientId, String clientSecret) {
+	private String createProduct(Product product, String clientId, String clientSecret) throws BaseException {
 		JSONObject productData = new JSONObject();
 		productData.put("name", product.getName());
 		productData.put("type", product.getType());
 		productData.put("category", product.getCategory());
 
-		System.out.println(productData.toString());
 		JSONObject responseJSON = sendRequestForCreatingProduct(PaypalConstants.CREATE_PRODUCT_URL, productData,
 				clientId, clientSecret);
 
@@ -139,10 +172,10 @@ public class SubscriptionService {
 		return paymentPreference;
 	}
 
-	private JSONObject createFrequency() {
+	private JSONObject createFrequency(Plan plan) {
 		JSONObject frequency = new JSONObject();
 
-		frequency.put("interval_unit", PaypalConstants.INTERVAL_UNIT);
+		frequency.put("interval_unit", plan.getTypeOfPlan());
 		frequency.put("interval_count", PaypalConstants.INTERVAL_COUNT);
 
 		return frequency;
@@ -197,7 +230,7 @@ public class SubscriptionService {
 	}
 
 	private JSONObject sendRequestForCreatingProduct(String url, JSONObject data, String merchantId,
-			String merchantSecret) {
+			String merchantSecret) throws BaseException {
 		JSONObject response = sendRequest(url, data, merchantId, merchantSecret);
 
 		logger.info("Request for creating product sent");
@@ -205,8 +238,8 @@ public class SubscriptionService {
 		return response;
 	}
 
-	private JSONObject sendRequestForCreatingPlan(String url, JSONObject data, String merchantId,
-			String merchantSecret) {
+	private JSONObject sendRequestForCreatingPlan(String url, JSONObject data, String merchantId, String merchantSecret)
+			throws BaseException {
 		JSONObject response = sendRequest(url, data, merchantId, merchantSecret);
 
 		logger.info("Request for creating plan sent");
@@ -215,7 +248,7 @@ public class SubscriptionService {
 	}
 
 	private JSONObject sendRequestForSubscribingOnPlan(String url, JSONObject data, String merchantId,
-			String merchantSecret) {
+			String merchantSecret) throws BaseException {
 		JSONObject response = sendRequest(url, data, merchantId, merchantSecret);
 
 		logger.info("Request for subscribing on plan sent");
@@ -224,7 +257,7 @@ public class SubscriptionService {
 	}
 
 	private JSONObject sendRequestForCancellingSubscription(String url, JSONObject data, String merchantId,
-			String merchantSecret) {
+			String merchantSecret) throws BaseException {
 		JSONObject response = sendRequest(url, data, merchantId, merchantSecret);
 
 		logger.info("Request for cancelling subscription sent");
@@ -232,7 +265,8 @@ public class SubscriptionService {
 		return response;
 	}
 
-	private JSONObject sendRequest(String url, JSONObject data, String merchantId, String merchantSecret) {
+	private JSONObject sendRequest(String url, JSONObject data, String merchantId, String merchantSecret)
+			throws BaseException {
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders headers = new HttpHeaders();
@@ -242,9 +276,17 @@ public class SubscriptionService {
 
 		HttpEntity<String> request = new HttpEntity<>(data.toString(), headers);
 
-		ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
 
-		return response.getBody() != null ? new JSONObject(response.getBody()) : null;
+			return response.getBody() != null ? new JSONObject(response.getBody()) : null;
+		} catch (HttpStatusCodeException e) {
+			logger.debug("Error in sending request to paypal");
+
+			JSONObject response = new JSONObject(e.getResponseBodyAsString());
+
+			throw new BaseException(HttpStatus.resolve(e.getRawStatusCode()), response.getString("message"));
+		}
 	}
 
 	private String createAuthorization(String merchantId, String merchantSecret) {

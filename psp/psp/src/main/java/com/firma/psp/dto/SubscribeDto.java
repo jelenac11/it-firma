@@ -8,6 +8,8 @@ import lombok.Setter;
 public class SubscribeDto {
 
 	String planId;
+	
+	Long transactionId;
 
 	String successUrl;
 
