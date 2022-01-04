@@ -8,7 +8,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,7 +33,7 @@ public class EquipmentShoppingCartItem {
 	@JoinColumn(name = "shopping_cart_id")
 	private EquipmentShoppingCart cart;
 
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "equipment_id")
 	private Equipment equipment;
 

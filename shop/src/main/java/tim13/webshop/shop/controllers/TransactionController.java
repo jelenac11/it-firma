@@ -28,7 +28,6 @@ public class TransactionController {
 	@PutMapping(value = "{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestParam Integer status) {
 		logger.trace("Transaction update requested.");
-		transactionService.update(id, status);
-		return new ResponseEntity<>("Transaction successfully updated", HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(transactionService.update(id, status), HttpStatus.OK);
 	}
 }

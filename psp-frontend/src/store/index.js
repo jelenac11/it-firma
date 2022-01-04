@@ -178,7 +178,6 @@ export default new Vuex.Store({
                 axios({ url: 'http://localhost:8095/api/payment-methods/get-payment-url', method: 'POST', data: data })
                     .then((res) => {
                         commit('setGroceries', res.data);
-                        window.location.href = res.data;
                         resolve(res);
                     })
                     .catch(err => {

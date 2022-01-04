@@ -35,8 +35,8 @@ public class PaymentService {
                 .title("")
                 .description("")
                 .callback_url(callback)
-                .cancel_url(pd.getFailedURL())
-                .success_url(pd.getSuccessURL())
+                .cancel_url(pd.getFailedURL() + "/" + pd.getMerchantOrderId())
+                .success_url(pd.getSuccessURL() + "/" + pd.getMerchantOrderId())
                 .token(token)
                 .purchaser_email("")
                 .build();

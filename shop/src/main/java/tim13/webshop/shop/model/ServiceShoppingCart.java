@@ -2,6 +2,7 @@ package tim13.webshop.shop.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +27,7 @@ public class ServiceShoppingCart extends ShoppingCart {
 	@JoinColumn(name = "user_id")
 	private ServiceBuyer buyer;
 
-	@OneToMany(mappedBy = "cart")
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
 	private Set<ServiceShoppingCartItem> items;
 
 }
