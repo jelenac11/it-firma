@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.paypal.api.payments.Amount;
@@ -20,6 +21,7 @@ import com.paypal.base.rest.PayPalRESTException;
 
 import tim13.paypal.common.PaypalConstants;
 import tim13.paypal.enumeration.TransactionStatus;
+import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.model.PaymentRequest;
 import tim13.paypal.repository.PaymentRequestRepository;
 import tim13.paypal.util.ICurrencyConverter;
@@ -49,18 +51,26 @@ public class PaymentService {
 			paymentRequest.setPaymentId(createdPayment.getId());
 
 			paymentRequestRepository.save(paymentRequest);
+			
 			logger.info("URL created.");
 
 			return getLink(createdPayment.getLinks());
 		} catch (PayPalRESTException e) {
-			e.printStackTrace();
 			logger.debug(e.getMessage());
+
 			return null;
 		}
 	}
 
-	public String executePayment(String payerId, String paymentId) {
+	public String executePayment(String payerId, String paymentId) throws BaseException {
 		PaymentRequest paymentRequest = paymentRequestRepository.findOneByPaymentId(paymentId);
+
+		if (paymentRequest == null) {
+			logger.debug(String.format("Payment request with id %s doesn't exist.", paymentId));
+
+			throw new BaseException(HttpStatus.NOT_FOUND,
+					String.format("Payment request with id %s doesn't exist.", paymentId));
+		}
 
 		APIContext apiContext = new APIContext(paymentRequest.getClientId(), paymentRequest.getClientSecret(),
 				PaypalConstants.MODE);
@@ -77,12 +87,13 @@ public class PaymentService {
 			tim13.paypal.model.Transaction transaction = createTransaction(payerId, paidTransaction, paymentRequest);
 
 			transactionService.save(transaction);
+
 			logger.info("Payment execution.");
 
 			return expandUrlWithId(paymentRequest.getSuccessUrl(), paymentRequest.getMerchantOrderId());
 		} catch (PayPalRESTException e) {
-			e.printStackTrace();
 			logger.debug(e.getMessage());
+
 			return expandUrlWithId(paymentRequest.getErrorUrl(), paymentRequest.getMerchantOrderId());
 		}
 	}
@@ -167,6 +178,7 @@ public class PaymentService {
 		amount.setTotal(convertCurrency(paymentRequest.getAmount()).toString());
 
 		logger.info("Amount creation.");
+
 		return amount;
 	}
 
