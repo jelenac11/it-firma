@@ -19,9 +19,9 @@ import com.firma.psp.dto.ChosenPaymentMethodDTO;
 import com.firma.psp.dto.ChosenPaymentMethodsDTO;
 import com.firma.psp.dto.NewAttributeDTO;
 import com.firma.psp.dto.NewPaymentMethodDTO;
-//import com.firma.psp.dto.PaymentAttributeDTO;
+import com.firma.psp.dto.PaymentAttributeDTO;
 import com.firma.psp.dto.PaymentAttributeValueDTO;
-//import com.firma.psp.dto.PaymentDataDTO;
+import com.firma.psp.dto.PaymentDataDTO;
 import com.firma.psp.dto.PaymentMethodDTO;
 import com.firma.psp.dto.PaymentRequestDTO;
 import com.firma.psp.dto.SupportedMethodResponseDTO;
@@ -175,15 +175,14 @@ public class PaymentMethodService {
 		if (paymentMethod == null || merchant == null) {
 			throw new RequestException("Payment method or merchant does not exist.");
 		}
-		return null;
 
-		/*PaymentDataDTO pd = createPaymentDataDTO(paymentMethod, o, merchant);
+		PaymentDataDTO pd = createPaymentDataDTO(paymentMethod, o, merchant);
 
 		RestTemplate rs = new RestTemplate();
-		return rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();*/
+		return rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
 	}
 
-	/*private PaymentDataDTO createPaymentDataDTO(PaymentMethod m, OrderData o, Merchant merchant) {
+	private PaymentDataDTO createPaymentDataDTO(PaymentMethod m, OrderData o, Merchant merchant) {
 		PaymentDataDTO pd = new PaymentDataDTO();
 		pd.setMerchantOrderId(o.getTransactionId());
 		pd.setMerchantTimestamp(o.getTimestamp());
@@ -203,7 +202,7 @@ public class PaymentMethodService {
 		pd.setAttributes(attributes);
 
 		return pd;
-	}*/
+	}
 
 	/*
 	 * private String getUrlByPaypal(Merchant merchant, Set<PaymentMethodAttribute>

@@ -16,6 +16,52 @@
                 <b>Successfully paid!</b>
               </p>
             </div>
+            <h1 class="my-12">You purchased:</h1>
+            <v-simple-table fixed-header class="mb-9">
+              <template v-slot:default>
+                <thead>
+                  <tr>
+                    <th class="text-left">Name</th>
+                    <th
+                      class="text-left"
+                      v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'"
+                    >
+                      Amount
+                    </th>
+                    <th
+                      class="text-left"
+                      v-if="currentUser.role === 'ROLE_SERVICE_BUYER'"
+                    >
+                      Participant
+                    </th>
+                    <th class="text-left">Price</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item in cartItems" :key="item.name">
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
+                      {{ item.equipment.name }}
+                    </td>
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'" class="text-left">
+                      {{ item.service.name }}
+                    </td>
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
+                      {{ item.quantity }}
+                    </td>
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'" class="text-left">
+                      {{ item.person }}
+                    </td>
+                    <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
+                      ${{ item.equipment.price }}
+                    </td>
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'" class="text-left">
+                      ${{ item.service.price }}
+                    </td>
+                  </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+            <h2 class="ml-4">Total paid: ${{ calculateTotal() }}</h2>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -24,11 +70,19 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "Success",
-  data: () => ({}),
+  data: () => ({
+    cartItems: []
+  }),
   props: {},
-  computed: {},
+  computed: {
+    ...mapState({
+      currentUser: (state) => state.user,
+    }),
+  },
   methods: {
     createSubscription: function (subscriptionId, transactionId) {
       this.$store
@@ -38,16 +92,36 @@ export default {
         })
         .then(() => {});
     },
+    calculateTotal: function () {
+      let sum = 0;
+      this.cartItems.forEach((it) => {
+        if (it.equipment !== undefined) {
+          sum += it.equipment.price * it.quantity;
+        } else {
+          sum += it.service.price;
+        }
+      });
+      return sum;
+    },
   },
   mounted: function () {
     const transactionId = this.$route.params.transactionId;
 
-    this.$store
+    this.$store.dispatch("getCurrentUser").then(() => {
+      this.$store
       .dispatch("updateTransaction", {
         transactionId: transactionId,
         status: 1,
       })
-      .then(() => {});
+      .then((resp) => {
+        console.log(resp.data);
+        if (this.currentUser.role === 'ROLE_EQUIPMENT_BUYER') {
+          this.cartItems = resp.data.equipmentCart.items;
+        } else {
+          this.cartItems = resp.data.serviceCart.items;
+        }
+      });
+    });
 
     const subscriptionId = this.$route.query.subscription_id;
 

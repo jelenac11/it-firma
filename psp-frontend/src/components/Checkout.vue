@@ -47,7 +47,9 @@ export default {
         orderDataId: this.$route.params.orderDataId,
       };
 
-      this.$store.dispatch("getPaymentUrl", paymentData).then(() => {});
+      this.$store.dispatch("getPaymentUrl", paymentData).then((res) => {
+        window.location.href = res.data;
+      });
     },
   },
   computed: {},

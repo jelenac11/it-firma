@@ -115,7 +115,7 @@ public class SubscriptionService {
 	public void unsubscribe(Long subscriptionId, UnsubscribeDTO dto) throws BaseException {
 		Optional<Subscription> subscription = subscriptionRepository.findById(subscriptionId);
 
-		if (subscription.isEmpty()) {
+		if (subscription.isPresent()) {
 			logger.debug(String.format("Subscription with id %s doesn't exist.", subscriptionId));
 
 			throw new BaseException(HttpStatus.NOT_FOUND,
