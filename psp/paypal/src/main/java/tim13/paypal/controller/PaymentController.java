@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim13.paypal.dto.PaymentRequestDto;
+import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.mapper.PaymentRequestMapper;
 import tim13.paypal.service.PaymentService;
 
@@ -39,12 +40,16 @@ public class PaymentController {
 	}
 
 	@GetMapping(value = "/execute", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<Void> executePayment(@RequestParam("paymentId") String paymentId,
+	public ResponseEntity<?> executePayment(@RequestParam("paymentId") String paymentId,
 			@RequestParam("PayerID") String payerId) {
 		logger.trace("Payment execution requested.");
 
-		return ResponseEntity.status(HttpStatus.SEE_OTHER)
-				.location(URI.create(paymentService.executePayment(payerId, paymentId))).build();
+		try {
+			return ResponseEntity.status(HttpStatus.SEE_OTHER)
+					.location(URI.create(paymentService.executePayment(payerId, paymentId))).build();
+		} catch (BaseException e) {
+			return new ResponseEntity<>(e.getMessage(), e.getStatus());
+		}
 	}
 
 }
