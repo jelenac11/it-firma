@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -28,6 +29,11 @@ public class TransactionController {
 	@PutMapping(value = "{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestParam Integer status) {
 		logger.trace("Transaction update requested.");
-		return new ResponseEntity<>(transactionService.update(id, status), HttpStatus.OK);
+		try {
+			return new ResponseEntity<>(transactionService.update(id, status), HttpStatus.OK);
+		} catch (MailException | InterruptedException e) {
+			e.printStackTrace();
+			return new ResponseEntity<>("Email service not working.", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
