@@ -27,7 +27,7 @@ public class ServiceShoppingCart extends ShoppingCart {
 	@JoinColumn(name = "user_id")
 	private ServiceBuyer buyer;
 
-	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ServiceShoppingCartItem> items;
 
 }

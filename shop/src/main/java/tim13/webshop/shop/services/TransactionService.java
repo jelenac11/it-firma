@@ -102,7 +102,7 @@ public class TransactionService {
 					
 					Set<ServiceShoppingCartItem> forDelete = new HashSet<ServiceShoppingCartItem>();
 					serviceCart.getItems().stream().forEach(forDelete::add);
-					for (ServiceShoppingCartItem item : serviceCart.getItems()) {
+					for (ServiceShoppingCartItem item : forDelete) {
 						serviceCart.getItems().remove(item);
 					}
 					serviceShoppingCartRepository.saveAndFlush(serviceCart);
