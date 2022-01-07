@@ -31,6 +31,7 @@ public class PaymentController {
 		try {
 			return ResponseEntity.ok(paymentService.pay(paymentDataDto));
 		} catch (Exception e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

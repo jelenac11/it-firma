@@ -41,9 +41,11 @@ public class PaymentService {
 		CreditCard cc = cardRepo.findByPanAndSecurityCodeAndCardHolderName(pccRequestDto.getPAN(),
 				pccRequestDto.getSecurityCode(), pccRequestDto.getCardHolderName());
 		if (cc == null) {
+			logger.trace("Credit card doesnt exist");
 			throw new NotFoundException("Credit card doesnt exist");
 		}
 		if (!checkExpirationData(cc.getExpirationDate(), pccRequestDto.getExpirationDate())) {
+			logger.trace("Invalid credit card. It is expired");
 			throw new NotFoundException("Invalid credit card data.");
 		}
 		Transaction transaction = createTransaction(pccRequestDto);
@@ -51,21 +53,25 @@ public class PaymentService {
 		double buyerAmount = convertAmount(cc.getAccount().getCurrency(), pccRequestDto.getAmount());
 
 		try {
+			logger.trace("Transfering money requested");
 			transfer(cc, buyerAmount);
 		} catch (IllegalArgumentException e) {
+			logger.trace(e.getMessage());
 			transaction.setStatus(TransactionStatus.FAILED);
 		} catch (Exception e) {
+			logger.trace(e.getMessage());
 			transaction.setStatus(TransactionStatus.ERROR);
 		}
 		transaction.setStatus(TransactionStatus.SUCCESS);
 
 		Transaction t = transactionRepo.save(transaction);
-
+		logger.trace("Transaction saved");
 		return new PCCResponseDTO(pccRequestDto.getAcquirerOrderId(), t.getId(), pccRequestDto.getAcquirerTimestamp(),
 				t.getIssuerTimestamp(), t.getStatus());
 	}
 
 	private double convertAmount(String currency, Double amount) {
+		logger.trace("Converting money requested");
 		if (currency.equals("RSD")) {
 			return amount * BankConstants.USD_RSD;
 		} else if (currency.equals("EUR")) {
@@ -77,6 +83,7 @@ public class PaymentService {
 	}
 
 	private Transaction createTransaction(PCCRequestDTO pcc) {
+		logger.trace("Creating transaction requested");
 		Date d = new Date(System.currentTimeMillis());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dateStr = sdf.format(d);
