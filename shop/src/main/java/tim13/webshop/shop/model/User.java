@@ -1,5 +1,6 @@
 package tim13.webshop.shop.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,6 +62,12 @@ public class User implements UserDetails {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private List<Role> roles;
+	
+	@Column
+    private boolean enabled;
+	
+	@Column
+	private LocalDateTime lastSignInDate = LocalDateTime.now();
 
 	public User(Long id) {
 		super();

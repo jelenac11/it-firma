@@ -25,6 +25,7 @@ import com.firma.psp.model.VerificationToken;
 import com.firma.psp.repositories.IAuthorityRepository;
 import com.firma.psp.repositories.IMerchantRepository;
 import com.firma.psp.repositories.IOrderDataRepository;
+import com.github.nbaars.pwnedpasswords4j.client.PwnedPasswordChecker;
 
 @Service
 public class MerchantService implements UserDetailsService {
@@ -46,6 +47,9 @@ public class MerchantService implements UserDetailsService {
 
 	@Autowired
 	private VerificationTokenService verificationTokenService;
+	
+	@Autowired
+	private PwnedPasswordChecker pwnedChecker;
 
 	private static final Logger logger = LoggerFactory.getLogger(MerchantService.class);
 
@@ -53,7 +57,9 @@ public class MerchantService implements UserDetailsService {
 		Merchant existing = merchantRepository.findByEmail(merchantDTO.getEmail());
 		if (existing != null)
 			throw new RequestException("User with this email already exists.");
-
+		if (pwnedChecker.check(merchantDTO.getPassword())) {
+            throw new RequestException("Chosen password is not secure. Please choose another one.");
+        }
 		Merchant merchant = new Merchant();
 
 		merchant.setEmail(merchantDTO.getEmail());
