@@ -59,7 +59,7 @@
       </v-flex>
     </v-layout>
     <v-snackbar v-model="conflict" top color="red darken-4">
-      User with given email already exists. Try again.
+      {{this.message}}
     </v-snackbar>
   </v-container>
 </template>
@@ -76,6 +76,7 @@ export default {
       shopName: null,
       password: null,
     },
+    message: '',
     isValid: true,
     conflict: false,
     emailRules: [
@@ -99,8 +100,9 @@ export default {
         .dispatch("register", newUser)
         .then(() => this.$router.push("/sign-in"))
         .catch((err) => {
-          console.log(err);
+          console.log(err.response);
           this.conflict = true;
+          this.message = err.response.data;
         });
     },
   },

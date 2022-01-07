@@ -48,10 +48,7 @@
       </v-flex>
     </v-layout>
     <v-snackbar v-model="wrong" top color="red darken-3">
-      Wrong email or password. Try again.
-    </v-snackbar>
-    <v-snackbar v-model="notVerified" top color="red darken-3">
-      Your account is not verified. Please check your email.
+      {{this.message}}
     </v-snackbar>
   </v-container>
 </template>
@@ -69,7 +66,7 @@ export default {
     },
     isValid: true,
     wrong: false,
-    notVerified: false,
+    message: '',
     token: null,
   }),
   created() {
@@ -85,11 +82,8 @@ export default {
           this.$router.push("/");
         })
         .catch((err) => {
-          if (err.response.status === 400) {
-            this.notVerified = true;
-          } else if (err.response.status === 401) {
-            this.wrong = true;
-          }
+          this.message = err.response.data;
+          this.wrong = true;
         });
     },
   },

@@ -84,7 +84,8 @@ public class AuthenticationController {
 				logger.info(String.format("3 or more unsuccessfull login attempts from ip address %s", getClientIP()));
 				return new ResponseEntity<>("You tried to log in too many times. Your account wil be blocked for the next 24 hours.", HttpStatus.BAD_REQUEST);
 			}
-			logger.debug(e.getMessage());
+			System.out.println(e.getMessage());
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>("Incorrect email or password.", HttpStatus.UNAUTHORIZED);
 		}
 

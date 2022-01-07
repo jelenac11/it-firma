@@ -45,7 +45,7 @@
       </v-flex>
     </v-layout>
     <v-snackbar v-model="wrong" top color="red darken-3">
-      Wrong email or password. Try again.
+      {{this.message}}
     </v-snackbar>
   </v-container>
 </template>
@@ -66,6 +66,7 @@ export default {
     isValid: true,
     wrong: false,
     token: null,
+    message: ''
   }),
   created() {
     localStorage.removeItem("token");
@@ -84,8 +85,9 @@ export default {
             this.$router.push("/equipment");
           }
         })
-        .catch(() => {
+        .catch((err) => {
           this.wrong = true;
+          this.message = err.response.data;
         });
     },
   },

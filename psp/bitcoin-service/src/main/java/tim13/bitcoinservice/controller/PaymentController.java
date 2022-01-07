@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.firma.psp.controllers.AuthenticationController;
-
 import tim13.bitcoinservice.dto.PaymentCallbackDTO;
 import tim13.bitcoinservice.dto.PaymentDataDTO;
 import tim13.bitcoinservice.service.PaymentService;
@@ -28,7 +26,7 @@ public class PaymentController {
 	@Autowired
 	private PaymentService paymentService;
 
-	private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 	
 	@PostMapping(value = "/pay")
 	public ResponseEntity<String> pay(@Valid @RequestBody PaymentDataDTO paymentDataDto) {
@@ -43,7 +41,6 @@ public class PaymentController {
 
 	@RequestMapping(value = "/callback", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<?> callback(@ModelAttribute PaymentCallbackDTO callbackDTO) {
-		System.out.println(callbackDTO.toString());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
