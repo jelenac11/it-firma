@@ -27,6 +27,7 @@ public class MerchantController {
 	
 	@PostMapping()
 	public ResponseEntity<?> createMerchant(@Valid @RequestBody MerchantDTO merchantDTO) {
+		logger.trace("Adding new merchant bank account requested");
 		Merchant m = merchantService.save(merchantDTO);
 		return ResponseEntity.ok(m);
 	}

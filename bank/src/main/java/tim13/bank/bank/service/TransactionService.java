@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,8 @@ public class TransactionService {
 
 	@Autowired
 	private ITransactionRepository transactionRepository;
+	
+	private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
 	public Transaction transferSameBank(CreditCard card, Merchant merchant, Payment payment) {
 		Transaction transaction = createTransaction(payment, card.getPan());
@@ -41,21 +45,26 @@ public class TransactionService {
 		double merchantAmount = convertAmount(merchant.getCurrency(), payment.getAmount());
 
 		try {
+			logger.info("Transfering money in same bank");
 			transfer(card, merchant.getMerchantId(), buyerAmount, merchantAmount);
 		} catch (IllegalArgumentException e) {
+			logger.debug(e.getMessage());
 			transaction.setStatus(TransactionStatus.FAILED);
 			return transaction;
 		} catch (Exception e) {
+			logger.debug(e.getMessage());
 			transaction.setStatus(TransactionStatus.ERROR);
 			return transaction;
 		}
 
+		logger.info("Successfull transaction");
 		transaction.setStatus(TransactionStatus.SUCCESS);
 		return transaction;
 	}
 
 	public Transaction transferDifferentBanks(Payment payment, Merchant merchant, CardDetailsDTO card)
 			throws RequestException {
+		logger.info("Transfering money between different banks");
 		Transaction transaction = createTransaction(payment, card.getPAN());
 		transactionRepository.save(transaction);
 
@@ -70,6 +79,7 @@ public class TransactionService {
 		ResponseEntity<PCCResponseDTO> response = rs.postForEntity("http://localhost:9003/api/payment/pay",
 				pccRequestDto, PCCResponseDTO.class);
 		if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
+			logger.debug("Invalid credit card data");
 			throw new RequestException("Invalid credit card data.");
 		}
 
@@ -78,6 +88,7 @@ public class TransactionService {
 		transactionRepository.save(transaction);
 
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
+			logger.info("Successfull transaction");
 			double merchantAmount = convertAmount(merchant.getCurrency(), payment.getAmount());
 			merchantService.transferMoneyToMerchant(merchant.getMerchantId(), merchantAmount);
 		}
@@ -86,6 +97,7 @@ public class TransactionService {
 	}
 
 	private double convertAmount(String currency, Double amount) {
+		logger.info("Converting money");
 		if (currency.equals("RSD")) {
 			return amount * BankConstants.USD_RSD;
 		} else if (currency.equals("EUR")) {
@@ -97,6 +109,7 @@ public class TransactionService {
 	}
 
 	private Transaction createTransaction(Payment paymentRequest, String pan) {
+		logger.info("Creating new transaction");
 		return new Transaction(paymentRequest.getAmount(), paymentRequest.getMerchantId(),
 				paymentRequest.getMerchantOrderId(), paymentRequest.getMerchantTimestamp(), pan,
 				paymentRequest.getId());
@@ -105,8 +118,10 @@ public class TransactionService {
 	private void transfer(CreditCard buyer, String merchantId, double buyerAmount, double merchantAmount)
 			throws IllegalArgumentException {
 		if (!accountService.hasEnoughMoney(buyerAmount, buyer)) {
+			logger.info("Not enough money on bank account");
 			throw new IllegalArgumentException("You don't have enough money.");
 		}
+		logger.info("Enough money on bank account");
 		merchantService.transferMoneyToMerchant(merchantId, merchantAmount);
 	}
 

@@ -80,14 +80,17 @@ public class AuthenticationController {
 					authenticationRequest.getEmail(), authenticationRequest.getPassword()));
 		} catch (Exception e) {
 			boolean blocked = loginFailed();
-			if (blocked)
+			if (blocked) {
+				logger.info(String.format("3 or more unsuccessfull login attempts from ip address %s", getClientIP()));
 				return new ResponseEntity<>("You tried to log in too many times. Your account wil be blocked for the next 24 hours.", HttpStatus.BAD_REQUEST);
+			}
 			logger.debug(e.getMessage());
 			return new ResponseEntity<>("Incorrect email or password.", HttpStatus.UNAUTHORIZED);
 		}
 
 		User user = (User) authentication.getPrincipal();
 		if (!user.isEnabled()) {
+			logger.info(String.format("Blocked user attempted to login from ip address %s", getClientIP()));
 			return new ResponseEntity<>("You are not able to login because you are blocked.", HttpStatus.BAD_REQUEST);
 		}
 		List<Role> auth = user.getRoles();
@@ -99,7 +102,7 @@ public class AuthenticationController {
 		String jwt = tokenUtils.generateToken(user.getEmail(), auth.get(0).getName());
 		int expiresIn = tokenUtils.getExpiredIn();
 
-		logger.trace(String.format("User with ID: %s successfully logged in.", user.getId()));
+		logger.info(String.format("Successfull login from ip address %s", getClientIP()));
 		return ResponseEntity.ok(new UserTokenStateDTO(jwt, (long) expiresIn));
 	}
 

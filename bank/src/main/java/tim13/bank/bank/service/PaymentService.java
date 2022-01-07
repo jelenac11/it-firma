@@ -35,7 +35,9 @@ public class PaymentService {
 	private TransactionService transactionService;
 
 	public String pay(PaymentRequestDTO paymentRequestDto) {
+		logger.info("Paying requested");
 		if (!checkMerchantData(paymentRequestDto.getMerchantId(), paymentRequestDto.getMerchantPassword())) {
+			logger.debug("Invalid merchant data");
 			return paymentRequestDto.getErrorUrl();
 		}
 		Payment p = new Payment();
@@ -47,10 +49,12 @@ public class PaymentService {
 		p.setMerchantOrderId(paymentRequestDto.getMerchantOrderId());
 		p.setSuccessUrl(paymentRequestDto.getSuccessUrl());
 		Payment created = paymentRepo.save(p);
+		logger.info("Creating new payment");
 		return BankConstants.FRONTEND_PAYMENT + created.getId();
 	}
 
 	private boolean checkMerchantData(String merchantId, String merchantPassword) {
+		logger.info("Checking merchant data");
 		Merchant m = merchantRepo.findByMerchantIdAndMerchantPassword(merchantId, merchantPassword);
 		if (m == null) {
 			return false;
@@ -60,25 +64,32 @@ public class PaymentService {
 
 	public String confirmPayment(Long id, @Valid CardDetailsDTO cardDetailsDTO)
 			throws NotFoundException, RequestException {
+		logger.info("Confirming payment");
 		Payment payment = paymentRepo.getOne(id);
 		if (payment == null) {
+			logger.debug("Requested payment doesnt exist");
 			throw new NotFoundException("Payment does not exist");
 		}
 
 		Transaction transaction = null;
 		Merchant merchant = merchantRepo.getByMerchantId(payment.getMerchantId());
 		if (cardService.isClientOfBank(cardDetailsDTO.getPAN())) {
+			logger.info("Client has account in same bank as merchant");
 			CreditCard card = cardService.checkCardDetails(cardDetailsDTO);
 			transaction = transactionService.transferSameBank(card, merchant, payment);
 		} else {
+			logger.info("Client has account in different bank than merchant");
 			transaction = transactionService.transferDifferentBanks(payment, merchant, cardDetailsDTO);
 		}
 
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
+			logger.info("Transaction was successfull");
 			return payment.getSuccessUrl() + "/" + payment.getMerchantOrderId();
 		} else if (transaction.getStatus().equals(TransactionStatus.FAILED)) {
+			logger.info("Transaction failed");
 			return payment.getFailedUrl() + "/" + payment.getMerchantOrderId();
 		} else {
+			logger.info("Error in transaction");
 			return payment.getErrorUrl() + "/" + payment.getMerchantOrderId();
 		}
 	}
