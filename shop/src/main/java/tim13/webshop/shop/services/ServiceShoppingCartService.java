@@ -66,8 +66,8 @@ public class ServiceShoppingCartService {
 		item.setPerson(dto.getPerson());
 		item.setCart(cart);
 
-		serviceShoppingCartItemRepository.save(item);
-		logger.info("Adding new item to service shopping cart.");
+		item = serviceShoppingCartItemRepository.save(item);
+		logger.info("Adding new item with id " + item.getId() + " to service shopping cart.");
 
 		return new ResponseEntity<>("Item " + dto.getService().getName() + " added.", HttpStatus.OK);
 	}
@@ -82,7 +82,7 @@ public class ServiceShoppingCartService {
 		for (ServiceShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
 				serviceShoppingCartItemRepository.deleteById(id);
-				logger.info("Item removed from service shopping cart.");
+				logger.info("Item with id " + item.getId() + " removed from service shopping cart.");
 				break;
 			}
 		}

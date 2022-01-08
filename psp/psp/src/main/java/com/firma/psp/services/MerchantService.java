@@ -75,8 +75,8 @@ public class MerchantService implements UserDetailsService {
 		merchant.setSupportsPaymentMethods(false);
 		merchant.setLastPasswordResetDate(System.currentTimeMillis());
 
-		this.save(merchant);
-		logger.info("New merchant successfully registered.");
+		merchant = this.save(merchant);
+		logger.info("New merchant with id " + merchant.getId() + " successfully registered.");
 
 		emailService.sendActivationLink(merchant);
 		return true;
@@ -98,7 +98,7 @@ public class MerchantService implements UserDetailsService {
 		Merchant m = merchantRepository.findByEmail(o.getMerchantEmail());
 		if (m == null)
 			throw new Exception("Merchant doesn't exist");
-		logger.info("Reading merchant methods from database.");
+		logger.info("Reading merchant methods from database for merchant with id " + id);
 		return m.getPaymentMethods().stream().map(pm -> new MethodResponseDTO(pm.getId(), pm.getName()))
 				.collect(Collectors.toList());
 	}
@@ -137,8 +137,8 @@ public class MerchantService implements UserDetailsService {
 		return merchantRepository.findByEmail(email);
 	}
 
-	public void save(Merchant user) {
-		merchantRepository.save(user);
+	public Merchant save(Merchant user) {
+		return merchantRepository.save(user);
 	}
 
 	public String encodePassword(String password) {

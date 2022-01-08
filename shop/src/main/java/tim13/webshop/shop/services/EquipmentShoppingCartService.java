@@ -77,10 +77,10 @@ public class EquipmentShoppingCartService {
 			item.setEquipment(e);
 			item.setQuantity(dto.getQuantity());
 			item.setCart(cart);
-			equipmentShoppingCartItemRepository.save(item);
+			item = equipmentShoppingCartItemRepository.save(item);
+			logger.info("Adding new item with id " + item.getId() + " to equipment shopping cart.");
 		}
 
-		logger.info("Adding new item to equipment shopping cart.");
 		return new ResponseEntity<>("Item " + dto.getEquipment().getName() + " added.", HttpStatus.OK);
 	}
 
@@ -94,7 +94,7 @@ public class EquipmentShoppingCartService {
 		for (EquipmentShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
 				equipmentShoppingCartItemRepository.deleteById(id);
-				logger.info("Item removed from equipment shopping cart.");
+				logger.info("Item with id " + item.getId() + " removed from equipment shopping cart.");
 				break;
 			}
 		}

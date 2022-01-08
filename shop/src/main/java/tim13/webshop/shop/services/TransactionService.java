@@ -48,7 +48,7 @@ public class TransactionService {
 	public Transaction save(Transaction transaction) {
 		Transaction newTransaction = transactionRepository.save(transaction);
 
-		logger.info("New transaction created");
+		logger.info("New transaction created with id " + newTransaction.getId());
 
 		return newTransaction;
 	}
