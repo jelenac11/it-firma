@@ -51,7 +51,7 @@ public class PaymentService {
 			paymentRequest.setPaymentId(createdPayment.getId());
 
 			paymentRequestRepository.save(paymentRequest);
-			
+
 			logger.info("URL created.");
 
 			return getLink(createdPayment.getLinks());

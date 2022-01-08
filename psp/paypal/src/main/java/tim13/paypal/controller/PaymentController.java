@@ -32,7 +32,7 @@ public class PaymentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
-	@PostMapping(value = "/create-url")
+	@PostMapping(value = "/pay")
 	public ResponseEntity<String> createUrl(@RequestBody PaymentRequestDto paymentRequestDto) {
 		logger.trace("URL creation requested.");
 

@@ -11,28 +11,31 @@ public class PaymentRequestMapper {
 	public PaymentRequest toEntity(PaymentRequestDto paymentRequestDto) {
 		PaymentRequest paymentRequest = new PaymentRequest();
 
-		paymentRequest.setClientId(paymentRequestDto.getClientId());
-		paymentRequest.setClientSecret(paymentRequestDto.getClientSecret());
+		paymentRequest.setClientId(paymentRequestDto.getAttributes().stream()
+				.filter(method -> method.getName().equals("Merchant client Id")).findFirst().get().getValue());
+		paymentRequest.setClientSecret(paymentRequestDto.getAttributes().stream()
+				.filter(method -> method.getName().equals("Merchant Client Secret")).findFirst().get().getValue());
 		paymentRequest.setMerchantOrderId(paymentRequestDto.getMerchantOrderId());
 		paymentRequest.setAmount(paymentRequestDto.getAmount());
-		paymentRequest.setSuccessUrl(paymentRequestDto.getSuccessUrl());
-		paymentRequest.setCancelUrl(paymentRequestDto.getCancelUrl());
-		paymentRequest.setErrorUrl(paymentRequestDto.getErrorUrl());
+		paymentRequest.setSuccessUrl(paymentRequestDto.getSuccessURL());
+		paymentRequest.setCancelUrl(paymentRequestDto.getFailedURL());
+		paymentRequest.setErrorUrl(paymentRequestDto.getErrorURL());
 
 		return paymentRequest;
 	}
 
-	public PaymentRequestDto toDto(PaymentRequest paymentRequest) {
-		PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
-
-		paymentRequestDto.setClientId(paymentRequest.getClientId());
-		paymentRequestDto.setClientSecret(paymentRequest.getClientSecret());
-		paymentRequestDto.setMerchantOrderId(paymentRequest.getMerchantOrderId());
-		paymentRequestDto.setAmount(paymentRequest.getAmount());
-		paymentRequestDto.setSuccessUrl(paymentRequest.getSuccessUrl());
-		paymentRequestDto.setCancelUrl(paymentRequest.getCancelUrl());
-		paymentRequestDto.setErrorUrl(paymentRequest.getErrorUrl());
-
-		return paymentRequestDto;
-	}
+	/*
+	 * public PaymentRequestDto toDto(PaymentRequest paymentRequest) {
+	 * PaymentRequestDto paymentRequestDto = new PaymentRequestDto();
+	 * 
+	 * paymentRequestDto.setClientId(paymentRequest.getClientId());
+	 * paymentRequestDto.setClientSecret(paymentRequest.getClientSecret());
+	 * paymentRequestDto.setMerchantOrderId(paymentRequest.getMerchantOrderId());
+	 * paymentRequestDto.setAmount(paymentRequest.getAmount());
+	 * paymentRequestDto.setSuccessUrl(paymentRequest.getSuccessUrl());
+	 * paymentRequestDto.setCancelUrl(paymentRequest.getCancelUrl());
+	 * paymentRequestDto.setErrorUrl(paymentRequest.getErrorUrl());
+	 * 
+	 * return paymentRequestDto; }
+	 */
 }
