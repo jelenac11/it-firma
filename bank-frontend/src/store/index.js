@@ -33,6 +33,19 @@ export default new Vuex.Store({
                     });
             });
         },
+
+        payQr({ commit }, data) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:9002/api/payment/qr/pay/' + data, method: 'POST' })
+                    .then(resp => {
+                        commit('setGroceries', resp.data)
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
     },
     modules: {}
 });

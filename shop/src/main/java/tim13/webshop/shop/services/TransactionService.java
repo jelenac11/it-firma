@@ -79,6 +79,7 @@ public class TransactionService {
 					for (EquipmentShoppingCartItem itm : equpmentCart.getItems()) {
 						str.append(itm.getEquipment().getName() + "\nAmount: " + itm.getQuantity() + "\nPrice per item: " + itm.getEquipment().getPrice() + "\n\n");
 					}
+					
 					emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
 
 					Set<EquipmentShoppingCartItem> forDelete = new HashSet<EquipmentShoppingCartItem>();

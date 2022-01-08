@@ -1,6 +1,7 @@
 package tim13.bank.bank.model;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tim13.bank.bank.converter.CryptoStringConverter;
 
 @Entity
 @Getter
@@ -43,4 +45,8 @@ public class Merchant {
     @Column(nullable = false)
     @ColumnTransformer(forColumn = "merchant_password", read = "pgp_sym_decrypt(merchant_password, current_setting('encrypt.key'), 'cipher-algo=aes256')", write = "pgp_sym_encrypt(?, current_setting('encrypt.key'), 'cipher-algo=aes256')")
     private String merchantPassword;
+    
+    @Column(name = "pan")
+	@Convert(converter = CryptoStringConverter.class)
+	private String pan;
 }
