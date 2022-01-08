@@ -1,7 +1,6 @@
 package tim13.bank.bank.controller;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Positive;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.sun.istack.NotNull;
 
 import tim13.bank.bank.dto.CardDetailsDTO;
 import tim13.bank.bank.dto.PaymentRequestDTO;
@@ -38,6 +35,7 @@ public class PaymentController {
 		try {
 			return ResponseEntity.ok(paymentService.pay(paymentRequestDto));
 		} catch (Exception e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -48,6 +46,7 @@ public class PaymentController {
 		try {
 			return new ResponseEntity<>(paymentService.confirmPayment(id, cardDetailsDTO), HttpStatus.OK);
 		} catch (Exception e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}

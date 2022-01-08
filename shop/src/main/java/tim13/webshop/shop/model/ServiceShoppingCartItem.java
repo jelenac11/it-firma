@@ -33,7 +33,7 @@ public class ServiceShoppingCartItem {
 	@JoinColumn(name = "shopping_cart_id")
 	private ServiceShoppingCart cart;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "service_id")
 	private Service service;
 

@@ -2,6 +2,8 @@ package tim13.bitcoinservice.controller;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,18 +26,21 @@ public class PaymentController {
 	@Autowired
 	private PaymentService paymentService;
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
+	
 	@PostMapping(value = "/pay")
 	public ResponseEntity<String> pay(@Valid @RequestBody PaymentDataDTO paymentDataDto) {
+		logger.info("Payment requested");
 		try {
 			return ResponseEntity.ok(paymentService.pay(paymentDataDto));
 		} catch (Exception e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	@RequestMapping(value = "/callback", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
 	public ResponseEntity<?> callback(@ModelAttribute PaymentCallbackDTO callbackDTO) {
-		System.out.println(callbackDTO.toString());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 

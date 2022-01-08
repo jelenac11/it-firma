@@ -9,7 +9,7 @@ import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
 import Fail from "../components/Fail.vue";
 import MySubscriptions from "../components/MySubscriptions.vue";
-//import store from "../store";
+import store from "../store";
 
 Vue.use(VueRouter);
 
@@ -64,8 +64,9 @@ const routes = [
 const router = new VueRouter({
   routes
 });
-/*
+
 router.beforeEach((to, from, next) => {
+  if (to.path === '/') next({ name: 'Login' })
   if ((to.name !== 'Login') && !store.getters.authenticated) next({ name: 'Login' })
   else next()
   if ((to.name === 'Login') && store.getters.authenticated) next({ name: from.name })
@@ -77,5 +78,5 @@ router.beforeEach((to, from, next) => {
   if ((to.name === 'Courses' || to.name === 'Conferences') && store.state.user.role === 'ROLE_EQUIPMENT_BUYER') next({ name: 'Equipment' })
   else next()
 })
-*/
+
 export default router;

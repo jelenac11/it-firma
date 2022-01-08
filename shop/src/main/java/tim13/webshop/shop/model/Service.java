@@ -2,6 +2,7 @@ package tim13.webshop.shop.model;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -56,7 +57,7 @@ public class Service {
 	@Column
 	private boolean online;
 
-	@OneToMany(mappedBy = "service")
+	@OneToMany(mappedBy = "service", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private Set<ServiceShoppingCartItem> items;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)

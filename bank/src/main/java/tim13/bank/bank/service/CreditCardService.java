@@ -10,6 +10,8 @@ import java.time.LocalDateTime;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +27,10 @@ public class CreditCardService {
 	@Value("${bank_identification_number}")
 	private String identificationNumber;
 
+	private static final Logger logger = LoggerFactory.getLogger(CreditCardService.class);
+	
 	public boolean isClientOfBank(String pan) {
+		logger.info("Checking if client and merchant bank are same");
 		String bankIdentificationNumber = pan.substring(0, 6);
 		return bankIdentificationNumber.equals(identificationNumber);
 	}
@@ -34,16 +39,20 @@ public class CreditCardService {
 			throws NotFoundException, RequestException {
 		CreditCard card = cardRepo.findByPanAndSecurityCodeAndCardHolderName(cardDetailsDTO.getPAN(),
 				cardDetailsDTO.getSecurityCode(), cardDetailsDTO.getCardHolderName());
+		logger.info("Checking credit card data");
 		if (card == null) {
+			logger.info("Nonexisting card");
 			throw new NotFoundException("Credit card doesnt exist");
 		}
 		if (!checkExpirationData(card.getExpirationDate(), cardDetailsDTO.getExpirationDate())) {
+			logger.info("Credit card expired");
 			throw new RequestException("Invalid credit card data.");
 		}
 		return card;
 	}
 
 	private boolean checkExpirationData(LocalDate expirationDate, String expiration) {
+		logger.info("Checking expiration data of credit card");
 		String[] values = expiration.split("/");
 		int month = Integer.parseInt(values[0]);
 

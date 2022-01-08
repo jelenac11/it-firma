@@ -1,5 +1,7 @@
 package com.firma.psp.controllers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,24 +27,28 @@ public class SubscriptionController {
 	@Autowired
 	private SubscriptionService subscriptionService;
 
+	private static final Logger logger = LoggerFactory.getLogger(PaymentMethodController.class);
+	
 	@PostMapping(value = "/create-plan")
 	public ResponseEntity<?> createPlan(@RequestBody PlanDto planDto) {
 		try {
 			String productId = subscriptionService.createPlan(planDto);
-
+			logger.info("Subscription plan created");
 			return ResponseEntity.status(HttpStatus.CREATED).body(productId);
 		} catch (BaseException e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), e.getStatus());
 		}
 	}
 
 	@PostMapping(value = "/subscribe")
 	public ResponseEntity<?> subscribe(@RequestBody SubscribeDto subscribeDto) {
+		logger.info("Subcribe requested");
 		try {
 			String productId = subscriptionService.subscribe(subscribeDto);
-
 			return ResponseEntity.status(HttpStatus.CREATED).body(productId);
 		} catch (BaseException e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), e.getStatus());
 		}
 	}
@@ -50,11 +56,13 @@ public class SubscriptionController {
 	@PostMapping(value = "/unsubscribe/{id}")
 	public ResponseEntity<?> unsubscribe(@PathVariable("id") String subscriptionId,
 			@RequestBody CancellingSubscriptionDto dto) {
+		logger.info("Unsubscribe requested!");
 		try {
 			subscriptionService.unsubscribe(subscriptionId, dto);
 
 			return new ResponseEntity<Void>(HttpStatus.OK);
 		} catch (BaseException e) {
+			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), e.getStatus());
 		}
 	}

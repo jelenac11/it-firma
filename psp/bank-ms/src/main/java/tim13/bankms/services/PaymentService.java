@@ -14,6 +14,7 @@ public class PaymentService {
 	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
 	public String pay(PaymentDataDTO paymentDataDto) {
+		logger.info("Paying order using bank");
 		String id = paymentDataDto.getAttributes().stream()
 				.filter(attribute -> attribute.getName().equalsIgnoreCase("merchant id")).findFirst().get().getValue();
 		String password = paymentDataDto.getAttributes().stream()
