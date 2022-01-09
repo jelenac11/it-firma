@@ -42,8 +42,8 @@
                     <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
                       {{ item.equipment.name }}
                     </td>
-                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'" class="text-left">
-                      {{ item.service.name }}
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
+                      <p>{{ item.service.name }}<span v-if="!item.service.online"> <b>(Transport and accommodation included)</b></span></p> 
                     </td>
                     <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
                       {{ item.quantity }}
@@ -54,8 +54,8 @@
                     <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'" class="text-left">
                       ${{ item.equipment.price }}
                     </td>
-                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'" class="text-left">
-                      ${{ item.service.price }}
+                    <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
+                      ${{ item.service.price + item.additionalCosts }}
                     </td>
                   </tr>
                 </tbody>
@@ -98,7 +98,7 @@ export default {
         if (it.equipment !== undefined) {
           sum += it.equipment.price * it.quantity;
         } else {
-          sum += it.service.price;
+          sum += it.service.price + it.additionalCosts;
         }
       });
       return sum;

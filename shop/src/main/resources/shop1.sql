@@ -63,8 +63,32 @@ INSERT INTO equipments (name, description, quantity, price, equipment_type, user
 
 INSERT INTO services ("type", name, description, location, price, start_date, end_date, teacher, user_id, online) VALUES ('CRS', 'Java Advanced Masterclass', 'Really good lessons', 'Novi Sad', 250, 1641142800000, 1641402000000, 'Milan Marinkovic', 14, true);
 INSERT INTO services ("type", name, description, location, price, start_date, end_date, teacher, user_id, online) VALUES ('CRS', 'Rust Advanced Masterclass', 'Really good lessons', 'Belgrade', 450, 1641560400000, 1641646800000, 'Jelena Cupac', 14, true);
-INSERT INTO services ("type", name, description, location, price, start_date, end_date, teacher, user_id, online) VALUES ('CRS', 'Golang Advanced Masterclass', 'Really good lessons', 'Vienna', 550, 1643731200000, 1643832000000, 'Aleksa Goljovic', 15, false);
+INSERT INTO services ("type", name, description, location, price, start_date, end_date, teacher, user_id, online) VALUES ('CRS', 'Golang Advanced Masterclass', 'Really good lessons', 'London', 550, 1643731200000, 1643832000000, 'Aleksa Goljovic', 15, true);
 
 INSERT INTO services ("type", name, description, location, price, start_date, end_date, user_id, online) VALUES ('CNF', 'International Conference on Information Systems', 'Really good conference', 'Novi Sad', 70, 1641646800000, 1641819600000, 14, false);
 INSERT INTO services ("type", name, description, location, price, start_date, end_date, user_id, online) VALUES ('CNF', 'International Conference on Machine Learning', 'Really good conference', 'Belgrade', 200, 1641805200000, 1641830400000, 15, true);
-INSERT INTO services ("type", name, description, location, price, start_date, end_date, user_id, online) VALUES ('CNF', 'International Conference on Software Engineering', 'Really good conference', 'London', 900, 1644051600000, 1644483600000, 15, false);
+INSERT INTO services ("type", name, description, location, price, start_date, end_date, user_id, online) VALUES ('CNF', 'International Conference on Software Engineering', 'Really good conference', 'Vienna', 900, 1644051600000, 1644483600000, 15, false);
+
+INSERT INTO transports ("type", price, location) VALUES ('BUS', 20, 'Belgrade');
+INSERT INTO transports ("type", price, location) VALUES ('TRAIN', 10, 'Belgrade');
+INSERT INTO transports ("type", price, location) VALUES ('PLANE', 50, 'Belgrade');
+
+INSERT INTO transports ("type", price, location) VALUES ('BUS', 15, 'Novi Sad');
+INSERT INTO transports ("type", price, location) VALUES ('TRAIN', 5, 'Novi Sad');
+INSERT INTO transports ("type", price, location) VALUES ('PLANE', 45, 'Novi Sad');
+
+INSERT INTO transports ("type", price, location) VALUES ('BUS', 40, 'Vienna');
+INSERT INTO transports ("type", price, location) VALUES ('TRAIN', 30, 'Vienna');
+INSERT INTO transports ("type", price, location) VALUES ('PLANE', 70, 'Vienna');
+
+INSERT INTO accommodations ("type", price, location) VALUES ('HOTEL', 25, 'Belgrade');
+INSERT INTO accommodations ("type", price, location) VALUES ('MOTEL', 15, 'Belgrade');
+INSERT INTO accommodations ("type", price, location) VALUES ('APARTMENT', 50, 'Belgrade');
+
+INSERT INTO accommodations ("type", price, location) VALUES ('HOTEL', 20, 'Novi Sad');
+INSERT INTO accommodations ("type", price, location) VALUES ('MOTEL', 10, 'Novi Sad');
+INSERT INTO accommodations ("type", price, location) VALUES ('APARTMENT', 45, 'Novi Sad');
+
+INSERT INTO accommodations ("type", price, location) VALUES ('HOTEL', 65, 'Vienna');
+INSERT INTO accommodations ("type", price, location) VALUES ('MOTEL', 55, 'Vienna');
+INSERT INTO accommodations ("type", price, location) VALUES ('APARTMENT', 90, 'Vienna');

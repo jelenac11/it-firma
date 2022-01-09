@@ -61,7 +61,7 @@
                         </v-card-title>
                         <v-divider></v-divider>
                         <v-list dense>
-                          <v-list-item-content>
+                          <v-list-item-content v-if="!item.online">
                             <span class="ml-4"
                               >Location: <b>{{ item.location }}</b></span
                             >

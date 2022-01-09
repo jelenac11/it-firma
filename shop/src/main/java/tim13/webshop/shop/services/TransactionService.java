@@ -96,7 +96,7 @@ public class TransactionService {
 					 
 					str.append("You purchased:\n\n");
 					for (ServiceShoppingCartItem itm : serviceCart.getItems()) {
-						str.append(itm.getService().getName() + "\nFor: " + itm.getPerson() + "\nPrice: " + itm.getService().getPrice() + "\n\n");
+						str.append(itm.getService().getName() + "\nFor: " + itm.getPerson() + "\nPrice: " + (itm.getService().getPrice() + itm.getAdditionalCosts()) + "\n\n");
 					}
 					emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
 					

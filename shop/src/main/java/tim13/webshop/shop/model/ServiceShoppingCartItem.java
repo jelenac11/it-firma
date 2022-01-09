@@ -28,6 +28,9 @@ public class ServiceShoppingCartItem {
 
 	@Column
 	private String person;
+	
+	@Column(name = "additional_costs")
+	private double additionalCosts;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = true)
 	@JoinColumn(name = "shopping_cart_id")

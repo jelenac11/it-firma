@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-row justify="center">
-      <v-dialog v-model="show" max-width="600px">
+      <v-dialog v-model="show" max-width="700px">
         <v-card class="px-4 py-4">
           <v-card-title>
             <h2 style="color: #4caf50; margin-bottom: 30px; margin-top: 10px">
@@ -36,7 +36,7 @@
                       {{ item.equipment.name }}
                     </td>
                     <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
-                      {{ item.service.name }}
+                      <p>{{ item.service.name }}<span v-if="!item.service.online"> <b>(Transport and accommodation included)</b></span></p> 
                     </td>
                     <td v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'">
                       {{ item.quantity }}
@@ -48,7 +48,7 @@
                       ${{ item.equipment.price }}
                     </td>
                     <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
-                      ${{ item.service.price }}
+                      ${{ item.service.price + item.additionalCosts }}
                     </td>
                     <td>
                       <v-btn
@@ -147,7 +147,7 @@ export default {
         if (it.equipment !== undefined) {
           sum += it.equipment.price * it.quantity;
         } else {
-          sum += it.service.price;
+          sum += it.service.price + it.additionalCosts;
         }
       });
       return sum;

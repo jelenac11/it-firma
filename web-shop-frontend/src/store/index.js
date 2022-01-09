@@ -149,6 +149,32 @@ export default new Vuex.Store({
             });
         },
 
+        getTransports({ commit }, id) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/transports/' + id, method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
+        getAccommodations({ commit }, id) {
+            return new Promise((resolve, reject) => {
+                axios({ url: 'http://localhost:8089/api/accommodations/' + id, method: 'GET' })
+                    .then(resp => {
+                        commit('setEquipments', resp.data);
+                        resolve(resp);
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            });
+        },
+
         addEquipmentToCart({ commit }, equipment) {
             return new Promise((resolve, reject) => {
                 axios({ url: 'http://localhost:8089/api/equipment-shopping-carts/add-item', data: equipment, method: 'POST' })

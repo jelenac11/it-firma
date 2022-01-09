@@ -20,6 +20,26 @@
                 v-model="name"
                 required
               ></v-text-field>
+              <v-select
+                v-if="!item.online"
+                :items="transports"
+                v-model="selectTr"
+                label="Transport"
+                :item-text="item => item.type +' ($' + item.price + ')'"
+                required
+                return-object
+                single-line
+              ></v-select>
+              <v-select
+                v-if="!item.online"
+                :items="accommodations"
+                v-model="selectAc"
+                label="Accommodation"
+                :item-text="item => item.type +' ($' + item.price + ')'"
+                required
+                return-object
+                single-line
+              ></v-select>
             </v-form>
           </v-card-text>
           <v-card-actions>
@@ -49,6 +69,17 @@ export default {
     name: "",
     isValid: true,
     wrong: false,
+    transports: [],
+    accommodations: [],
+    showAddToCart: false,
+    selectTr: {
+      type: '',
+      price: 0
+    },
+    selectAc: {
+      type: '',
+      price: 0
+    }
   }),
   props: {
     value: Boolean,
@@ -64,6 +95,22 @@ export default {
       },
     },
   },
+  watch: {
+    value(visible) {
+      if (visible) {
+        if (this.item.teacher === undefined && !this.item.online) {
+          this.$store.dispatch("getTransports", this.item.id).then((resp) => {
+            this.transports = resp.data;
+            this.selectTr = this.transports[0];
+          });
+          this.$store.dispatch("getAccommodations", this.item.id).then((resp) => {
+            this.accommodations = resp.data;
+            this.selectAc = this.accommodations[0];
+          });
+        }
+      }
+    }
+  },
   methods: {
     add: function () {
       const toAdd = {
@@ -76,6 +123,7 @@ export default {
           id: null,
           person: this.name,
           service: toAdd,
+          additionalCosts: this.selectTr.price + this.selectAc.price
         })
         .then(() => {
           this.$refs.formAddToCart.reset();
@@ -92,6 +140,5 @@ export default {
       this.show = false;
     },
   },
-  created() {},
 };
 </script>

@@ -64,6 +64,7 @@ public class ServiceShoppingCartService {
 		ServiceShoppingCartItem item = new ServiceShoppingCartItem();
 		item.setService(s);
 		item.setPerson(dto.getPerson());
+		item.setAdditionalCosts(dto.getAdditionalCosts());
 		item.setCart(cart);
 
 		item = serviceShoppingCartItemRepository.save(item);
@@ -81,7 +82,8 @@ public class ServiceShoppingCartService {
 
 		for (ServiceShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
-				serviceShoppingCartItemRepository.deleteById(id);
+				cart.getItems().remove(item);
+				serviceShoppingCartRepository.saveAndFlush(cart);
 				logger.info("Item with id " + item.getId() + " removed from service shopping cart.");
 				break;
 			}
