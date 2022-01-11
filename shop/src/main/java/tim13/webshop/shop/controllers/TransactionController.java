@@ -18,7 +18,7 @@ import tim13.webshop.shop.services.TransactionService;
 
 @RestController
 @RequestMapping(value = "/api/transaction", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8096", maxAge = 3600, allowedHeaders = "*")
 public class TransactionController {
 
 	@Autowired

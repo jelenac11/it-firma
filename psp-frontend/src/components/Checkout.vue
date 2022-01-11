@@ -51,9 +51,27 @@ export default {
         window.location.href = res.data;
       });
     },
+    checkIsPaymentForWage: function () {
+      const wage = this.$route.query.wage;
+
+      if (!wage) {
+        return;
+      }
+
+      const paymentData = {
+        paymentMethodId: 2,
+        orderDataId: this.$route.params.orderDataId,
+      };
+
+      this.$store.dispatch("getPaymentUrlForWage", paymentData).then((res) => {
+        window.location.href = res.data;
+      });
+    },
   },
   computed: {},
   created() {
+    this.checkIsPaymentForWage();
+
     let orderDataId = parseInt(this.$route.params.orderDataId);
     this.$store
       .dispatch("getSupportedMethodsForMerchant", orderDataId)

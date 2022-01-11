@@ -74,7 +74,7 @@ public class PlanService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			return rs.postForEntity("http://localhost:8095/api/subscription/create-plan", planDTO, String.class)
+			return rs.postForEntity("https://localhost:8095/api/subscription/create-plan", planDTO, String.class)
 					.getBody();
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());

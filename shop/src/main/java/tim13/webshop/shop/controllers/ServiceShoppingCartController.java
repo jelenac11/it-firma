@@ -20,7 +20,7 @@ import tim13.webshop.shop.services.ServiceShoppingCartService;
 
 @RestController
 @RequestMapping(value = "/api/service-shopping-carts", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8081", maxAge = 3600, allowedHeaders = "*")
 public class ServiceShoppingCartController {
 
 	@Autowired

@@ -48,7 +48,7 @@ public class SubscriptionService {
 		Optional<PaymentMethod> paymentMethod = merchant.getPaymentMethods().stream()
 				.filter(method -> method.getName().toLowerCase().equals("paypal")).findFirst();
 
-		if (paymentMethod.isPresent()) {
+		if (!paymentMethod.isPresent()) {
 			logger.debug("Merchant is not subscribed on payment with paypal.");
 
 			throw new BaseException(HttpStatus.NOT_FOUND, "Merchant is not subscribed on payment with paypal.");

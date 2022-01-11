@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <img class="image-qr" :src="'http://localhost:9002' + QRImageUrl" />
+    <img class="image-qr" :src="'https://localhost:9002' + QRImageUrl" />
     <v-btn class="pay-button" color="green darken-1" @click="pay()"
       >Continue with paying</v-btn
     >

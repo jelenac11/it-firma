@@ -1,5 +1,6 @@
 package tim13.webshop.shop.services;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import tim13.webshop.shop.dto.OrderDTO;
 import tim13.webshop.shop.dto.OrderDataDTO;
+import tim13.webshop.shop.dto.PayWageDTO;
 import tim13.webshop.shop.enums.TransactionStatus;
 import tim13.webshop.shop.exceptions.NotLoggedInException;
 import tim13.webshop.shop.exceptions.RequestException;
@@ -26,8 +28,10 @@ import tim13.webshop.shop.model.Order;
 import tim13.webshop.shop.model.OrderItem;
 import tim13.webshop.shop.model.Transaction;
 import tim13.webshop.shop.model.User;
+import tim13.webshop.shop.model.Wage;
 import tim13.webshop.shop.repositories.IEquipmentShoppingCartItemRepository;
 import tim13.webshop.shop.repositories.IServiceShoppingCartItemRepository;
+import tim13.webshop.shop.repositories.IWageRepository;
 import tim13.webshop.shop.repositories.IOrderRepository;
 
 @Service
@@ -43,9 +47,17 @@ public class OrderService {
 	private IEquipmentShoppingCartItemRepository chiefShoppingCartItemRepository;
 
 	@Autowired
+	private IWageRepository wageRepository;
+
+	@Autowired
 	private TransactionService transactionService;
 
 	private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
+
+	public Order getOrderByTransaction(Long transactionId) {
+		logger.trace("Read order from DB by transaction id.");
+		return orderRepository.getByTransactionId(transactionId);
+	}
 
 	public RedirectView addOrder(OrderDTO dto) throws RequestException, NotLoggedInException {
 		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -56,7 +68,7 @@ public class OrderService {
 		o.setTotalPrice(dto.getTotalPrice());
 
 		List<OrderItem> items = dto.getItems().stream()
-				.map(c -> new OrderItem(null, c.getItemId(), ItemType.valueOf(c.getItemType()), o))
+				.map(c -> new OrderItem(null, c.getItemId(), c.getProductId(), ItemType.valueOf(c.getItemType()), o))
 				.collect(Collectors.toList());
 
 		o.setItems(new HashSet<>(items));
@@ -92,10 +104,56 @@ public class OrderService {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		Long orderDataId = restTemplate.postForEntity("http://localhost:8095/api/order-data", entity, Long.class)
+		Long orderDataId = restTemplate.postForEntity("https://localhost:8095/api/order-data", entity, Long.class)
 				.getBody();
 
-		return new RedirectView("http://localhost:8096/#/checkout/" + orderDataId);
+		return new RedirectView("https://localhost:8096/#/checkout/" + orderDataId);
+	}
+
+	public RedirectView addWage(PayWageDTO dto) throws RequestException, NotLoggedInException {
+		User current = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if (current == null)
+			throw new NotLoggedInException("You must login first. No logged in user found!");
+
+		Wage wage = wageRepository.findById(dto.getWageId()).orElseGet(null);
+
+		Order o = new Order();
+		o.setTotalPrice(dto.getPrice());
+
+		List<OrderItem> items = new ArrayList<>();
+
+		items.add(new OrderItem(null, null, wage.getId(), ItemType.SERVICE, o));
+
+		o.setItems(new HashSet<>(items));
+
+		orderRepository.save(o);
+
+		logger.info(String.format("New order wage for user with ID: %s created.", current.getId()));
+
+		Merchant merchant = null;
+
+		Transaction transaction = createAndSaveTransaction(merchant, current, o);
+
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		OrderDataDTO orderDataDTO = new OrderDataDTO();
+		orderDataDTO.setTransactionId(transaction.getId());
+		orderDataDTO.setMerchantEmail("someemail@gmail.com");
+		orderDataDTO.setTimestamp(transaction.getTimeStamp());
+		orderDataDTO.setTotalPrice(o.getTotalPrice());
+		orderDataDTO.setSuccessUrl("https://localhost:8081/#/success");
+		orderDataDTO.setFailUrl("https://localhost:8081/#/fail");
+		orderDataDTO.setErrorUrl("https://localhost:8081/#/error");
+
+		HttpEntity<OrderDataDTO> entity = new HttpEntity<>(orderDataDTO, headers);
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		Long orderDataId = restTemplate.postForEntity("https://localhost:8095/api/order-data", entity, Long.class)
+				.getBody();
+
+		return new RedirectView("https://localhost:8096/#/checkout/" + orderDataId + "?wage=yes");
 	}
 
 	private Transaction createAndSaveTransaction(Merchant to, User user, Order order) {

@@ -15,7 +15,7 @@ import tim13.webshop.shop.services.EquipmentService;
 
 @RestController
 @RequestMapping(value = "/api/equipments", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8081", maxAge = 3600, allowedHeaders = "*")
 public class EquipmentController {
 
 	@Autowired

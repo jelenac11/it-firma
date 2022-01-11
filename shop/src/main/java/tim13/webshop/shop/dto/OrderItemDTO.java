@@ -16,6 +16,8 @@ public class OrderItemDTO {
 	@NotEmpty
 	public Long itemId;
 	@NotEmpty
+	public Long productId;
+	@NotEmpty
 	public String itemType;
 
 }

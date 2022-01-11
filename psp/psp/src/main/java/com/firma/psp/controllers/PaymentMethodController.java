@@ -23,7 +23,7 @@ import com.firma.psp.services.PaymentMethodService;
 
 @RestController
 @RequestMapping(value = "/api/payment-methods", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8096", maxAge = 3600, allowedHeaders = "*")
 public class PaymentMethodController {
 
 	@Autowired
@@ -82,6 +82,17 @@ public class PaymentMethodController {
 		try {
 			logger.trace("Payment requested.");
 			return new ResponseEntity<>(methodService.getPaymentUrl(paymentRequest), HttpStatus.OK);
+		} catch (RequestException e) {
+			logger.debug(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@PostMapping(value = "/get-payment-url-for-wage")
+	public ResponseEntity<?> getPaymentUrlForWage(@Valid @RequestBody PaymentRequestDTO paymentRequest) {
+		try {
+			logger.trace("Payment requested.");
+			return new ResponseEntity<>(methodService.getPaymentUrlForWage(paymentRequest), HttpStatus.OK);
 		} catch (RequestException e) {
 			logger.debug(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

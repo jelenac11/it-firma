@@ -21,7 +21,7 @@ import tim13.bank.bank.dto.PaymentRequestDTO;
 import tim13.bank.bank.service.PaymentService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8082", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8082", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping(value = "/api/payment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentController {
 

@@ -15,7 +15,7 @@ import tim13.webshop.shop.services.ConferenceService;
 
 @RestController
 @RequestMapping(value = "/api/conferences", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8081", maxAge = 3600, allowedHeaders = "*")
 public class ConferenceController {
 
 	@Autowired

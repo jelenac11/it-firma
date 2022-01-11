@@ -118,6 +118,7 @@ export default {
       this.cartItems.forEach((cartItem) => {
         this.order.items.push({
           itemId: cartItem.id,
+          productId: cartItem.service.id,
           itemType:
             this.currentUser.role === "ROLE_EQUIPMENT_BUYER"
               ? "EQUIPMENT"

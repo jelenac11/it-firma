@@ -19,7 +19,7 @@ import com.firma.psp.services.OrderDataService;
 
 @RestController
 @RequestMapping(value = "/api/order-data", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8089", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8089", maxAge = 3600, allowedHeaders = "*")
 public class OrderDataController {
 
 	@Autowired

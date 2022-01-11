@@ -23,7 +23,7 @@ import tim13.webshop.shop.services.SubscriptionService;
 
 @RestController
 @RequestMapping(value = "/api/subscriptions", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8081", maxAge = 3600, allowedHeaders = "*")
 public class SubscriptionController {
 
 	@Autowired
@@ -62,7 +62,8 @@ public class SubscriptionController {
 		try {
 			subscriptionService.createSubscription(transactionId, subscriptionId);
 
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			return new ResponseEntity<>(subscriptionService.createSubscription(transactionId, subscriptionId),
+					HttpStatus.CREATED);
 		} catch (BaseException e) {
 			return new ResponseEntity<>(e.getMessage(), e.getStatus());
 		}

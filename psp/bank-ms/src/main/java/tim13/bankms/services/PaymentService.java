@@ -26,7 +26,7 @@ public class PaymentService {
 				paymentDataDto.getFailedURL(), paymentDataDto.getErrorURL());
 
 		RestTemplate rs = new RestTemplate();
-		return rs.postForEntity("http://localhost:9002/api/payment/pay", pr, String.class).getBody();
+		return rs.postForEntity("https://localhost:9002/api/payment/pay", pr, String.class).getBody();
 	}
 
 }
