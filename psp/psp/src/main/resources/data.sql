@@ -1,4 +1,4 @@
-INSERT INTO authority (name) VALUES ('ROLE_MERCHANT');
+INSERT INTO roles (name) VALUES ('ROLE_MERCHANT');
 
 
 
