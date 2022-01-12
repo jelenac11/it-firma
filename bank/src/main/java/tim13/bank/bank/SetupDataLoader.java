@@ -79,6 +79,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
 			merchant.setMerchantId(merchantId);
 			merchant.setMerchantPassword(merchantPassword);
 			merchant.setCurrency(currency);
+			merchant.setPan("1234567898765432");
 		}
 		merchantRepo.save(merchant);
 	}

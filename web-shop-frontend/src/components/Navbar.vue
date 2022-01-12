@@ -46,6 +46,14 @@
       >
         Conferences
       </v-btn>
+      <v-btn
+        class="mr-4"
+        outlined
+        @click="goToWages()"
+        v-if="currentUser.role === 'ROLE_SERVICE_BUYER'"
+      >
+        Wages
+      </v-btn>
       <v-spacer></v-spacer>
       <h2 class="mr-4" style="font-weight: 400">
         {{ currentUser.email }}
@@ -125,6 +133,10 @@ export default {
     },
     goToConferences: function () {
       let path = "/conferences";
+      if (this.$route.path !== path) this.$router.push(path);
+    },
+    goToWages: function () {
+      let path = "/wages";
       if (this.$route.path !== path) this.$router.push(path);
     },
     openCart: function () {

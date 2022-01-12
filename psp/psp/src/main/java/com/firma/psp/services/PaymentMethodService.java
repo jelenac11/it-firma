@@ -189,6 +189,27 @@ public class PaymentMethodService {
 		return url;
 	}
 
+	public String getPaymentUrlForWage(PaymentRequestDTO paymentRequest) throws RequestException {
+		PaymentMethod paymentMethod = methodRepo.findByName("Paypal");
+		OrderData o = orderDataRepo.getOne(paymentRequest.getOrderDataId());
+
+		if (paymentMethod == null) {
+			throw new RequestException("Payment method or merchant does not exist.");
+		}
+
+		PaymentDataDTO pd = createPaymentDataDTOForWage(o);
+
+		RestTemplate rs = new RestTemplate();
+
+		String url = rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
+
+		if (url == null || url.isEmpty()) {
+			return expandUrlWithId(o.getErrorUrl(), o.getTransactionId());
+		}
+
+		return url;
+	}
+
 	private PaymentDataDTO createPaymentDataDTO(PaymentMethod m, OrderData o, Merchant merchant) {
 		PaymentDataDTO pd = new PaymentDataDTO();
 		pd.setMerchantOrderId(o.getTransactionId());
@@ -205,6 +226,27 @@ public class PaymentMethodService {
 			PaymentData paymentData = paymentDataRepo.findByMerchantIdAndAttributeId(merchant.getId(), pma.getId());
 			attributes.add(new PaymentAttributeDTO(pma.getName(), paymentData.getValue()));
 		}
+
+		pd.setAttributes(attributes);
+
+		return pd;
+	}
+
+	private PaymentDataDTO createPaymentDataDTOForWage(OrderData o) {
+		PaymentDataDTO pd = new PaymentDataDTO();
+		pd.setMerchantOrderId(o.getTransactionId());
+		pd.setMerchantTimestamp(o.getTimestamp());
+		pd.setAmount(o.getTotalPrice());
+		pd.setFailedURL(o.getFailUrl());
+		pd.setErrorURL(o.getErrorUrl());
+		pd.setSuccessURL(o.getSuccessUrl());
+
+		List<PaymentAttributeDTO> attributes = new ArrayList<PaymentAttributeDTO>();
+
+		attributes.add(new PaymentAttributeDTO("Merchant client Id",
+				"AbUNYV0YnP4YQug6WnbhcdgyujwyZW0cQqFvSbjJjoPeXTkztfOcFv2UI3aN_Q8nzaNCzYN-0IaoT9FK"));
+		attributes.add(new PaymentAttributeDTO("Merchant Client Secret",
+				"EByNpv7mwtCzQgZpwuo3pbFew8HuTeUQJKq36I0TbbPj1WHiSQ1IoaRoiatf29gEjqhO94_VI6LmUK9w"));
 
 		pd.setAttributes(attributes);
 

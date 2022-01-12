@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +21,7 @@ import tim13.bank.bank.dto.PaymentRequestDTO;
 import tim13.bank.bank.service.PaymentService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8082", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8082", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping(value = "/api/payment", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PaymentController {
 
@@ -34,6 +35,17 @@ public class PaymentController {
 		logger.trace("Payment requested.");
 		try {
 			return ResponseEntity.ok(paymentService.pay(paymentRequestDto));
+		} catch (Exception e) {
+			logger.trace(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@GetMapping(value = "/qr/pay/{id}")
+	public ResponseEntity<?> payQr(@PathVariable(value = "id") Long id) {
+		logger.trace("Creating QR code for mobile payment requested.");
+		try {
+			return ResponseEntity.ok(paymentService.payQR(id));
 		} catch (Exception e) {
 			logger.trace(e.getMessage());
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

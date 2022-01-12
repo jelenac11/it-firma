@@ -35,6 +35,7 @@
                         class="add-button"
                         color="green"
                         v-on:click="createPlan()"
+                        v-if="currentUser.role == 'ROLE_MERCHANT'"
                         ><v-icon>mdi-plus</v-icon></v-btn
                       >
                       <v-btn-toggle v-model="sortDesc" mandatory>

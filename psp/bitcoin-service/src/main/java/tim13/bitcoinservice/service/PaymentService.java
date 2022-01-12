@@ -125,7 +125,7 @@ public class PaymentService {
 		if (status.equals(TransactionStatus.ERROR))
 			statusInt = 3;
 		HttpHeaders headers = new HttpHeaders();
-		new RestTemplate().exchange("http://localhost:8089/api/transaction/" + transactionId + "?status=" + statusInt,
+		new RestTemplate().exchange("https://localhost:8089/api/transaction/" + transactionId + "?status=" + statusInt,
 				HttpMethod.PUT, new HttpEntity<>(headers), Object.class);
 	}
 

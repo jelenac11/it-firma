@@ -29,6 +29,7 @@ public class MerchantService {
 		merchant.setMerchantId(id);
 		merchant.setMerchantPassword(password);
 		merchant.setName(merchantDTO.getName());
+		merchant.setPan(merchantDTO.getPan());
 		merchantRepo.save(merchant);
 		return merchant;
 	}

@@ -30,12 +30,15 @@ public class OrderItem {
 
 	@Column(name = "item_id")
 	private Long itemId;
+	
+	@Column(name = "product_id")
+	private Long productId;
 
 	@Column(name = "item_type")
 	@Enumerated(EnumType.STRING)
 	private ItemType itemType;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = true)
+	@ManyToOne(fetch = FetchType.EAGER, optional = true)
 	@JoinColumn(name = "order_id")
 	private Order order;
 

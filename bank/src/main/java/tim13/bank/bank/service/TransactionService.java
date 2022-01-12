@@ -76,7 +76,7 @@ public class TransactionService {
 				card.getSecurityCode());
 
 		RestTemplate rs = new RestTemplate();
-		ResponseEntity<PCCResponseDTO> response = rs.postForEntity("http://localhost:9003/api/payment/pay",
+		ResponseEntity<PCCResponseDTO> response = rs.postForEntity("https://localhost:9003/api/payment/pay",
 				pccRequestDto, PCCResponseDTO.class);
 		if (response.getStatusCode() == HttpStatus.NOT_FOUND) {
 			logger.debug("Invalid credit card data");

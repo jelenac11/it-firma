@@ -17,16 +17,20 @@ import lombok.Setter;
 public class MerchantDTO {
 
 	@NotBlank(message = "Name must not be empty")
-    private String name;
+	private String name;
 
-    @Email(message = "Email not valid")
-    private String email;
-    
-    @NotBlank(message = "Currency must not be empty")
-    @Pattern(regexp = "EUR|RSD|USD|GBP", flags = Pattern.Flag.CASE_INSENSITIVE)
-    private String currency;
+	@Email(message = "Email not valid")
+	private String email;
 
-    @Min(0)
-    private Double balance;
-    
+	@NotBlank(message = "Currency must not be empty")
+	@Pattern(regexp = "EUR|RSD|USD|GBP", flags = Pattern.Flag.CASE_INSENSITIVE)
+	private String currency;
+
+	@Min(0)
+	private Double balance;
+
+	@NotBlank(message = "PAN number is empty.")
+	@Pattern(regexp = "^[0-9]{16}$")
+	private String pan;
+
 }

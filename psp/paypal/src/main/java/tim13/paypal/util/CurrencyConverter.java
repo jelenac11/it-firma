@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CurrencyConverter implements ICurrencyConverter {
 
-	private Double rate = 0.0096;
+	private Double rate = 1.0;
 
 	@Override
 	public Double convert(String from, String to, Double amount) {

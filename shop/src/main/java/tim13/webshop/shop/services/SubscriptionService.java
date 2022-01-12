@@ -135,7 +135,7 @@ public class SubscriptionService {
 		logger.info("User successfully unsubscribed.");
 	}
 
-	public void createSubscription(Long transactionId, String subscriptionId) throws BaseException {
+	public SubscriptionDTO createSubscription(Long transactionId, String subscriptionId) throws BaseException {
 		Transaction transaction = transactionRepository.getOne(transactionId);
 
 		if (transaction == null) {
@@ -162,6 +162,8 @@ public class SubscriptionService {
 		logger.info("Saving new subscription in database.");
 
 		subscription = subscriptionRepository.save(subscription);
+
+		return mapper.toDTO(subscription);
 	}
 
 	private Order createOrder(Plan plan) {
@@ -222,7 +224,7 @@ public class SubscriptionService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			return rs.postForEntity("http://localhost:8095/api/subscription/subscribe", data, String.class).getBody();
+			return rs.postForEntity("https://localhost:8095/api/subscription/subscribe", data, String.class).getBody();
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());
 
@@ -234,7 +236,7 @@ public class SubscriptionService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			rs.postForEntity("http://localhost:8095/api/subscription/unsubscribe/" + subscriptionId, dto, Void.class);
+			rs.postForEntity("https://localhost:8095/api/subscription/unsubscribe/" + subscriptionId, dto, Void.class);
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());
 

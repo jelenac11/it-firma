@@ -49,7 +49,7 @@ public class EmailService {
 		email.setTo("jelenacupac99@gmail.com");
 		email.setSubject(subject);
 		email.setText(
-				"For verification, please click on this link: " + "\r\n" + "http://localhost:8096" + confirmationUrl);
+				"For verification, please click on this link: " + "\r\n" + "https://localhost:8096" + confirmationUrl);
 		javaMailSender.send(email);
 	}
 

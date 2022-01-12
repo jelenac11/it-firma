@@ -7,7 +7,7 @@ public class PaypalConstants {
 	public static String PAYMENT_METHOD = "paypal";
 	public static String INTENT = "sale";
 	public static String LINK_REL = "approval_url";
-	public static String SUCCESS_URL = "http://localhost:8080/paypal/api/payment/execute/";
+	public static String SUCCESS_URL = "https://localhost:8080/paypal/api/payment/execute/";
 	public static String SUBSCRIPTION_CANCELLING_URL = "https://api.sandbox.paypal.com/v1/billing/subscriptions/%s/cancel";
 	public static String SUBSCRIBE_URL = "https://api.sandbox.paypal.com/v1/billing/subscriptions";
 	public static String CREATE_PLAN_URL = "https://api.sandbox.paypal.com/v1/billing/plans";

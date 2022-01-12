@@ -5,6 +5,7 @@ import Equipment from "../components/Equipment.vue";
 import Courses from "../components/Courses.vue";
 import Plans from "../components/Plans.vue";
 import Conferences from "../components/Conferences.vue";
+import Wages from "../components/Wages.vue";
 import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
 import Fail from "../components/Fail.vue";
@@ -40,6 +41,11 @@ const routes = [
     component: Conferences
   },
   {
+    path: "/wages",
+    name: "Wages",
+    component: Wages
+  },
+  {
     path: "/success/:transactionId",
     name: "Success",
     component: Success
@@ -62,6 +68,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
+  mode: 'history',
   routes
 });
 

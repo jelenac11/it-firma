@@ -43,4 +43,8 @@ public class Merchant {
     @Column(nullable = false)
     @Convert(converter = CryptoStringConverter.class)
     private String merchantPassword;
+    
+    @Column(name = "pan")
+	@Convert(converter = CryptoStringConverter.class)
+	private String pan;
 }

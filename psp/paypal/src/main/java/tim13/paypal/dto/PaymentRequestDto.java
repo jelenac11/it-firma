@@ -22,7 +22,7 @@ public class PaymentRequestDto {
 	private Long merchantOrderId;
 
 	@NotNull(message = "Amount is not provided.")
-	@Min(value = 1,message = "Amount must be greater than 0")
+	@Min(value = 0,message = "Amount must be greater or equal to 0")
 	private Double amount;
 
 	@NotBlank(message = "Success url is not provided.")

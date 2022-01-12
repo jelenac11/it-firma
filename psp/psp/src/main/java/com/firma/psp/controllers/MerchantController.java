@@ -16,7 +16,7 @@ import com.firma.psp.services.MerchantService;
 
 @RestController
 @RequestMapping(value = "/api/merchants", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8096", maxAge = 3600, allowedHeaders = "*")
 public class MerchantController {
 
 	@Autowired

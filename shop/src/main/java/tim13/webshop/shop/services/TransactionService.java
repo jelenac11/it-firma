@@ -9,16 +9,20 @@ import tim13.webshop.shop.dto.CartDTO;
 import tim13.webshop.shop.dto.EquipmentShoppingCartDTO;
 import tim13.webshop.shop.dto.ServiceShoppingCartDTO;
 import tim13.webshop.shop.enums.TransactionStatus;
+import tim13.webshop.shop.enums.WageStatus;
 import tim13.webshop.shop.model.EquipmentShoppingCart;
 import tim13.webshop.shop.model.EquipmentShoppingCartItem;
+import tim13.webshop.shop.model.OrderItem;
 import tim13.webshop.shop.model.Role;
 import tim13.webshop.shop.model.ServiceShoppingCart;
 import tim13.webshop.shop.model.ServiceShoppingCartItem;
 import tim13.webshop.shop.model.Transaction;
 import tim13.webshop.shop.model.User;
+import tim13.webshop.shop.model.Wage;
 import tim13.webshop.shop.repositories.IEquipmentShoppingCartRepository;
 import tim13.webshop.shop.repositories.IServiceShoppingCartRepository;
 import tim13.webshop.shop.repositories.ITransactionRepository;
+import tim13.webshop.shop.repositories.IWageRepository;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +45,10 @@ public class TransactionService {
 
 	@Autowired
 	private IServiceShoppingCartRepository serviceShoppingCartRepository;
-	
+
+	@Autowired
+	private IWageRepository wageRepository;
+
 	@Autowired
 	private EmailService emailService;
 
@@ -60,7 +67,7 @@ public class TransactionService {
 		if (transaction == null) {
 			return new CartDTO();
 		}
-		
+
 		CartDTO cart = new CartDTO();
 
 		switch (status) {
@@ -72,13 +79,15 @@ public class TransactionService {
 				if (role.getName().equals("ROLE_EQUIPMENT_BUYER")) {
 					EquipmentShoppingCart equpmentCart = equipmentShoppingCartRepository.findByUserId(current.getId());
 					cart.setEquipmentCart(new EquipmentShoppingCartDTO(equpmentCart));
-					
+
 					StringBuilder str = new StringBuilder();
-		 
+
 					str.append("You purchased:\n\n");
 					for (EquipmentShoppingCartItem itm : equpmentCart.getItems()) {
-						str.append(itm.getEquipment().getName() + "\nAmount: " + itm.getQuantity() + "\nPrice per item: " + itm.getEquipment().getPrice() + "\n\n");
+						str.append(itm.getEquipment().getName() + "\nAmount: " + itm.getQuantity()
+								+ "\nPrice per item: " + itm.getEquipment().getPrice() + "\n\n");
 					}
+
 					emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
 
 					Set<EquipmentShoppingCartItem> forDelete = new HashSet<EquipmentShoppingCartItem>();
@@ -89,23 +98,28 @@ public class TransactionService {
 					equipmentShoppingCartRepository.saveAndFlush(equpmentCart);
 
 				} else if (role.getName().equals("ROLE_SERVICE_BUYER")) {
-					ServiceShoppingCart serviceCart = serviceShoppingCartRepository.findByUserId(current.getId());
-					cart.setServiceCart(new ServiceShoppingCartDTO(serviceCart));
-					
-					StringBuilder str = new StringBuilder();
-					 
-					str.append("You purchased:\n\n");
-					for (ServiceShoppingCartItem itm : serviceCart.getItems()) {
-						str.append(itm.getService().getName() + "\nFor: " + itm.getPerson() + "\nPrice: " + (itm.getService().getPrice() + itm.getAdditionalCosts()) + "\n\n");
+					if (transaction.getTo() == null) {
+						workWithWage(transaction);
+					} else {
+						ServiceShoppingCart serviceCart = serviceShoppingCartRepository.findByUserId(current.getId());
+						cart.setServiceCart(new ServiceShoppingCartDTO(serviceCart));
+
+						StringBuilder str = new StringBuilder();
+
+						str.append("You purchased:\n\n");
+						for (ServiceShoppingCartItem itm : serviceCart.getItems()) {
+							str.append(itm.getService().getName() + "\nFor: " + itm.getPerson() + "\nPrice: "
+									+ itm.getService().getPrice() + "\n\n");
+						}
+						emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
+
+						Set<ServiceShoppingCartItem> forDelete = new HashSet<ServiceShoppingCartItem>();
+						serviceCart.getItems().stream().forEach(forDelete::add);
+						for (ServiceShoppingCartItem item : forDelete) {
+							serviceCart.getItems().remove(item);
+						}
+						serviceShoppingCartRepository.saveAndFlush(serviceCart);
 					}
-					emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
-					
-					Set<ServiceShoppingCartItem> forDelete = new HashSet<ServiceShoppingCartItem>();
-					serviceCart.getItems().stream().forEach(forDelete::add);
-					for (ServiceShoppingCartItem item : forDelete) {
-						serviceCart.getItems().remove(item);
-					}
-					serviceShoppingCartRepository.saveAndFlush(serviceCart);
 				}
 			}
 			break;
@@ -125,4 +139,20 @@ public class TransactionService {
 
 		return cart;
 	}
+
+	private void workWithWage(Transaction transaction) throws MailException, InterruptedException {
+		OrderItem orderITem = transaction.getOrder().getItems().stream().findFirst().orElseGet(null);
+
+		Wage wage = wageRepository.getOne(orderITem.getProductId());
+
+		StringBuilder str = new StringBuilder();
+		str.append("You paid wage:\n\n");
+		str.append("\nFor: " + wage.getConference() + "\nPrice: " + wage.getDuration() * 5 + "\n\n");
+		emailService.sendEmail("jelenacupac99@gmail.com", "Purchase completed", str.toString());
+
+		wage.setStatus(WageStatus.PAID);
+
+		wageRepository.save(wage);
+	}
+
 }

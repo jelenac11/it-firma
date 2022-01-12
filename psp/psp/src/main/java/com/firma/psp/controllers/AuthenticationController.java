@@ -34,7 +34,7 @@ import com.firma.psp.security.TokenUtils;
 import com.firma.psp.services.MerchantService;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8096", maxAge = 3600, allowedHeaders = "*")
 @RequestMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
 public class AuthenticationController {
 
