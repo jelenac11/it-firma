@@ -18,7 +18,7 @@ import tim13.webshop.shop.services.TransactionService;
 
 @RestController
 @RequestMapping(value = "/api/transaction", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "https://localhost:8096", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://79eb-87-116-162-55.ngrok.io", maxAge = 3600, allowedHeaders = "*")
 public class TransactionController {
 
 	@Autowired
@@ -26,7 +26,7 @@ public class TransactionController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
 
-	@PutMapping(value = "{id}")
+	@PutMapping(value = "/{id}")
 	public ResponseEntity<?> update(@PathVariable Long id, @RequestParam Integer status) {
 		logger.trace("Transaction update requested.");
 		try {

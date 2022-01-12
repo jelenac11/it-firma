@@ -13,5 +13,6 @@ module.exports = {
       cert: fs.readFileSync('./certs/shop-front.crt')
     },
     hotOnly: false,
+    disableHostCheck: true
   }
 }

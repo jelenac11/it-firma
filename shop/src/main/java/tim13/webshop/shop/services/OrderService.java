@@ -142,9 +142,9 @@ public class OrderService {
 		orderDataDTO.setMerchantEmail("someemail@gmail.com");
 		orderDataDTO.setTimestamp(transaction.getTimeStamp());
 		orderDataDTO.setTotalPrice(o.getTotalPrice());
-		orderDataDTO.setSuccessUrl("https://localhost:8081/#/success");
-		orderDataDTO.setFailUrl("https://localhost:8081/#/fail");
-		orderDataDTO.setErrorUrl("https://localhost:8081/#/error");
+		orderDataDTO.setSuccessUrl("https://79eb-87-116-162-55.ngrok.io/success");
+		orderDataDTO.setFailUrl("https://79eb-87-116-162-55.ngrok.io/fail");
+		orderDataDTO.setErrorUrl("https://79eb-87-116-162-55.ngrok.io/error");
 
 		HttpEntity<OrderDataDTO> entity = new HttpEntity<>(orderDataDTO, headers);
 
