@@ -1,8 +1,7 @@
 package com.firma.psp.services;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -18,11 +17,11 @@ import org.springframework.stereotype.Service;
 import com.firma.psp.dto.MerchantDTO;
 import com.firma.psp.dto.MethodResponseDTO;
 import com.firma.psp.exceptions.RequestException;
-import com.firma.psp.model.Authority;
 import com.firma.psp.model.Merchant;
 import com.firma.psp.model.OrderData;
+import com.firma.psp.model.Role;
 import com.firma.psp.model.VerificationToken;
-import com.firma.psp.repositories.IAuthorityRepository;
+import com.firma.psp.repositories.IRoleRepository;
 import com.firma.psp.repositories.IMerchantRepository;
 import com.firma.psp.repositories.IOrderDataRepository;
 import com.github.nbaars.pwnedpasswords4j.client.PwnedPasswordChecker;
@@ -34,7 +33,7 @@ public class MerchantService implements UserDetailsService {
 	private IMerchantRepository merchantRepository;
 
 	@Autowired
-	private IAuthorityRepository authorityRepository;
+	private IRoleRepository roleRepository;
 
 	@Autowired
 	private IOrderDataRepository orderDataRepository;
@@ -66,11 +65,11 @@ public class MerchantService implements UserDetailsService {
 		merchant.setShopName(merchantDTO.getShopName());
 		merchant.setPassword(encodePassword(merchantDTO.getPassword()));
 
-		Set<Authority> auths = new HashSet<>();
-		Authority a = authorityRepository.findByName("ROLE_MERCHANT");
-		auths.add(a);
+		List<Role> roles = new ArrayList<>();
+		Role r = roleRepository.findByName("ROLE_MERCHANT");
+		roles.add(r);
 
-		merchant.setAuthorities(auths);
+		merchant.setRoles(roles);
 		merchant.setVerified(false);
 		merchant.setSupportsPaymentMethods(false);
 		merchant.setLastPasswordResetDate(System.currentTimeMillis());

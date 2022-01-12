@@ -28,7 +28,7 @@ import com.firma.psp.dto.ResponseUserDTO;
 import com.firma.psp.dto.UserLoginDTO;
 import com.firma.psp.dto.UserTokenStateDTO;
 import com.firma.psp.exceptions.RequestException;
-import com.firma.psp.model.Authority;
+import com.firma.psp.model.Role;
 import com.firma.psp.model.Merchant;
 import com.firma.psp.security.TokenUtils;
 import com.firma.psp.services.MerchantService;
@@ -68,12 +68,12 @@ public class AuthenticationController {
 			return new ResponseEntity<>("Account not verified.", HttpStatus.BAD_REQUEST);
 
 		@SuppressWarnings("unchecked")
-		Set<Authority> auth = (Set<Authority>) user.getAuthorities();
+		Set<Role> roles = (Set<Role>) user.getAuthorities();
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
 		String role = "";
-		for (Authority a : auth) {
+		for (Role a : roles) {
 			role = a.getName();
 		}
 
@@ -115,7 +115,7 @@ public class AuthenticationController {
 		}
 		Merchant current = (Merchant) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String role = "";
-		for (Authority a : (Set<Authority>) current.getAuthorities()) {
+		for (Role a : (Set<Role>) current.getAuthorities()) {
 			role = a.getName();
 		}
 
