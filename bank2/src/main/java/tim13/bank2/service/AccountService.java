@@ -18,15 +18,15 @@ public class AccountService {
 	private static final Logger logger = LoggerFactory.getLogger(AccountService.class);
 
 	public boolean hasEnoughMoney(double buyerAmount, CreditCard buyer) {
-		logger.trace("Checking if there is enough money on bank account");
+		logger.trace("Checking if there is enough money on bank account **** **** **** " + buyer.getPan().substring(12));
 		Account account = accountRepo.findById(buyer.getId()).get();
 		if (account != null && account.getBalance() >= buyerAmount) {
-			logger.info("Enough money on bank account");
+			logger.info("Enough money on bank account **** **** **** " + buyer.getPan().substring(12));
 			account.setBalance(account.getBalance() - buyerAmount);
 			accountRepo.save(account);
 			return true;
 		}
-		logger.trace("Not enough money on bank account");
+		logger.trace("Not enough money on bank account **** **** **** " + buyer.getPan().substring(12));
 		return false;
 	}
 

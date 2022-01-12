@@ -41,11 +41,11 @@ public class CreditCardService {
 				cardDetailsDTO.getSecurityCode(), cardDetailsDTO.getCardHolderName());
 		logger.info("Checking credit card data");
 		if (card == null) {
-			logger.info("Nonexisting card");
+			logger.info("Nonexisting card with pan **** **** **** " + cardDetailsDTO.getPAN().substring(12));
 			throw new NotFoundException("Credit card doesnt exist");
 		}
 		if (!checkExpirationData(card.getExpirationDate(), cardDetailsDTO.getExpirationDate())) {
-			logger.info("Credit card expired");
+			logger.info("Credit card expired with pan **** **** **** " + cardDetailsDTO.getPAN().substring(12));
 			throw new RequestException("Invalid credit card data.");
 		}
 		return card;

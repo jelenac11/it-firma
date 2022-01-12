@@ -19,14 +19,14 @@ public class AccountService {
 
 	public boolean hasEnoughMoney(double buyerAmount, CreditCard buyer) {
 		Account account = accountRepo.findById(buyer.getId()).get();
-		logger.trace("Checking if there is enough money on bank account");
+		logger.trace("Checking if there is enough money on bank account **** **** **** " + buyer.getPan().substring(12));
         if(account != null && account.getBalance() >= buyerAmount){
-        	logger.info("Enough money on bank account");
+        	logger.info("There is enough money on bank account **** **** **** " + buyer.getPan().substring(12));
             account.setBalance(account.getBalance() - buyerAmount);
             accountRepo.save(account);
             return true;
         }
-        logger.info("Not enough money on bank account");
+        logger.info("Not enough money on bank account **** **** **** " + buyer.getPan().substring(12));
         return false;
 	}
 	

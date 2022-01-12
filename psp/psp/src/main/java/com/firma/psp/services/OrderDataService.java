@@ -35,7 +35,7 @@ public class OrderDataService {
 		o.setErrorUrl(orderDataDTO.getErrorUrl());
 
 		OrderData newOrder = orderDataRepository.save(o);
-		logger.info("Saving order data.");
+		logger.info("Saving order data with id " + newOrder.getId());
 
 		return newOrder.getId();
 	}

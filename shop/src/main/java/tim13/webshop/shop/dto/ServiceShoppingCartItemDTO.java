@@ -18,11 +18,13 @@ public class ServiceShoppingCartItemDTO {
 	@NotBlank
 	private String person;
 	private ServiceDTO service;
+	private double additionalCosts;
 
 	public ServiceShoppingCartItemDTO(ServiceShoppingCartItem i) {
 		this.id = i.getId();
 		this.person = i.getPerson();
 		this.service = new ServiceDTO(i.getService());
+		this.additionalCosts = i.getAdditionalCosts();
 	}
 
 }

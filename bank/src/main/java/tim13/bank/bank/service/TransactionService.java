@@ -57,7 +57,7 @@ public class TransactionService {
 			return transaction;
 		}
 
-		logger.info("Successfull transaction");
+		logger.info("Successfull transaction with id " + transaction.getId());
 		transaction.setStatus(TransactionStatus.SUCCESS);
 		return transaction;
 	}
@@ -88,7 +88,7 @@ public class TransactionService {
 		transactionRepository.save(transaction);
 
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
-			logger.info("Successfull transaction");
+			logger.info("Successfull transaction with id " + transaction.getId());
 			double merchantAmount = convertAmount(merchant.getCurrency(), payment.getAmount());
 			merchantService.transferMoneyToMerchant(merchant.getMerchantId(), merchantAmount);
 		}
@@ -109,7 +109,7 @@ public class TransactionService {
 	}
 
 	private Transaction createTransaction(Payment paymentRequest, String pan) {
-		logger.info("Creating new transaction");
+		logger.info("Creating new transaction for payment with id " + paymentRequest.getId());
 		return new Transaction(paymentRequest.getAmount(), paymentRequest.getMerchantId(),
 				paymentRequest.getMerchantOrderId(), paymentRequest.getMerchantTimestamp(), pan,
 				paymentRequest.getId());
@@ -118,10 +118,10 @@ public class TransactionService {
 	private void transfer(CreditCard buyer, String merchantId, double buyerAmount, double merchantAmount)
 			throws IllegalArgumentException {
 		if (!accountService.hasEnoughMoney(buyerAmount, buyer)) {
-			logger.info("Not enough money on bank account");
+			logger.info("Not enough money on bank account with pan **** **** **** " + buyer.getPan().substring(12));
 			throw new IllegalArgumentException("You don't have enough money.");
 		}
-		logger.info("Enough money on bank account");
+		logger.info("Enough money on bank account with pan **** **** **** " + buyer.getPan().substring(12));
 		merchantService.transferMoneyToMerchant(merchantId, merchantAmount);
 	}
 

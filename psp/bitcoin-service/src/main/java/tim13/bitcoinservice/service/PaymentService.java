@@ -1,5 +1,7 @@
 package tim13.bitcoinservice.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -25,8 +27,11 @@ public class PaymentService {
 
 	@Value("${SANDBOX_URL}")
 	private String sandbox;
+	
+	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
 	public String pay(PaymentDataDTO pd) {
+		logger.info("Payment requested for payment with id " + pd.getMerchantOrderId());
 		String token = pd.getAttributes().stream()
 				.filter(attribute -> attribute.getName().equalsIgnoreCase("merchant token")).findFirst().get()
 				.getValue();
@@ -48,7 +53,7 @@ public class PaymentService {
 			response = new RestTemplate().exchange(sandbox, HttpMethod.POST, new HttpEntity<>(bitcoinOrder, headers),
 					BitcoinOrderResponseDTO.class);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.info("Create order CoinGate failed for payment with id " + pd.getMerchantOrderId());
 			throw new InvalidDataException("Create order CoinGate failed", HttpStatus.BAD_REQUEST);
 		}
 
@@ -70,6 +75,7 @@ public class PaymentService {
 	@SneakyThrows
 	@Async
 	public void checkTransaction(Long id, String coingateApiKey) {
+		logger.info("Checking transaction with id " + id);
 		String getOrderSandboxUrl = "https://api-sandbox.coingate.com/v2/orders/" + id;
 
 		String clientSecret = "Bearer " + coingateApiKey;
@@ -91,7 +97,7 @@ public class PaymentService {
 	}
 
 	public void completePayment(BitcoinOrderResponseDTO data) {
-
+		logger.info("Completing payment");
 		Long transactionId;
 		try {
 			transactionId = Long.parseLong(data.getOrder_id());

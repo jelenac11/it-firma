@@ -60,7 +60,7 @@ public class PaymentService {
 		p.setMerchantOrderId(paymentRequestDto.getMerchantOrderId());
 		p.setSuccessUrl(paymentRequestDto.getSuccessUrl());
 		Payment created = paymentRepo.save(p);
-		logger.info("Creating new payment");
+		logger.info("Creating new payment with id " + created.getId());
 		return BankConstants.FRONTEND_PAYMENT + created.getId();
 	}
 
@@ -96,7 +96,7 @@ public class PaymentService {
 
 	public String confirmPayment(Long id, @Valid CardDetailsDTO cardDetailsDTO)
 			throws NotFoundException, RequestException {
-		logger.info("Confirming payment");
+		logger.info("Confirming payment with id " + id);
 		Payment payment = paymentRepo.getOne(id);
 		if (payment == null) {
 			logger.debug("Requested payment doesnt exist");
@@ -115,10 +115,10 @@ public class PaymentService {
 		}
 
 		if (transaction.getStatus().equals(TransactionStatus.SUCCESS)) {
-			logger.info("Transaction was successfull");
+			logger.info("Transaction with id " + transaction.getId() + " was successfull");
 			return payment.getSuccessUrl() + "/" + payment.getMerchantOrderId();
 		} else if (transaction.getStatus().equals(TransactionStatus.FAILED)) {
-			logger.info("Transaction failed");
+			logger.info("Transaction " + transaction.getId() + " failed");
 			return payment.getFailedUrl() + "/" + payment.getMerchantOrderId();
 		} else {
 			logger.info("Error in transaction");
