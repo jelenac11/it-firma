@@ -104,7 +104,7 @@ public class OrderService {
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		Long orderDataId = restTemplate.postForEntity("https://localhost:8095/api/order-data", entity, Long.class)
+		Long orderDataId = restTemplate.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/order-data", entity, Long.class)
 				.getBody();
 
 		return new RedirectView("https://localhost:8096/#/checkout/" + orderDataId);
@@ -142,15 +142,15 @@ public class OrderService {
 		orderDataDTO.setMerchantEmail("someemail@gmail.com");
 		orderDataDTO.setTimestamp(transaction.getTimeStamp());
 		orderDataDTO.setTotalPrice(o.getTotalPrice());
-		orderDataDTO.setSuccessUrl("https://79eb-87-116-162-55.ngrok.io/success");
-		orderDataDTO.setFailUrl("https://79eb-87-116-162-55.ngrok.io/fail");
-		orderDataDTO.setErrorUrl("https://79eb-87-116-162-55.ngrok.io/error");
+		orderDataDTO.setSuccessUrl("https://c876-149-28-36-86.ngrok.io/success");
+		orderDataDTO.setFailUrl("https://c876-149-28-36-86.ngrok.io/fail");
+		orderDataDTO.setErrorUrl("https://c876-149-28-36-86.ngrok.io/error");
 
 		HttpEntity<OrderDataDTO> entity = new HttpEntity<>(orderDataDTO, headers);
 
 		RestTemplate restTemplate = new RestTemplate();
 
-		Long orderDataId = restTemplate.postForEntity("https://localhost:8095/api/order-data", entity, Long.class)
+		Long orderDataId = restTemplate.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/order-data", entity, Long.class)
 				.getBody();
 
 		return new RedirectView("https://localhost:8096/#/checkout/" + orderDataId + "?wage=yes");

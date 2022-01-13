@@ -18,7 +18,7 @@ import tim13.webshop.shop.repositories.ITransportRepository;
 
 @RestController
 @RequestMapping(value = "/api/transports", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:8081", maxAge = 3600, allowedHeaders = "*")
+@CrossOrigin(origins = "https://localhost:8081", maxAge = 3600, allowedHeaders = "*")
 public class TransportController {
 
 	@Autowired

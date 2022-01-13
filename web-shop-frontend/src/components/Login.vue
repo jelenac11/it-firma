@@ -87,6 +87,7 @@ export default {
         })
         .catch((err) => {
           this.wrong = true;
+          console.log(err.response);
           this.message = err.response.data;
         });
     },

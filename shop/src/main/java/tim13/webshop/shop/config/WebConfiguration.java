@@ -11,6 +11,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/**").allowedOrigins("https://79eb-87-116-162-55.ngrok.io");
+		registry.addMapping("/**").allowedOrigins("https://c876-149-28-36-86.ngrok.io");
 	}
 }

@@ -3,7 +3,6 @@ package tim13.webshop.shop.services;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -113,16 +112,16 @@ public class SubscriptionService {
 	}
 
 	public void unsubscribe(Long subscriptionId, UnsubscribeDTO dto) throws BaseException {
-		Optional<Subscription> subscription = subscriptionRepository.findById(subscriptionId);
+		Subscription subscription = subscriptionRepository.getOne(subscriptionId);
 
-		if (subscription.isPresent()) {
+		if (subscription == null) {
 			logger.debug(String.format("Subscription with id %s doesn't exist.", subscriptionId));
 
 			throw new BaseException(HttpStatus.NOT_FOUND,
 					String.format("Subscription with id %s doesn't exist.", subscriptionId));
 		}
 
-		String paypalSubscriptionId = subscription.get().getSubscriptionPaypalId();
+		String paypalSubscriptionId = subscription.getSubscriptionPaypalId();
 
 		logger.info("Sending request to unsubscribe user from subscription.");
 
@@ -130,12 +129,18 @@ public class SubscriptionService {
 
 		logger.info("Removing subscription from database.");
 
-		subscriptionRepository.delete(subscription.get());
+		subscriptionRepository.delete(subscription);
 
 		logger.info("User successfully unsubscribed.");
 	}
 
 	public SubscriptionDTO createSubscription(Long transactionId, String subscriptionId) throws BaseException {
+		Subscription subs = subscriptionRepository.findBySubscriptionPaypalId(subscriptionId);
+
+		if (subs != null) {
+			return mapper.toDTO(subs);
+		}
+		
 		Transaction transaction = transactionRepository.getOne(transactionId);
 
 		if (transaction == null) {
@@ -224,7 +229,9 @@ public class SubscriptionService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			return rs.postForEntity("https://localhost:8095/api/subscription/subscribe", data, String.class).getBody();
+			return rs
+					.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/subscription/subscribe", data, String.class)
+					.getBody();
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());
 
@@ -236,7 +243,8 @@ public class SubscriptionService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			rs.postForEntity("https://localhost:8095/api/subscription/unsubscribe/" + subscriptionId, dto, Void.class);
+			rs.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/subscription/unsubscribe/" + subscriptionId, dto,
+					Void.class);
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());
 
