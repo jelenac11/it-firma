@@ -93,7 +93,8 @@ public class EquipmentShoppingCartService {
 
 		for (EquipmentShoppingCartItem item : cart.getItems()) {
 			if (item.getId() == id) {
-				equipmentShoppingCartItemRepository.deleteById(id);
+				cart.getItems().remove(item);
+				equipmentShoppingCartRepository.saveAndFlush(cart);
 				logger.info("Item with id " + item.getId() + " removed from equipment shopping cart.");
 				break;
 			}

@@ -140,7 +140,7 @@ export default {
   data: () => ({
     cartItems: [],
     wageItems: [],
-    subscription: null,
+    subscription: null
   }),
   props: {},
   computed: {
@@ -156,7 +156,10 @@ export default {
           transactionId,
         })
         .then((res) => {
-          console.log(res.data);
+          if(!res.data) {
+            return;
+          }
+
           this.subscription = res.data;
         });
     },

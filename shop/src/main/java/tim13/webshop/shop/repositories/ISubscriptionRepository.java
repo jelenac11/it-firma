@@ -10,4 +10,6 @@ import tim13.webshop.shop.model.User;
 public interface ISubscriptionRepository extends JpaRepository<Subscription, Long> {
 
 	List<Subscription> findByBuyer(User buyer);
+	
+	Subscription findBySubscriptionPaypalId(String subscriptionPaypalId);
 }
