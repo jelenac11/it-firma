@@ -1,6 +1,6 @@
 package com.firma.psp.controllers;
 
-import java.util.Set;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -68,7 +68,7 @@ public class AuthenticationController {
 			return new ResponseEntity<>("Account not verified.", HttpStatus.BAD_REQUEST);
 
 		@SuppressWarnings("unchecked")
-		Set<Role> roles = (Set<Role>) user.getAuthorities();
+		List<Role> roles = (List<Role>) user.getAuthorities();
 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -115,7 +115,7 @@ public class AuthenticationController {
 		}
 		Merchant current = (Merchant) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		String role = "";
-		for (Role a : (Set<Role>) current.getAuthorities()) {
+		for (Role a : (List<Role>) current.getAuthorities()) {
 			role = a.getName();
 		}
 

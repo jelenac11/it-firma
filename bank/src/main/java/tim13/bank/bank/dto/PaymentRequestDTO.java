@@ -37,15 +37,15 @@ public class PaymentRequestDTO {
 	private Double amount;
 
 	@NotBlank(message = "Success url is not provided.")
-	@Pattern(regexp = "(http(s)?:\\/\\/)((localhost:))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
 	private String successUrl;
 
 	@NotBlank(message = "Cancel url is not provided.")
-	@Pattern(regexp = "(http(s)?:\\/\\/)((localhost:))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
 	private String cancelUrl;
 
 	@NotBlank(message = "Error url is not provided.")
-	@Pattern(regexp = "(http(s)?:\\/\\/)((localhost:))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
 	private String errorUrl;
 
 }

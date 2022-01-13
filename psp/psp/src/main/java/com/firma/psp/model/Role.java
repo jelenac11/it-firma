@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.*;
@@ -31,7 +30,7 @@ public class Role implements GrantedAuthority {
 	String name;
 
 	@ManyToMany(mappedBy = "roles")
-	private Collection<Merchant> users;
+	private List<Merchant> users;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "roles_privileges", joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"), inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "privilege_id"))

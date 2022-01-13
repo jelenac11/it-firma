@@ -1,5 +1,6 @@
 package com.firma.psp.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,6 +27,7 @@ public class VerificationToken {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
+	@Column(name = "token")
 	private String token;
 
 	@OneToOne(targetEntity = Merchant.class, fetch = FetchType.LAZY)
