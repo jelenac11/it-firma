@@ -1,6 +1,6 @@
 package com.firma.psp.model;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,9 +28,10 @@ public class Privilege {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	Long id;
 
+	@Column(name = "name")
 	private String name;
 
 	@ManyToMany(mappedBy = "privileges")
-	private Collection<Role> roles;
+	private List<Role> roles;
 
 }
