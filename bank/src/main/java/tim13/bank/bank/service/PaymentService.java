@@ -144,9 +144,6 @@ public class PaymentService {
 		qr.put("acquirer", merchant.getName());
 		qr.put("acquirerAccount", merchant.getPan());
 		qr.put("currency", merchant.getCurrency());
-		qr.put("successUrl", payment.getSuccessUrl());
-		qr.put("errorUrl", payment.getErrorUrl());
-		qr.put("failedUrl", payment.getFailedUrl());
 		qr.put("amount", convertAmount(merchant.getCurrency(), payment.getAmount()));
 
 		return qr;
