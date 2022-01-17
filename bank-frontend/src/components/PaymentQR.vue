@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <img class="image-qr" :src="'https://localhost:9002' + QRImageUrl" />
+    <img class="image-qr" :src="'https://localhost:9002' + this.QRImageUrl" />
     <v-btn class="pay-button" color="green darken-1" @click="pay()"
       >Continue with paying</v-btn
     >
@@ -21,13 +21,28 @@ export default {
 
       this.$router.push(path);
     },
+    getPng: function () {
+      const paymentId = this.$route.params.paymentId;
+      let ii = null;
+    this.$store
+      .dispatch("payQr", paymentId)
+      .then((res) => {
+        console.log(res.data);
+        ii = res.data;
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+      return ii;
+    }
   },
-  mounted() {
+  created() {
     const paymentId = this.$route.params.paymentId;
 
     this.$store
       .dispatch("payQr", paymentId)
       .then((res) => {
+        console.log(res.data);
         this.QRImageUrl = res.data;
       })
       .catch((err) => {

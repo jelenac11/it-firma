@@ -30,8 +30,8 @@ export default {
   name: "ChoosePayment",
   data: () => ({
     methods: [
-      { id: 1, name: "Paying with credit card", url: "/payment/" },
-      { id: 2, name: "Paying with QR", url: "/payment-qr/" },
+      { name: "Paying with credit card", url: "/payment/" },
+      { name: "Paying with QR", url: "/payment-qr/" },
     ],
     headers: [
       {
@@ -43,9 +43,9 @@ export default {
   }),
   methods: {
     choose: function (method) {
-      const paymentMethodId = method.id;
+      const paymentId = this.$route.params.paymentId;
 
-      const path = method.url + paymentMethodId;
+      const path = method.url + paymentId;
 
       this.$router.push(path);
     },
