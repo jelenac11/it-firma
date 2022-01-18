@@ -166,7 +166,6 @@ export default {
       const payWage = {
         price: wage.duration * 5 + 1,
         wageId: wage.id,
-        receiver: this.receiver,
       };
 
       this.showAddToCart = true;

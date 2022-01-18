@@ -152,7 +152,7 @@ public class OrderService {
 		RestTemplate restTemplate = new RestTemplate();
 
 		Long orderDataId = restTemplate
-				.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/order-data", entity, Long.class).getBody();
+				.postForEntity("https://localhost:8095/api/order-data", entity, Long.class).getBody();
 
 		return new RedirectView("https://localhost:8096/#/checkout/" + orderDataId + "?wage=yes");
 	}

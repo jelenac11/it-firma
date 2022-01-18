@@ -12,11 +12,11 @@
             <v-form v-model="isValid" ref="formAddToCart">
               <v-text-field
                 color="green"
-                prepend-icon="person"
-                name="name"
-                label="Name"
+                prepend-icon="email"
+                name="email"
+                label="Email"
                 type="text"
-                :rules="[(v) => !!v || 'Name is required']"
+                :rules="[(v) => !!v || 'Email is required']"
                 v-model="name"
                 required
               ></v-text-field>
@@ -30,7 +30,7 @@
               text
               :disabled="!isValid"
               @click="add()"
-              >Add<v-icon class="ml-2 mb-1">mdi-plus</v-icon></v-btn
+              >Pay <v-icon class="ml-2 mb-1">mdi-cash</v-icon></v-btn
             >
           </v-card-actions>
         </v-card>
@@ -75,8 +75,8 @@ export default {
   methods: {
     add: function () {
       const payWage = {
-        price: this.item.duration * 5 + 1,
-        wageId: this.item.id,
+        price: this.item.price,
+        wageId: this.item.wageId,
         receiver: this.name,
       };
 

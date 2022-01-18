@@ -55,7 +55,7 @@ export default new Vuex.Store({
     actions: {
         getAllMethods({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/payment-methods', method: 'GET' })
+                axios({ url: 'https://localhost:8095/api/payment-methods', method: 'GET' })
                     .then(resp => {
                         commit('setMethods', resp.data);
                         resolve(resp);
@@ -68,7 +68,7 @@ export default new Vuex.Store({
 
         getSupportedMethods({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/payment-methods/merchant', method: 'GET' })
+                axios({ url: 'https://localhost:8095/api/payment-methods/merchant', method: 'GET' })
                     .then(resp => {
                         commit('setMethods', resp.data);
                         resolve(resp);
@@ -81,7 +81,7 @@ export default new Vuex.Store({
 
         getSupportedMethodsForMerchant({ commit }, orderDataId) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/merchants/supported-methods/' + orderDataId, method: 'GET' })
+                axios({ url: 'https://localhost:8095/api/merchants/supported-methods/' + orderDataId, method: 'GET' })
                     .then(resp => {
                         commit('setMethods', resp.data);
                         resolve(resp);
@@ -94,7 +94,7 @@ export default new Vuex.Store({
 
         chosenMethods({ commit }, chosen) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/payment-methods/chosen', data: chosen, method: 'POST' })
+                axios({ url: 'https://localhost:8095/api/payment-methods/chosen', data: chosen, method: 'POST' })
                     .then(resp => {
                         commit('setGroceries', resp.data);
                         commit('setSetSupportedPaymentMethods', true);
@@ -108,7 +108,7 @@ export default new Vuex.Store({
 
         login({ commit }, user) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/auth/login', data: user, method: 'POST' })
+                axios({ url: 'https://localhost:8095/auth/login', data: user, method: 'POST' })
                     .then(resp => {
                         const token = resp.data.accessToken;
                         localStorage.setItem('token', token);
@@ -126,7 +126,7 @@ export default new Vuex.Store({
 
         register({ commit }, user) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/auth/sign-up', data: user, method: 'POST' })
+                axios({ url: 'https://localhost:8095/auth/sign-up', data: user, method: 'POST' })
                     .then(resp => resolve(resp))
                     .catch(err => {
                         reject(err);
@@ -137,7 +137,7 @@ export default new Vuex.Store({
 
         verify({ commit }, token) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/auth/verify/' + token, method: 'GET' })
+                axios({ url: 'https://localhost:8095/auth/verify/' + token, method: 'GET' })
                     .then(resp => {
                         commit('setGroceries', resp.data);
                         resolve(resp);
@@ -159,7 +159,7 @@ export default new Vuex.Store({
 
         getCurrentUser({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/auth/current-user', method: 'GET' })
+                axios({ url: 'https://localhost:8095/auth/current-user', method: 'GET' })
                     .then(resp => {
                         const user = resp.data;
                         commit('setCurrentUser', user);
@@ -175,7 +175,7 @@ export default new Vuex.Store({
 
         getPaymentUrl({ commit }, data) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/payment-methods/get-payment-url', method: 'POST', data: data })
+                axios({ url: 'https://localhost:8095/api/payment-methods/get-payment-url', method: 'POST', data: data })
                     .then((res) => {
                         commit('setGroceries', res.data);
                         resolve(res);
@@ -189,7 +189,7 @@ export default new Vuex.Store({
 
         getPaymentUrlForWage({ commit }, data) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://abb2-109-92-144-92.ngrok.io/api/payment-methods/get-payment-url-for-wage', method: 'POST', data: data })
+                axios({ url: 'https://localhost:8095/api/payment-methods/get-payment-url-for-wage', method: 'POST', data: data })
                     .then((res) => {
                         commit('setGroceries', res.data);
                         resolve(res);
