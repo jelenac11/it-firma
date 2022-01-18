@@ -1,13 +1,24 @@
 package tim13.paypal.service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import com.paypal.api.payments.Amount;
 import com.paypal.api.payments.Links;
@@ -23,6 +34,7 @@ import tim13.paypal.common.PaypalConstants;
 import tim13.paypal.enumeration.TransactionStatus;
 import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.model.PaymentRequest;
+import tim13.paypal.model.Wage;
 import tim13.paypal.repository.PaymentRequestRepository;
 import tim13.paypal.util.ICurrencyConverter;
 
@@ -193,5 +205,99 @@ public class PaymentService {
 
 	private String expandUrlWithId(String url, Long id) {
 		return url + "/" + id;
+	}
+
+	public String payWage(Wage entity) {
+		logger.trace("Paying wage started.");
+
+		JSONObject wageObject = new JSONObject();
+
+		JSONObject senderBatch = createSenderBatch();
+		JSONArray items = createItems(entity);
+
+		wageObject.put("sender_batch_header", senderBatch);
+		wageObject.put("items", items);
+
+		try {
+			sendRequestForPayingWage(PaypalConstants.PAYING_WAGE, wageObject, entity.getClientId(),
+					entity.getClientSecret());
+		} catch (BaseException e) {
+			return expandUrlWithId(entity.getErrorURL(), entity.getMerchantOrderId());
+		}
+
+		return expandUrlWithId(entity.getSuccessURL(), entity.getMerchantOrderId());
+	}
+
+	private JSONObject createSenderBatch() {
+		JSONObject senderBatch = new JSONObject();
+
+		senderBatch.put("sender_batch_id", UUID.randomUUID().toString());
+
+		return senderBatch;
+	}
+
+	private JSONArray createItems(Wage wage) {
+		JSONObject item = new JSONObject();
+
+		item.put("recipient_type", "EMAIL");
+		item.put("amount", createAmount(wage.getAmount()));
+		item.put("sender_item_id", UUID.randomUUID().toString());
+		item.put("receiver", wage.getReceiver());
+
+		JSONArray items = new JSONArray();
+
+		items.put(item);
+
+		return items;
+	}
+
+	private JSONObject createAmount(Double amount) {
+		JSONObject amountObject = new JSONObject();
+
+		amountObject.put("value", amount);
+		amountObject.put("currency", "USD");
+
+		return amountObject;
+	}
+
+	private JSONObject sendRequestForPayingWage(String url, JSONObject data, String merchantId, String merchantSecret)
+			throws BaseException {
+		JSONObject response = sendRequest(url, data, merchantId, merchantSecret);
+
+		logger.info("Request for paying wage sent");
+
+		return response;
+	}
+
+	private JSONObject sendRequest(String url, JSONObject data, String merchantId, String merchantSecret)
+			throws BaseException {
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders headers = new HttpHeaders();
+
+		headers.set("Authorization", createAuthorization(merchantId, merchantSecret));
+		headers.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<String> request = new HttpEntity<>(data.toString(), headers);
+
+		try {
+			ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+			return response.getBody() != null ? new JSONObject(response.getBody()) : null;
+		} catch (HttpStatusCodeException e) {
+			logger.debug("Error in sending request to paypal");
+
+			JSONObject response = new JSONObject(e.getResponseBodyAsString());
+
+			throw new BaseException(HttpStatus.resolve(e.getRawStatusCode()), response.getString("message"));
+		}
+	}
+
+	private String createAuthorization(String merchantId, String merchantSecret) {
+		String auth = merchantId + ":" + merchantSecret;
+
+		byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(StandardCharsets.US_ASCII));
+
+		return "Basic " + new String(encodedAuth);
 	}
 }

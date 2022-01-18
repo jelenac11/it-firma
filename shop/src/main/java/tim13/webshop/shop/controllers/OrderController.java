@@ -51,7 +51,7 @@ public class OrderController {
 	@GetMapping(value = "/transaction/{id}")
 	public ResponseEntity<?> getOrderByTransaction(@PathVariable Long id) {
 		logger.trace("Fetching order requested.");
-		
+
 		return new ResponseEntity<>(orderService.getOrderByTransaction(id).getTotalPrice(), HttpStatus.OK);
 	}
 

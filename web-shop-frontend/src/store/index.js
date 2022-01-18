@@ -47,7 +47,7 @@ export default new Vuex.Store({
     actions: {
         getEquipmentShoppingCart({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/equipment-shopping-carts', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/equipment-shopping-carts', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -60,7 +60,7 @@ export default new Vuex.Store({
 
         getServiceShoppingCart({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/service-shopping-carts', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/service-shopping-carts', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -73,7 +73,7 @@ export default new Vuex.Store({
 
         getAllEquipments({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/equipments', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/equipments', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -86,7 +86,7 @@ export default new Vuex.Store({
 
         getAllCourses({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/courses', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/courses', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -99,7 +99,7 @@ export default new Vuex.Store({
 
         getAllCoursesByMerchant({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/courses/by-merchant', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/courses/by-merchant', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -112,7 +112,7 @@ export default new Vuex.Store({
 
         getAllPlans({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/plans', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/plans', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -125,7 +125,7 @@ export default new Vuex.Store({
 
         getAllConferences({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/conferences', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/conferences', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -138,7 +138,7 @@ export default new Vuex.Store({
 
         getMySubscriptions({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/subscriptions/by-buyer', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/subscriptions/by-buyer', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -151,7 +151,7 @@ export default new Vuex.Store({
 
         getAllWages({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/wages', method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/wages', method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -164,7 +164,7 @@ export default new Vuex.Store({
 
         getTransports({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/transports/' + id, method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/transports/' + id, method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -177,7 +177,7 @@ export default new Vuex.Store({
 
         getAccommodations({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/accommodations/' + id, method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/accommodations/' + id, method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -190,7 +190,7 @@ export default new Vuex.Store({
 
         addEquipmentToCart({ commit }, equipment) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/equipment-shopping-carts/add-item', data: equipment, method: 'POST' })
+                axios({ url: 'https://localhost:8089/api/equipment-shopping-carts/add-item', data: equipment, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -203,7 +203,7 @@ export default new Vuex.Store({
 
         addServiceToCart({ commit }, service) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/service-shopping-carts/add-item', data: service, method: 'POST' })
+                axios({ url: 'https://localhost:8089/api/service-shopping-carts/add-item', data: service, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -216,7 +216,7 @@ export default new Vuex.Store({
 
         addOrder({ commit }, order) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/orders', data: order, method: 'POST' })
+                axios({ url: 'https://localhost:8089/api/orders', data: order, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -230,7 +230,7 @@ export default new Vuex.Store({
 
         removeServiceCartItem({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/service-shopping-carts/remove-item/' + id, method: 'DELETE' })
+                axios({ url: 'https://localhost:8089/api/service-shopping-carts/remove-item/' + id, method: 'DELETE' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -243,7 +243,7 @@ export default new Vuex.Store({
 
         removeEquipmentCartItem({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/equipment-shopping-carts/remove-item/' + id, method: 'DELETE' })
+                axios({ url: 'https://localhost:8089/api/equipment-shopping-carts/remove-item/' + id, method: 'DELETE' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -257,7 +257,7 @@ export default new Vuex.Store({
 
         login({ commit }, user) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/auth/login', data: user, method: 'POST' })
+                axios({ url: 'https://localhost:8089/auth/login', data: user, method: 'POST' })
                     .then(resp => {
                         const token = resp.data.accessToken;
                         const user = { 'email': jwt_decode(resp.data.accessToken).sub, 'role': jwt_decode(resp.data.accessToken).role };
@@ -285,7 +285,7 @@ export default new Vuex.Store({
 
         getCurrentUser({ commit }) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/auth/current-user', method: 'GET' })
+                axios({ url: 'https://localhost:8089/auth/current-user', method: 'GET' })
                     .then(resp => {
                         const user = resp.data;
                         commit('setCurrentUser', user);
@@ -300,7 +300,7 @@ export default new Vuex.Store({
 
         updateTransaction({ commit }, data) {
             return new Promise((resolve, reject) => {
-                axios({ url: `https://e0bb-87-116-166-189.ngrok.io/api/transaction/${data.transactionId}?status=${data.status}`, method: 'PUT' })
+                axios({ url: `https://localhost:8089/api/transaction/${data.transactionId}?status=${data.status}`, method: 'PUT' })
                     .then((resp) => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -313,7 +313,7 @@ export default new Vuex.Store({
 
         createPlan({ commit }, plan) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/plans', data: plan, method: 'POST' })
+                axios({ url: 'https://localhost:8089/api/plans', data: plan, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -326,7 +326,7 @@ export default new Vuex.Store({
 
         subscribe({ commit }, planId) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/subscriptions/subscribe/' + planId, method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/subscriptions/subscribe/' + planId, method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
 
@@ -340,7 +340,7 @@ export default new Vuex.Store({
 
         createSubscription({ commit }, data) {
             return new Promise((resolve, reject) => {
-                axios({ url: `https://e0bb-87-116-166-189.ngrok.io/api/subscriptions/${data.subscriptionId}/${data.transactionId}`, method: 'GET' })
+                axios({ url: `https://localhost:8089/api/subscriptions/${data.subscriptionId}/${data.transactionId}`, method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
 
@@ -354,7 +354,7 @@ export default new Vuex.Store({
 
         unsubscribe({ commit }, data) {
             return new Promise((resolve, reject) => {
-                axios({ url: `https://e0bb-87-116-166-189.ngrok.io/api/subscriptions/unsubscribe/${data.id}`, data: { reason: data.reason }, method: 'POST' })
+                axios({ url: `https://localhost:8089/api/subscriptions/unsubscribe/${data.id}`, data: { reason: data.reason }, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
 
@@ -368,7 +368,7 @@ export default new Vuex.Store({
 
         payWage({ commit }, order) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/orders/wage', data: order, method: 'POST' })
+                axios({ url: 'https://localhost:8089/api/orders/wage', data: order, method: 'POST' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);
@@ -382,7 +382,7 @@ export default new Vuex.Store({
 
         getOrderForWage({ commit }, id) {
             return new Promise((resolve, reject) => {
-                axios({ url: 'https://e0bb-87-116-166-189.ngrok.io/api/orders/transaction/' + id, method: 'GET' })
+                axios({ url: 'https://localhost:8089/api/orders/transaction/' + id, method: 'GET' })
                     .then(resp => {
                         commit('setEquipments', resp.data);
                         resolve(resp);

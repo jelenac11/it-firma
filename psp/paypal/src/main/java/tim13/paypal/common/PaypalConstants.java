@@ -12,6 +12,7 @@ public class PaypalConstants {
 	public static String SUBSCRIBE_URL = "https://api.sandbox.paypal.com/v1/billing/subscriptions";
 	public static String CREATE_PLAN_URL = "https://api.sandbox.paypal.com/v1/billing/plans";
 	public static String CREATE_PRODUCT_URL = "https://api.sandbox.paypal.com/v1/catalogs/products";
+	public static String PAYING_WAGE = "https://api.sandbox.paypal.com/v1/payments/payouts";
 	public static String AUTO_BILL_OUTSTANDING = "true";
 	public static String SETUP_FEE_FAILURE_ACTION = "CONTINUE";
 	public static String TENURE_TYPE = "REGULAR";

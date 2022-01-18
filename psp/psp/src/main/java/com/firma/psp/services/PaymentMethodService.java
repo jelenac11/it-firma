@@ -201,7 +201,7 @@ public class PaymentMethodService {
 
 		RestTemplate rs = new RestTemplate();
 
-		String url = rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay", pd, String.class).getBody();
+		String url = rs.postForEntity(paymentMethod.getUri() + "/api/payment/pay/wage", pd, String.class).getBody();
 
 		if (url == null || url.isEmpty()) {
 			return expandUrlWithId(o.getErrorUrl(), o.getTransactionId());
@@ -240,6 +240,7 @@ public class PaymentMethodService {
 		pd.setFailedURL(o.getFailUrl());
 		pd.setErrorURL(o.getErrorUrl());
 		pd.setSuccessURL(o.getSuccessUrl());
+		pd.setReceiver(o.getReceiver());
 
 		List<PaymentAttributeDTO> attributes = new ArrayList<PaymentAttributeDTO>();
 
