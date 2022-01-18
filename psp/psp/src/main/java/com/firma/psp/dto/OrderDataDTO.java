@@ -31,6 +31,7 @@ public class OrderDataDTO {
 	private String failUrl;
 	@NotEmpty
 	private String errorUrl;
+	private String receiver;
 
 	public OrderDataDTO(OrderData o) {
 		this.transactionId = o.getTransactionId();
@@ -40,6 +41,7 @@ public class OrderDataDTO {
 		this.failUrl = o.getFailUrl();
 		this.errorUrl = o.getErrorUrl();
 		this.timestamp = o.getTimestamp().getTime();
+		this.receiver = o.getReceiver();
 	}
 
 }

@@ -84,10 +84,7 @@
                             style="width: 85%; color: white"
                             v-on:click="pay(item)"
                             v-if="currentUser.role == 'ROLE_SERVICE_BUYER'"
-                            >Pay
-                            <v-icon class="ml-3"
-                              >mdi-cash</v-icon
-                            ></v-btn
+                            >Pay <v-icon class="ml-3">mdi-cash</v-icon></v-btn
                           >
                         </v-card-actions>
                       </v-card>
@@ -115,17 +112,20 @@
         </v-card>
       </v-flex>
     </v-layout>
+    <AddReceiver v-model="showAddToCart" :item="itemForCart"></AddReceiver>
   </div>
 </template>
 
 <script>
 import Navbar from "./Navbar.vue";
+import AddReceiver from "./AddReceiver.vue";
 import { mapState } from "vuex";
 
 export default {
   name: "Wages",
   components: {
     Navbar,
+    AddReceiver,
   },
   data: () => ({
     search: "",
@@ -168,14 +168,8 @@ export default {
         wageId: wage.id,
       };
 
-      this.$store
-        .dispatch("payWage", payWage)
-        .then((resp) => {
-           window.location.href = resp.data.url;
-        })
-        .catch((err) => {
-          console.log(err.response.data);
-        });
+      this.showAddToCart = true;
+      this.itemForCart = payWage;
     },
   },
   created() {

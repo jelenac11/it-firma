@@ -14,17 +14,20 @@ import lombok.Setter;
 @AllArgsConstructor
 public class PaymentDataDTO {
 
-    private Long merchantOrderId;
+	private Long merchantOrderId;
 
-    private Timestamp merchantTimestamp;
+	private Timestamp merchantTimestamp;
 
-    private Double amount;
+	private Double amount;
 
-    private List<PaymentAttributeDTO> attributes;
-    
-    private String successURL;
+	private List<PaymentAttributeDTO> attributes;
 
-    private String errorURL;
+	private String successURL;
 
-    private String failedURL;
+	private String errorURL;
+
+	private String failedURL;
+
+	private String receiver;
+
 }

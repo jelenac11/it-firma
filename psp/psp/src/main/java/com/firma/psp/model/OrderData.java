@@ -30,6 +30,9 @@ public class OrderData {
 
 	@Column(name = "merchant_email")
 	private String merchantEmail;
+	
+	@Column(name = "receiver")
+	private String receiver;
 
 	@Column(nullable = false)
 	private Timestamp timestamp;

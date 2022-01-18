@@ -16,8 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import tim13.paypal.dto.PaymentRequestDto;
+import tim13.paypal.dto.WageDTO;
 import tim13.paypal.exceptions.BaseException;
 import tim13.paypal.mapper.PaymentRequestMapper;
+import tim13.paypal.mapper.WageMapper;
 import tim13.paypal.service.PaymentService;
 
 @RestController
@@ -30,6 +32,9 @@ public class PaymentController {
 	@Autowired
 	private PaymentRequestMapper paymentRequestMapper;
 
+	@Autowired
+	private WageMapper wageMapper;
+
 	private static final Logger logger = LoggerFactory.getLogger(PaymentController.class);
 
 	@PostMapping(value = "/pay")
@@ -37,6 +42,13 @@ public class PaymentController {
 		logger.trace("URL creation requested.");
 
 		return ResponseEntity.ok(paymentService.createUrl(paymentRequestMapper.toEntity(paymentRequestDto)));
+	}
+
+	@PostMapping(value = "/pay/wage")
+	public ResponseEntity<String> payWage(@RequestBody WageDTO wageDto) {
+		logger.trace("Paying wage requested.");
+
+		return ResponseEntity.ok(paymentService.payWage(wageMapper.toEntity(wageDto)));
 	}
 
 	@GetMapping(value = "/execute", produces = MediaType.TEXT_PLAIN_VALUE)

@@ -11,4 +11,6 @@ public class PayWageDTO {
 
 	private Long wageId;
 
+	private String receiver;
+
 }

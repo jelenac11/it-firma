@@ -26,6 +26,7 @@ public class OrderDataService {
 		o.setMerchantEmail(orderDataDTO.getMerchantEmail());
 		o.setTotalPrice(orderDataDTO.getTotalPrice());
 		o.setTransactionId(orderDataDTO.getTransactionId());
+		o.setReceiver(orderDataDTO.getReceiver());
 		Date d = new Date(orderDataDTO.getTimestamp());
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String dateStr = sdf.format(d);

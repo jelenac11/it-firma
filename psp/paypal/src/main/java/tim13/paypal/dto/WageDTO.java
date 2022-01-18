@@ -1,0 +1,43 @@
+package tim13.paypal.dto;
+
+import java.util.List;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.PositiveOrZero;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class WageDTO {
+	
+	@NotNull(message = "Merchant order id is not provided.")
+	@PositiveOrZero
+	private Long merchantOrderId;
+
+	private List<PaymentAttributeDTO> attributes;
+
+	@NotBlank(message = "Receiver email is not provided.")
+	private String receiver;
+	
+	@NotNull(message = "Amount is not provided.")
+	@Min(value = 0, message = "Amount must be greater or equal to 0")
+	private Double amount;
+
+	@NotBlank(message = "Success url is not provided.")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	private String successURL;
+
+	@NotBlank(message = "Cancel url is not provided.")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	private String failedURL;
+
+	@NotBlank(message = "Error url is not provided.")
+	@Pattern(regexp = "(http(s)?:\\/\\/)((.*))[(\\/)?a-zA-Z0-9@:%._\\+~#=-]{1,256}")
+	private String errorURL;
+
+}
