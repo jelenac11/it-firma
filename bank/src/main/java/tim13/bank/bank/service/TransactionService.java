@@ -59,6 +59,7 @@ public class TransactionService {
 
 		logger.info("Successfull transaction with id " + transaction.getId());
 		transaction.setStatus(TransactionStatus.SUCCESS);
+		transaction = transactionRepository.save(transaction);
 		return transaction;
 	}
 
