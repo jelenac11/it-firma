@@ -2,7 +2,9 @@ package tim13.bitcoinservice.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,6 +29,10 @@ public class PaymentService {
 
 	@Value("${SANDBOX_URL}")
 	private String sandbox;
+	
+	@Autowired
+	@Lazy
+	private TransactionChecker transactionChecker;
 	
 	private static final Logger logger = LoggerFactory.getLogger(PaymentService.class);
 
@@ -66,34 +72,22 @@ public class PaymentService {
 		if (paymentUrl == null || paymentUrl.equals("")) {
 			throw new InvalidDataException("Missing payment url from coingate", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		
+		new Thread(new Runnable() {
+	        private ResponseEntity<BitcoinOrderResponseDTO> param;
 
-		checkTransaction(response.getBody().getId(), token);
+	        public Runnable init(ResponseEntity<BitcoinOrderResponseDTO> param) {
+	            this.param = param;
+	            return this;
+	        }
+
+	        @Override
+	        public void run() {
+	        	transactionChecker.checkTransaction(this.param.getBody().getId(), token);
+	        }
+	    }.init(response)).start();
 
 		return paymentUrl;
-	}
-
-	@SneakyThrows
-	@Async
-	public void checkTransaction(Long id, String coingateApiKey) {
-		logger.info("Checking transaction with id " + id);
-		String getOrderSandboxUrl = "https://api-sandbox.coingate.com/v2/orders/" + id;
-
-		String clientSecret = "Bearer " + coingateApiKey;
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", clientSecret);
-
-		ResponseEntity<BitcoinOrderResponseDTO> responseEntity;
-
-		do {
-			responseEntity = new RestTemplate().exchange(getOrderSandboxUrl, HttpMethod.GET, new HttpEntity<>(headers),
-					BitcoinOrderResponseDTO.class);
-			Thread.sleep(5000);
-
-		} while (responseEntity.getBody().getStatus().equals("new")
-				|| responseEntity.getBody().getStatus().equals("pending")
-				|| responseEntity.getBody().getStatus().equals("confirming"));
-
-		completePayment(responseEntity.getBody());
 	}
 
 	public void completePayment(BitcoinOrderResponseDTO data) {
