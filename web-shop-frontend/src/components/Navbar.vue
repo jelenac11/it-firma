@@ -89,6 +89,9 @@
             <v-subheader class="log-out mr-2" @click="openMySubscriptions()">
               <b>My Subscriptions</b>
             </v-subheader>
+            <v-subheader class="log-out mr-2" @click="openMyHistory()">
+              <b>Shopping history</b>
+            </v-subheader>
             <v-subheader class="log-out mr-2" @click="logOut()"
               ><v-icon class="mr-2">mdi-exit-to-app</v-icon
               ><b>Log out</b></v-subheader
@@ -144,6 +147,10 @@ export default {
     },
     openMySubscriptions: function () {
       let path = "/my-subscriptions";
+      if (this.$route.path !== path) this.$router.push(path);
+    },
+    openMyHistory: function () {
+      let path = "/history";
       if (this.$route.path !== path) this.$router.push(path);
     },
   },

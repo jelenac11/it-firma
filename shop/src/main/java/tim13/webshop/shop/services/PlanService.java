@@ -74,7 +74,7 @@ public class PlanService {
 		RestTemplate rs = new RestTemplate();
 
 		try {
-			return rs.postForEntity("https://abb2-109-92-144-92.ngrok.io/api/subscription/create-plan", planDTO, String.class)
+			return rs.postForEntity("https://cf8e-79-101-213-141.ngrok.io/api/subscription/create-plan", planDTO, String.class)
 					.getBody();
 		} catch (HttpStatusCodeException e) {
 			logger.debug(e.getResponseBodyAsString());

@@ -10,6 +10,7 @@ import Success from "../components/Success.vue";
 import Cancel from "../components/Cancel.vue";
 import Fail from "../components/Fail.vue";
 import MySubscriptions from "../components/MySubscriptions.vue";
+import History from "../components/History.vue";
 import store from "../store";
 
 Vue.use(VueRouter);
@@ -24,6 +25,11 @@ const routes = [
     path: "/equipment",
     name: "Equipment",
     component: Equipment
+  },
+  {
+    path: "/history",
+    name: "History",
+    component: History
   },
   {
     path: "/courses",

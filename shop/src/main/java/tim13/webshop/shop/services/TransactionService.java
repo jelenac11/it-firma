@@ -12,6 +12,7 @@ import tim13.webshop.shop.enums.TransactionStatus;
 import tim13.webshop.shop.enums.WageStatus;
 import tim13.webshop.shop.model.EquipmentShoppingCart;
 import tim13.webshop.shop.model.EquipmentShoppingCartItem;
+import tim13.webshop.shop.model.HistoryItem;
 import tim13.webshop.shop.model.OrderItem;
 import tim13.webshop.shop.model.Role;
 import tim13.webshop.shop.model.ServiceShoppingCart;
@@ -20,6 +21,7 @@ import tim13.webshop.shop.model.Transaction;
 import tim13.webshop.shop.model.User;
 import tim13.webshop.shop.model.Wage;
 import tim13.webshop.shop.repositories.IEquipmentShoppingCartRepository;
+import tim13.webshop.shop.repositories.IHistoryItemRepo;
 import tim13.webshop.shop.repositories.IServiceShoppingCartRepository;
 import tim13.webshop.shop.repositories.ITransactionRepository;
 import tim13.webshop.shop.repositories.IWageRepository;
@@ -48,6 +50,10 @@ public class TransactionService {
 
 	@Autowired
 	private IWageRepository wageRepository;
+	
+	@Autowired
+	private IHistoryItemRepo historyRepo;
+
 
 	@Autowired
 	private EmailService emailService;
@@ -93,6 +99,12 @@ public class TransactionService {
 					Set<EquipmentShoppingCartItem> forDelete = new HashSet<EquipmentShoppingCartItem>();
 					equpmentCart.getItems().stream().forEach(forDelete::add);
 					for (EquipmentShoppingCartItem item : forDelete) {
+						HistoryItem hi = new HistoryItem();
+						hi.setBuyer(current);
+						hi.setTotalPrice(item.getEquipment().getPrice() * item.getQuantity());
+						hi.setQuantity(item.getQuantity());
+						hi.setName(item.getEquipment().getName());
+						historyRepo.save(hi);
 						equpmentCart.getItems().remove(item);
 					}
 					equipmentShoppingCartRepository.saveAndFlush(equpmentCart);
@@ -116,6 +128,12 @@ public class TransactionService {
 						Set<ServiceShoppingCartItem> forDelete = new HashSet<ServiceShoppingCartItem>();
 						serviceCart.getItems().stream().forEach(forDelete::add);
 						for (ServiceShoppingCartItem item : forDelete) {
+							HistoryItem hi = new HistoryItem();
+							hi.setBuyer(current);
+							hi.setTotalPrice(item.getService().getPrice() + item.getAdditionalCosts());
+							hi.setQuantity(1);
+							hi.setName(item.getService().getName());
+							historyRepo.save(hi);
 							serviceCart.getItems().remove(item);
 						}
 						serviceShoppingCartRepository.saveAndFlush(serviceCart);

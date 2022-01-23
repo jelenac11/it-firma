@@ -16,6 +16,20 @@
                 <b>Payment failed!</b>
               </p>
             </div>
+            <router-link
+              to="/equipment"
+              class="ml-5 mt-5"
+              style="color: #1976d2"
+              v-if="this.currentUser.role === 'ROLE_EQUIPMENT_BUYER'"
+              >Go to homepage.</router-link
+            >
+            <router-link
+              to="/courses"
+              class="ml-5 mt-5"
+              style="color: #1976d2"
+              v-if="this.currentUser.role === 'ROLE_SERVICE_BUYER'"
+              >Go to homepage.</router-link
+            >
           </v-card-text>
         </v-card>
       </v-flex>
@@ -24,13 +38,20 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   name: "Fail",
   data: () => ({}),
   props: {},
-  computed: {},
+  computed: {
+    ...mapState({
+      currentUser: (state) => state.user,
+    }),
+  },
   methods: {},
   mounted: function () {
+    this.$store.dispatch("getCurrentUser");
     const transactionId = this.$route.params.transactionId;
 
     this.$store

@@ -57,7 +57,12 @@
                       {{ item.equipment.name }}
                     </td>
                     <td v-if="currentUser.role === 'ROLE_SERVICE_BUYER'">
-                      <p>{{ item.service.name }}<span v-if="!item.service.online"> <b>(Transport and accommodation included)</b></span></p> 
+                      <p>
+                        {{ item.service.name
+                        }}<span v-if="!item.service.online">
+                          <b>(Transport and accommodation included)</b></span
+                        >
+                      </p>
                     </td>
                     <td
                       v-if="currentUser.role === 'ROLE_EQUIPMENT_BUYER'"
@@ -106,10 +111,10 @@
                     <td class="text-left">
                       {{ getDate(subscription.startDate) }}
                     </td>
-                     <td class="text-left">
+                    <td class="text-left">
                       {{ subscription.plan.typeOfPlan }}
                     </td>
-                     <td class="text-left">
+                    <td class="text-left">
                       {{ subscription.plan.price }}
                     </td>
                   </tr>
@@ -125,6 +130,20 @@
             <h2 v-if="subscription" class="ml-4">
               Total paid: $ {{ subscription.plan.price }}
             </h2>
+            <router-link
+              to="/equipment"
+              class="ml-5 mt-5"
+              style="color: #1976d2"
+              v-if="this.currentUser.role === 'ROLE_EQUIPMENT_BUYER'"
+              >Go to homepage.</router-link
+            >
+            <router-link
+              to="/courses"
+              class="ml-5 mt-5"
+              style="color: #1976d2"
+              v-if="this.currentUser.role === 'ROLE_SERVICE_BUYER'"
+              >Go to homepage.</router-link
+            >
           </v-card-text>
         </v-card>
       </v-flex>
@@ -140,7 +159,7 @@ export default {
   data: () => ({
     cartItems: [],
     wageItems: [],
-    subscription: null
+    subscription: null,
   }),
   props: {},
   computed: {
@@ -156,7 +175,7 @@ export default {
           transactionId,
         })
         .then((res) => {
-          if(!res.data) {
+          if (!res.data) {
             return;
           }
 
